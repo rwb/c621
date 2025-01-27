@@ -126,9 +126,9 @@ yss <- sample(y,size=100,replace=T)
 * We need to choose an estimator to produce the estimate.
 * An obvious choice for an estimator would be the *sample mean*:
 
-$
+$$
 \overline{y} = \frac{1}{n} \sum_{i=1}^n y_i
-$
+$$
 
 
 
