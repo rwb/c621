@@ -76,3 +76,37 @@ The various topics I plan to discuss in this course are listed below in coverage
 31. logistic regression
 32. confidence intervals for proportions (Brown et al., 2001; [link](https://projecteuclid.org/journals/statistical-science/volume-16/issue-2/Interval-Estimation-for-a-Binomial-Proportion/10.1214/ss/1009213286.full)).
 33. introduction to Bayesian analysis of proportions (Agresti and Hitchcock, 2005; [link](https://link.springer.com/content/pdf/10.1007/s10260-005-0121-y.pdf)).
+
+### Lesson 1 - Monday 1/27/25
+
+* An estimator is a formula or way of calculating some scientifically interesting quantity.
+* Estimators are used to calculate estimates (sometimes people say "estimand").
+* Scientists must attend to the properties of the estimators they use for describing phenomena and developing inferences.
+* When we conduct a statistical analysis we are usually doing one of the following things: (1) point estimation; (2) interval estimation; and/or (3) hypothesis testing.
+* It is natural to be concerned with how accurately we are performing these tasks.
+* To motivate this discussion, let's consider the case of a normally distributed random variable for a large population.
+
+```R
+y <- rnorm(n=1000000,mean=100,sd=10)
+mean(y)
+sd(y)
+hist(y)
+```
+
+* Here is our output:
+
+```Rout
+> y <- rnorm(n=1000000,mean=100,sd=10)
+> mean(y)
+[1] 100.0036
+> sd(y)
+[1] 10.01643
+> hist(y)
+>
+```
+
+* Here is the population histogram:
+
+<p align="center">
+<img src="/gfiles/fig1.png" width="600px">
+</p>
