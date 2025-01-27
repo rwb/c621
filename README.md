@@ -88,7 +88,6 @@ The various topics I plan to discuss in this course are listed below in coverage
 * This generates the population distribution of y (mean of about 100 and a standard deviation of about 10):
 
 ```R
-set.seed(1)
 y <- rnorm(n=1000000,mean=100,sd=10)
 mean(y)
 sd(y)
@@ -98,7 +97,6 @@ hist(y)
 * Here is our output:
 
 ```Rout
-> set.seed(1)
 > y <- rnorm(n=1000000,mean=100,sd=10)
 > mean(y)
 [1] 100.0005
@@ -125,55 +123,125 @@ yss <- sample(y,size=100,replace=T)
 * Now, let's suppose our objective is to estimate the *population mean* using the *sample* information.
 * We need to choose an estimator to produce the estimate.
 * An obvious choice for an estimator would be the *sample mean*: $\overline{y} = \frac{1}{n} \sum_{i=1}^n y_i$
-
-
-
-* Next, let's draw repeated samples of size N = 300 from this population.
-* R Code:
+* But another choice for an estimator could be the *sample median* or the middle score of the distribution.
+* Let's calculate both quantities for our single sample:
 
 ```
-# Calculate population mean
-
-popmean <- mean(y)
-
-# draw a single sample of size n=[sampsize] 
-# from the population with replacement
-
-sampsize <- 300
-yss <- sample(y,size=sampsize,replace=T)
-
-# calculate the sample mean 
-
 mean(yss)
-
-# calculate the sample median 
-
 median(yss)
+```
 
-# now, let's repeat this process [nsamples] times
+* Here is our output:
 
-nsamples <- 100000
+```Rout
+> mean(yss)
+[1] 99.91584
+> median(yss)
+[1] 99.46716
+>
+```
 
-ys_mean <- vector()
-se_mean <- vector()
-ys_median <- vector()
+* Let's draw another sample and see what happens:
 
-for(i in 1:nsamples)
-  {
-   ys <- sample(y,size=sampsize,replace=T)
-   ys_mean[i] <- mean(ys)
-   se_mean[i] <- sd(ys)/sqrt(sampsize)
-   ys_median[i] <- median(ys)
-   }
+```R
+yss <- sample(y,size=100,replace=T)
+mean(yss)
+median(yss)
+```
 
-# calculate the mean squared error (mse)
+* Here is our next output:
 
-ys_mean_mse <- sum((ys_mean-popmean)^2)/nsamples
-ys_median_mse <- sum((ys_median-popmean)^2)/nsamples
+```Rout
+> yss <- sample(y,size=100,replace=T)
+> mean(yss)
+[1] 101.0809
+> median(yss)
+[1] 100.2906
+```
 
-# look at the results
+* In both samples the mean and median are close to the population mean
+* In the first sample, the mean is closer; in the second sample the median is closer.
+* How should we choose which estimator to use?
+* To investigate this, let's draw repeated samples of size n = 100 from this population.
 
-c(mean(ys_mean),sd(ys_mean),ys_mean_mse)
-c(mean(ys_median),sd(ys_median),ys_median_mse)
-mean(se_mean)
-median(se_mean)
+```R
+ymean <- vector()
+ymedian <- vector()
+
+for(i in 1:1e5){
+  ys <- sample(y,size=100,replace=T)
+  ymean[i] <- mean(ys)
+  ymedian[i] <- median(ys)
+  }
+
+mean(ymean)
+mean(ymedian)
+boxplot(ymean,ymedian,names=c("sample mean","sample median"))
+```
+
+* Here is our output:
+
+```Rout
+> ymean <- vector()
+> ymedian <- vector()
+> 
+> for(i in 1:1e5){
++   ys <- sample(y,size=100,replace=T)
++   ymean[i] <- mean(ys)
++   ymedian[i] <- median(ys)
++   }
+> 
+> mean(ymean)
+[1] 99.99852
+> mean(ymedian)
+[1] 99.9985
+> boxplot(ymean,ymedian,names=c("sample mean","sample median"))
+>
+```
+
+<p align="center">
+<img src="/gfiles/fig2.png" width="600px">
+</p>
+
+* This repeated sampling exercise yields an approximation to the *sampling distribution* of the two sets of estimates.
+* Both the sample mean and median seem to be *unbiased* (right on average) estimators of the population mean.
+* But the sample median has greater dispersion than the sample mean -- it is less *efficient*.
+* So, we would prefer the sample mean over the sample median on efficiency grounds
+* We can confirm this by looking at the standard deviation of each distribution of sample means and sample medians.
+
+```R
+sd(ymean)
+sd(ymedian)
+```
+
+* which gives the following output:
+
+```Rout
+> sd(ymean)
+[1] 1.000298
+> sd(ymedian)
+[1] 1.243241
+>
+```
+
+* Not by coincidence, the *mean squared error* for the two estimators gives us the same result (this is just the square of the standard deviations or the variance of the sampling distribution.
+
+```R
+dmean <- ymean-100
+sum(dmean^2)/1e5
+dmedian <- ymedian-100
+sum(dmedian^2)/1e5
+```
+
+* Here is the output:
+
+```Rout
+> dmean <- ymean-100
+> sqrt(sum(dmean^2)/1e5)
+[1] 1.000295
+> dmedian <- ymedian-100
+> sqrt(sum(dmedian^2)/1e5)
+[1] 1.243236
+>
+```
+
