@@ -224,7 +224,7 @@ sd(ymedian)
 >
 ```
 
-* Not by coincidence, the *mean squared error* for the two estimators gives us the same result (this is just the square of the standard deviations or the variance of the sampling distribution.
+* Not by coincidence, the *mean squared error* for the two estimators gives us the same result (this is just the square of the standard deviations or the variance of the sampling distribution).
 
 ```R
 dmean <- ymean-100
