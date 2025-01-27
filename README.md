@@ -309,6 +309,7 @@ for(i in 1:1e5){
   }
 
 mean(ymean)
+sd(ymean)
 mean(se.ymean)
 mean(ucl90-lcl90)
 trap <- ifelse(lcl90<100 & ucl90>100,"hit","miss")
@@ -318,30 +319,19 @@ table(trap)
 * Here is the output:
   
 ```Rout
-> ymean <- vector()
-> se.ymean <- vector()
-> lcl90 <- vector()
-> ucl90 <- vector()
-> 
-> for(i in 1:1e5){
-+   ys <- sample(y,size=100,replace=T)
-+   ymean[i] <- mean(ys)
-+   se.ymean[i] <- sd(ys)/sqrt(100)
-+   lcl90[i] <- ymean[i]+qnorm(p=0.05,mean=0,sd=1)*se.ymean[i]
-+   ucl90[i] <- ymean[i]+qnorm(p=0.95,mean=0,sd=1)*se.ymean[i]
-+   }
-> 
 > mean(ymean)
-[1] 100.0048
+[1] 99.99113
+> sd(ymean)
+[1] 1.004598
 > mean(se.ymean)
-[1] 0.9976054
+[1] 0.9969187
 > mean(ucl90-lcl90)
-[1] 3.28183
+[1] 3.279571
 > trap <- ifelse(lcl90<100 & ucl90>100,"hit","miss")
 > table(trap)
 trap
   hit  miss 
-89697 10303 
+89468 10532 
 > 
 ```
 
