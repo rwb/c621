@@ -245,3 +245,157 @@ sum(dmedian^2)/1e5
 > 
 ```
 
+* Now, let's think about a 90% confidence interval for the sample mean.
+* We can calculate this interval for a single sample using the following approach:
+
+```R
+yss <- sample(y,size=100,replace=T)
+mean(yss)
+sd(yss)
+se.meanyss <- sd(yss)/sqrt(100)
+se.meanyss
+p5 <- qnorm(p=0.05,mean=0,sd=1)
+p5
+p95 <- qnorm(p=0.95,mean=0,sd=1)
+p95
+lcl <- mean(yss)+p5*se.meanyss
+lcl
+ucl <- mean(yss)+p95*se.meanyss
+ucl
+```
+
+* Here is our output:
+
+```Rout
+> yss <- sample(y,size=100,replace=T)
+> mean(yss)
+[1] 99.35032
+> sd(yss)
+[1] 10.99164
+> se.meanyss <- sd(yss)/sqrt(100)
+> se.meanyss
+[1] 1.099164
+> p5 <- qnorm(p=0.05,mean=0,sd=1)
+> p5
+[1] -1.644854
+> p95 <- qnorm(p=0.95,mean=0,sd=1)
+> p95
+[1] 1.644854
+> lcl <- mean(yss)+p5*se.meanyss
+> lcl
+[1] 97.54235
+> ucl <- mean(yss)+p95*se.meanyss
+> ucl
+[1] 101.1583
+>
+```
+
+* So, the calculated 90% confidence interval for this particular sample is [97.542,101.1583] -- which traps the true population value of 100.
+* The creation of a valid 90% confidence interval means that our interval has *at least* a 90% chance of trapping the true population value of 100. What does this mean?
+* Here is some code to check on whether it really works:
+
+```R
+ymean <- vector()
+se.ymean <- vector()
+lcl90 <- vector()
+ucl90 <- vector()
+
+for(i in 1:1e5){
+  ys <- sample(y,size=100,replace=T)
+  ymean[i] <- mean(ys)
+  se.ymean[i] <- sd(ys)/sqrt(100)
+  lcl90[i] <- ymean[i]+qnorm(p=0.05,mean=0,sd=1)*se.ymean[i]
+  ucl90[i] <- ymean[i]+qnorm(p=0.95,mean=0,sd=1)*se.ymean[i]
+  }
+
+mean(ymean)
+mean(se.ymean)
+mean(ucl90-lcl90)
+trap <- ifelse(lcl90<100 & ucl90>100,"hit","miss")
+table(trap)
+```
+
+* Here is the output:
+  
+```Rout
+> ymean <- vector()
+> se.ymean <- vector()
+> lcl90 <- vector()
+> ucl90 <- vector()
+> 
+> for(i in 1:1e5){
++   ys <- sample(y,size=100,replace=T)
++   ymean[i] <- mean(ys)
++   se.ymean[i] <- sd(ys)/sqrt(100)
++   lcl90[i] <- ymean[i]+qnorm(p=0.05,mean=0,sd=1)*se.ymean[i]
++   ucl90[i] <- ymean[i]+qnorm(p=0.95,mean=0,sd=1)*se.ymean[i]
++   }
+> 
+> mean(ymean)
+[1] 100.0048
+> mean(se.ymean)
+[1] 0.9976054
+> mean(ucl90-lcl90)
+[1] 3.28183
+> trap <- ifelse(lcl90<100 & ucl90>100,"hit","miss")
+> table(trap)
+trap
+  hit  miss 
+89697 10303 
+> 
+```
+
+* As you can see, it's pretty close but not quite right. It turns out this is *not* a valid 90% confidence interval.
+* We should be using the t-distribution instead of the normal distribution with a sample size of 100.
+* Let's try the t-distribution and see what we get:
+
+```R
+ymean <- vector()
+se.ymean <- vector()
+lcl90 <- vector()
+ucl90 <- vector()
+
+for(i in 1:1e5){
+  ys <- sample(y,size=100,replace=T)
+  ymean[i] <- mean(ys)
+  se.ymean[i] <- sd(ys)/sqrt(100)
+  lcl90[i] <- ymean[i]+qt(p=0.05,df=100-1)*se.ymean[i]
+  ucl90[i] <- ymean[i]+qt(p=0.95,df=100-1)*se.ymean[i]
+  }
+
+mean(ymean)
+mean(se.ymean)
+mean(ucl90-lcl90)
+trap <- ifelse(lcl90<100 & ucl90>100,"hit","miss")
+table(trap)
+```
+
+* That's better!
+
+```Rout
+> ymean <- vector()
+> se.ymean <- vector()
+> lcl90 <- vector()
+> ucl90 <- vector()
+> 
+> for(i in 1:1e5){
++   ys <- sample(y,size=100,replace=T)
++   ymean[i] <- mean(ys)
++   se.ymean[i] <- sd(ys)/sqrt(100)
++   lcl90[i] <- ymean[i]+qt(p=0.05,df=100-1)*se.ymean[i]
++   ucl90[i] <- ymean[i]+qt(p=0.95,df=100-1)*se.ymean[i]
++   }
+> 
+> mean(ymean)
+[1] 99.99331
+> mean(se.ymean)
+[1] 0.9976558
+> mean(ucl90-lcl90)
+[1] 3.312998
+> trap <- ifelse(lcl90<100 & ucl90>100,"hit","miss")
+> table(trap)
+trap
+  hit  miss 
+90076  9924 
+> 
+```
