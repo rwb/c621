@@ -84,8 +84,8 @@ The various topics I plan to discuss in this course are listed below in coverage
 * Scientists must attend to the properties of the estimators they use for describing phenomena and developing inferences.
 * When we conduct a statistical analysis we are usually doing one of the following things: (1) point estimation; (2) interval estimation; and/or (3) hypothesis testing.
 * It is natural to be concerned with how accurately we are performing these tasks.
-* To motivate this discussion, let's consider the case of a normally distributed random variable for a large population.
-* This generates the population distribution:
+* To motivate this discussion, let's consider the case of a normally distributed random variable, *y*, for a large population.
+* This generates the population distribution of y (mean of about 100 and a standard deviation of about 10):
 
 ```R
 set.seed(1)
@@ -113,3 +113,72 @@ hist(y)
 <p align="center">
 <img src="/gfiles/fig1.png" width="600px">
 </p>
+
+* So far, all we've done is consider the population.
+* Now, let's draw a single sample, yss, of size 100 from the population -- with replacement.
+
+```R
+yss <- sample(y,size=100,replace=T)
+```
+
+* The y values for the single sample are included in the vector, *yss*.
+* Now, let's suppose our objective is to estimate the *population mean* using the *sample* information.
+* We need to choose an estimator to produce the estimate.
+* An obvious choice for an estimator would be the *sample mean*:
+
+\begin{displaymath}
+\overline{y} = \frac{1}{n} \sum_{i=1}^n y_i
+\end{displaymath}
+
+
+
+
+* Next, let's draw repeated samples of size N = 300 from this population.
+* R Code:
+
+```
+# Calculate population mean
+
+popmean <- mean(y)
+
+# draw a single sample of size n=[sampsize] 
+# from the population with replacement
+
+sampsize <- 300
+yss <- sample(y,size=sampsize,replace=T)
+
+# calculate the sample mean 
+
+mean(yss)
+
+# calculate the sample median 
+
+median(yss)
+
+# now, let's repeat this process [nsamples] times
+
+nsamples <- 100000
+
+ys_mean <- vector()
+se_mean <- vector()
+ys_median <- vector()
+
+for(i in 1:nsamples)
+  {
+   ys <- sample(y,size=sampsize,replace=T)
+   ys_mean[i] <- mean(ys)
+   se_mean[i] <- sd(ys)/sqrt(sampsize)
+   ys_median[i] <- median(ys)
+   }
+
+# calculate the mean squared error (mse)
+
+ys_mean_mse <- sum((ys_mean-popmean)^2)/nsamples
+ys_median_mse <- sum((ys_median-popmean)^2)/nsamples
+
+# look at the results
+
+c(mean(ys_mean),sd(ys_mean),ys_mean_mse)
+c(mean(ys_median),sd(ys_median),ys_median_mse)
+mean(se_mean)
+median(se_mean)
