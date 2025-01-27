@@ -85,8 +85,10 @@ The various topics I plan to discuss in this course are listed below in coverage
 * When we conduct a statistical analysis we are usually doing one of the following things: (1) point estimation; (2) interval estimation; and/or (3) hypothesis testing.
 * It is natural to be concerned with how accurately we are performing these tasks.
 * To motivate this discussion, let's consider the case of a normally distributed random variable for a large population.
+* This generates the population distribution:
 
 ```R
+set.seed(1)
 y <- rnorm(n=1000000,mean=100,sd=10)
 mean(y)
 sd(y)
@@ -96,13 +98,14 @@ hist(y)
 * Here is our output:
 
 ```Rout
+> set.seed(1)
 > y <- rnorm(n=1000000,mean=100,sd=10)
 > mean(y)
-[1] 100.0036
+[1] 100.0005
 > sd(y)
-[1] 10.01643
+[1] 10.00185
 > hist(y)
->
+> 
 ```
 
 * Here is the population histogram:
