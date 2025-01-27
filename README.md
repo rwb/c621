@@ -237,11 +237,11 @@ sum(dmedian^2)/1e5
 
 ```Rout
 > dmean <- ymean-100
-> sqrt(sum(dmean^2)/1e5)
-[1] 1.000295
+> sum(dmean^2)/1e5
+[1] 1.000589
 > dmedian <- ymedian-100
-> sqrt(sum(dmedian^2)/1e5)
-[1] 1.243236
->
+> sum(dmedian^2)/1e5
+[1] 1.545636
+> 
 ```
 
