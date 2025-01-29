@@ -390,4 +390,19 @@ trap
 > 
 ```
 
-* Larry Wasserman's (2004:92) interpretation of a confidence interval: "Warning! There is much confusion about how to interpret a confidence interval. A confidence interval is not a probability statement about $\theta$ since $\theta$ is a fixed quantity, not a random variable. Some texts interpret confidence intervals as follows: if I repeat the experiment over and over, the interval will contain the parameter 95 percent of the time. This is correct but useless since we rarely repeat the same experiment over and over. A better interpretation is this: "On day 1, you collect data and construct a 95 percent confidence interval for a parameter $\theta_1$. On day 2, you collect new data and construct a 95% percent confidence interval for an unrelated parameter $\theta_2$. On day 3, you collect new data and construct a 95% confidence interval for an unrelated parameter $\theta_3$. You continue this way constructing confidence intervals  for a sequence of unrelated parameters, $\theta_1,\theta_2,\cdots$ The 95 percent of your intervals will trap teh true parameter value. There is no need to introduce the idea of repeating the same experiment over and over."
+* Larry Wasserman's (2004:92) interpretation of a confidence interval: "Warning! There is much confusion about how to interpret a confidence interval. A confidence interval is not a probability statement about $\theta$ since $\theta$ is a fixed quantity, not a random variable. Some texts interpret confidence intervals as follows: if I repeat the experiment over and over, the interval will contain the parameter 95 percent of the time. This is correct but useless since we rarely repeat the same experiment over and over. A better interpretation is this: "On day 1, you collect data and construct a 95 percent confidence interval for a parameter $\theta_1$. On day 2, you collect new data and construct a 95% percent confidence interval for an unrelated parameter $\theta_2$. On day 3, you collect new data and construct a 95% confidence interval for an unrelated parameter $\theta_3$. You continue this way constructing confidence intervals  for a sequence of unrelated parameters, $\theta_1,\theta_2,\cdots$ Then 95 percent of your intervals will trap the true parameter value. There is no need to introduce the idea of repeating the same experiment over and over."
+
+### Lesson 2 - Monday 2/3/25
+
+* Before we turn to confidence intervals for medians, we will spend some time looking at how R works.
+* You can use R interactively or in batch mode.
+* Need to have a text editor such as Notepad (windows) or TextEdit (mac) that allows you to work with plain text.
+* R Studio also has a text editor and many students enjoy using it.
+* If you use R Studio, you still have to install R on your computer.
+* Whenever you start a new R session, I recommend that you submit the following command:
+
+```R
+rm(list=ls())
+```
+
+* Note that this clears the memory so you don't carry over materials from prior R sessions.
