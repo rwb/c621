@@ -406,3 +406,169 @@ rm(list=ls())
 ```
 
 * Note that this clears the memory so you don't carry over materials from prior R sessions.
+* Assignment operators
+
+```R
+x <- 2
+x
+x=3
+x
+```
+
+```Rout
+> x <- 2
+> x
+[1] 2
+> x=3
+> x
+[1] 3
+> 
+```
+
+* Basic arithmetic
+
+```R
+x <- 2
+y <- 3
+x+y
+x-y
+x*y
+y/x
+ysq = y*y
+ysq
+sqrt(ysq)
+xcu <- x^3
+xcu
+```
+
+```Rout
+> x <- 2
+> y <- 3
+> x+y
+[1] 5
+> x-y
+[1] -1
+> x*y
+[1] 6
+> y/x
+[1] 1.5
+> ysq = y*y
+> ysq
+[1] 9
+> sqrt(ysq)
+[1] 3
+> xcu <- x^3
+> xcu
+[1] 8
+>
+```
+
+* Logical operations
+
+```R
+x <- 7
+y <- 5
+x==y
+x!=y
+x>y
+x<y
+x>(y+2)
+x>=(y+2)
+```
+
+```Rout
+> x <- 7
+> y <- 5
+> x==y
+[1] FALSE
+> x!=y
+[1] TRUE
+> x>y
+[1] TRUE
+> x<y
+[1] FALSE
+> x>(y+2)
+[1] FALSE
+> x>=(y+2)
+[1] TRUE
+>
+```
+
+* Vectors
+
+```R
+x <- c(3,4,7,2,9,5)
+x
+```
+
+```Rout
+> x <- c(3,4,7,2,9,5)
+> x
+[1] 3 4 7 2 9 5
+>
+```
+
+* Functions
+
+```R
+x <- c(3,4,7,2,9,5)
+x
+length(x)
+sum(x)
+y <- sum(x)
+y
+xbar <- mean(x)
+xbar
+var(x)
+sd(x)
+sd(x)/sqrt(length(x))
+sum(x)/length(x)
+sort(x,decreasing=T)
+sort(x,decreasing=F)
+median(x)
+max(x)
+min(x)
+ifelse(mean(x)>median(x),"mean is bigger than median","mean is not bigger than median")
+purplecow <- ifelse(median(x)>mean(x),"mediaan is bigger than mean","median is not bigger than mean")
+purplecow
+```
+
+```Rout
+> x <- c(3,4,7,2,9,5)
+> x
+[1] 3 4 7 2 9 5
+> length(x)
+[1] 6
+> sum(x)
+[1] 30
+> y <- sum(x)
+> y
+[1] 30
+> xbar <- mean(x)
+> xbar
+[1] 5
+> var(x)
+[1] 6.8
+> sd(x)
+[1] 2.607681
+> sd(x)/sqrt(length(x))
+[1] 1.064581
+> sum(x)/length(x)
+[1] 5
+> sort(x,decreasing=T)
+[1] 9 7 5 4 3 2
+> sort(x,decreasing=F)
+[1] 2 3 4 5 7 9
+> median(x)
+[1] 4.5
+> max(x)
+[1] 9
+> min(x)
+[1] 2
+> ifelse(mean(x)>median(x),"mean is bigger than median","mean is not bigger than median")
+[1] "mean is bigger than median"
+> purplecow <- ifelse(median(x)>mean(x),"mediaan is bigger than mean","median is not bigger than mean")
+> purplecow
+[1] "median is not bigger than mean"
+>
+```
