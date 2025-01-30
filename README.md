@@ -572,3 +572,43 @@ purplecow
 [1] "median is not bigger than mean"
 >
 ```
+
+* We can also use our familiar formulas from elementary statistics to make our own calculations:
+
+```R
+x <- c(13,17,12,16,19,11,9,14,18,22,7,17,14,19,16)
+x
+n <- length(x)
+n
+median(x)
+sort(x)
+sort(x)[8]
+mean(x)
+1/n*sum(x)
+var(x)
+1/(n-1)*sum((x-mean(x))^2)
+```
+
+```Rout
+> x <- c(13,17,12,16,19,11,9,14,18,22,7,17,14,19,16)
+> x
+ [1] 13 17 12 16 19 11  9 14 18 22  7 17 14 19 16
+> n <- length(x)
+> n
+[1] 15
+> median(x)
+[1] 16
+> sort(x)
+ [1]  7  9 11 12 13 14 14 16 16 17 17 18 19 19 22
+> sort(x)[8]
+[1] 16
+> mean(x)
+[1] 14.93333
+> 1/n*sum(x)
+[1] 14.93333
+> var(x)
+[1] 16.49524
+> 1/(n-1)*sum((x-mean(x))^2)
+[1] 16.49524
+>
+```
