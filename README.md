@@ -581,7 +581,7 @@ purplecow
 >
 ```
 
-* We can also use our familiar formulas from elementary statistics to make our own calculations:
+* We can also use familiar formulas from elementary statistics to make our own calculations:
 
 ```R
 x <- c(13,17,12,16,19,11,9,14,18,22,7,17,14,19,16)
