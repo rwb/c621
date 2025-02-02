@@ -913,3 +913,131 @@ median(ss.age)
 <p align="center">
 <img src="/gfiles/fig5.png" width="600px">
 </p>
+
+* Now, let's calculate a 88% confidence interval for the sample mean:
+
+```R
+# calculate estimate of the mean
+xbar <- mean(ss.age)
+xbar
+
+# calculate the standard error
+std.err <- sd(ss.age)/sqrt(500)
+std.err
+
+# identify the multipliers for the hypothesized sampling
+# distribution of sample means
+
+lcl.mult <- qt(p=0.06,df=500-1)
+lcl.mult
+ucl.mult <- qt(p=0.94,df=500-1)
+ucl.mult
+
+# calculate the lower confidence limit
+
+xbar+lcl.mult*std.err
+
+# calculate the upper confidence limit
+
+xbar+ucl.mult*std.err
+```
+```Rout
+> # calculate estimate of the mean
+> xbar <- mean(ss.age)
+> xbar
+[1] 29.074
+> 
+> # calculate the standard error
+> std.err <- sd(ss.age)/sqrt(500)
+> std.err
+[1] 0.4571334
+> 
+> # identify the multipliers for the hypothesized sampling
+> # distribution of sample means
+> 
+> lcl.mult <- qt(p=0.06,df=500-1)
+> lcl.mult
+[1] -1.55744
+> ucl.mult <- qt(p=0.94,df=500-1)
+> ucl.mult
+[1] 1.55744
+> 
+> # calculate the lower confidence limit
+> 
+> xbar+lcl.mult*std.err
+[1] 28.36204
+> 
+> # calculate the upper confidence limit
+> 
+> xbar+ucl.mult*std.err
+[1] 29.78596
+>
+```
+
+* Notice that in this particular sample, our *procedure* has *trapped* (covered) the true population parameter value -- 29.33287.
+* What assurance do we have that this particular procedure traps the true population parameter value at the advertised coverage rate?
+
+```R
+lcl.mult <- qt(p=0.06,df=500-1)
+lcl.mult
+ucl.mult <- qt(p=0.94,df=500-1)
+ucl.mult
+
+xbarvec   <- vector()
+stderrvec <- vector()
+lclvec    <- vector()
+uclvec    <- vector()
+
+for(i in 1:1e6){
+  s <- sample(1:length(age),size=500,replace=T)
+  age.s <- age[s]
+  xbarvec[i] <- mean(age.s)
+  stderrvec[i] <- sd(age.s)/sqrt(500)
+  lclvec[i] <- xbarvec[i]+lcl.mult*stderrvec[i]
+  uclvec[i] <- xbarvec[i]+ucl.mult*stderrvec[i]
+  }
+
+mean(xbarvec)
+sd(xbarvec)
+mean(stderrvec)
+trap <- ifelse(lclvec<mean(age) & uclvec>mean(age),"hit","miss")
+table(trap)
+```
+```Rout
+> lcl.mult <- qt(p=0.06,df=500-1)
+> lcl.mult
+[1] -1.55744
+> ucl.mult <- qt(p=0.94,df=500-1)
+> ucl.mult
+[1] 1.55744
+> 
+> xbarvec   <- vector()
+> stderrvec <- vector()
+> lclvec    <- vector()
+> uclvec    <- vector()
+> 
+> for(i in 1:1e6){
++   s <- sample(1:length(age),size=500,replace=T)
++   age.s <- age[s]
++   xbarvec[i] <- mean(age.s)
++   stderrvec[i] <- sd(age.s)/sqrt(500)
++   lclvec[i] <- xbarvec[i]+lcl.mult*stderrvec[i]
++   uclvec[i] <- xbarvec[i]+ucl.mult*stderrvec[i]
++   }
+> 
+> mean(xbarvec)
+[1] 29.33225
+> sd(xbarvec)
+[1] 0.4731045
+> mean(stderrvec)
+[1] 0.4735261
+> trap <- ifelse(lclvec<mean(age) & uclvec>mean(age),"hit","miss")
+> table(trap)
+trap
+   hit   miss 
+880090 119910 
+>
+```
+<p align="center">
+<img src="/gfiles/fig6.png" width="600px">
+</p>
