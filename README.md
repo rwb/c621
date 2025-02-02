@@ -713,6 +713,20 @@ z
 > 
 ```
 
+* We can use the rep() function to replicate or repeat numbers:
+
+```R
+rep(3,times=7)
+rep(2,5)
+```
+```Rout
+> rep(3,times=7)
+[1] 3 3 3 3 3 3 3
+> rep(2,5)
+[1] 2 2 2 2 2
+>
+```
+
 * Here are the rounding, ceiling, and floor functions:
 
 ```R
@@ -808,6 +822,17 @@ hist(z2)
 <p align="center">
 <img src="/gfiles/fig3.png" width="600px">
 </p>
+
+* Last, we will consider the sample() function. We use this function to sample a list of integers from a larger list of integers.
+
+```R
+sample(1:5,size=3,replace=T)
+```
+```Rout
+> sample(1:5,size=3,replace=T)
+[1] 3 2 5
+>
+```
 
 * Now, let's review the procedure for calculating a XX% confidence interval for a sample mean. In this case, we have a measure of the age at release from prison for a population of inmates returning to the community. Here is the population distribution:
   
