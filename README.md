@@ -406,9 +406,12 @@ rm(list=ls())
 ```
 
 * Note that this clears the memory so you don't carry over materials from prior R sessions.
+* You can put comments in your R code/scripts by using the # symbol.
+* R ignores everything after the # symbol -- everything that is on the same line, that is.
 * Assignment operators
 
 ```R
+# illustrates assignment
 x <- 2
 x
 x=3
@@ -416,6 +419,7 @@ x
 ```
 
 ```Rout
+> # illustrates assignment
 > x <- 2
 > x
 [1] 2
@@ -624,5 +628,108 @@ sqrt(1/(n-1)*sum((x-mean(x))^2))
 [1] 4.061433
 > sqrt(1/(n-1)*sum((x-mean(x))^2))
 [1] 4.061433
+> 
+```
+
+* Here are 3 ways to generate a sequence of numbers:
+
+```R
+x <- seq(from=1,to=7,by=1)
+x
+y <- 1:7
+y
+
+z <- vector()
+for(i in 1:7){
+  z[i] <- i
+  }
+z
+```
+
+```Rout
+> x <- seq(from=1,to=7,by=1)
+> x
+[1] 1 2 3 4 5 6 7
+> y <- 1:7
+> y
+[1] 1 2 3 4 5 6 7
+> 
+> z <- vector()
+> for(i in 1:7){
++   z[i] <- i
++   }
+> z
+[1] 1 2 3 4 5 6 7
+>
+```
+
+* Here are the rounding, ceiling, and floor functions:
+
+```R
+x <- c(1.5,1.49)
+rx <- round(x,0)
+rx
+
+y <- c(1.5,1.49)
+ry <- floor(y)
+ry
+
+z <- c(1.5,1.49)
+rz <- ceiling(z)
+rz
+```
+
+```Rout
+> x <- c(1.5,1.49)
+> rx <- round(x,0)
+> rx
+[1] 2 1
+> 
+> y <- c(1.5,1.49)
+> ry <- floor(y)
+> ry
+[1] 1 1
+> 
+> z <- c(1.5,1.49)
+> rz <- ceiling(z)
+> rz
+[1] 2 2
+>
+```
+
+* Now, we look at how to generate random numbers. Here are a few examples:
+
+```R
+### uniform distribution
+u <- runif(n=7,min=0,max=1)
+u
+
+### uniform distribution of integers
+i <- round(runif(n=7,min=0.5,max=7.5),0)
+i
+
+### uniform distribution of integers - version 2
+i2 <- round(runif(n=1e7,min=0.5,max=7.5),0)
+table(i2)
+```
+
+```Rout
+> ### uniform distribution
+> u <- runif(n=7,min=0,max=1)
+> u
+[1] 0.17758123 0.06742606 0.90219515 0.45684591 0.77407265
+[6] 0.41772782 0.16073524
+> 
+> ### uniform distribution of integers
+> i <- round(runif(n=7,min=0.5,max=7.5),0)
+> i
+[1] 7 2 3 6 4 1 7
+>
+> ### uniform distribution of integers - version 2
+> i2 <- round(runif(n=1e7,min=0.5,max=7.5),0)
+> table(i2)
+i2
+      1       2       3       4       5       6       7 
+1428949 1427749 1429130 1428387 1428961 1429747 1427077 
 > 
 ```
