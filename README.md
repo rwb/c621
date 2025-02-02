@@ -808,3 +808,5 @@ hist(z2)
 <p align="center">
 <img src="/gfiles/fig3.png" width="600px">
 </p>
+
+* Now, let's review the procedure for calculating a XX% confidence interval for a sample mean. In this case, we have a measure of the age at release from prison for a sample of inmates returning to the community. 
