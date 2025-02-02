@@ -809,4 +809,58 @@ hist(z2)
 <img src="/gfiles/fig3.png" width="600px">
 </p>
 
-* Now, let's review the procedure for calculating a XX% confidence interval for a sample mean. In this case, we have a measure of the age at release from prison for a sample of inmates returning to the community. 
+* Now, let's review the procedure for calculating a XX% confidence interval for a sample mean. In this case, we have a measure of the age at release from prison for a population of inmates returning to the community. Here is the population distribution:
+  
+```R
+age <- c(rep(16,19000),rep(17,161000),rep(18,492000),rep(19,480000),
+         rep(20,624000),rep(21,599000),rep(22,580000),rep(23,468000),
+         rep(24,537000),rep(25,443000),rep(26,432000),rep(27,338000),
+         rep(28,415000),rep(29,292000),rep(30,324000),rep(31,254000),
+         rep(32,234000),rep(33,179000),rep(34,187000),rep(35,167000),
+         rep(36,177000),rep(37,132000),rep(38,152000),rep(39,117000),
+         rep(40,119000),rep(41,93000),rep(42,113000),rep(43,102000),
+         rep(44,85000),rep(45,75000),rep(46,90000),rep(47,72000),
+         rep(48,86000),rep(49,62000),rep(50,78000),rep(51,61000),
+         rep(52,57000),rep(53,50000),rep(54,44000),rep(55,49000),
+         rep(56,55000),rep(57,34000),rep(58,34000),rep(59,25000),
+         rep(60,21000),rep(61,18000),rep(62,19000),rep(63,11000),
+         rep(64,16000),rep(65,7000),rep(66,5000),rep(67,13000),
+         rep(68,5000),rep(69,3000),rep(70,1000),rep(71,3000),
+         rep(72,5000),rep(73,3000),rep(74,4000),rep(75,2000),
+         rep(76,1000),rep(77,2000),rep(78,2000))
+table(age)
+mean(age)
+median(age)
+hist(age)
+```
+
+```Rout
+> table(age)
+age
+    16     17     18     19     20     21     22     23 
+ 19000 161000 492000 480000 624000 599000 580000 468000 
+    24     25     26     27     28     29     30     31 
+537000 443000 432000 338000 415000 292000 324000 254000 
+    32     33     34     35     36     37     38     39 
+234000 179000 187000 167000 177000 132000 152000 117000 
+    40     41     42     43     44     45     46     47 
+119000  93000 113000 102000  85000  75000  90000  72000 
+    48     49     50     51     52     53     54     55 
+ 86000  62000  78000  61000  57000  50000  44000  49000 
+    56     57     58     59     60     61     62     63 
+ 55000  34000  34000  25000  21000  18000  19000  11000 
+    64     65     66     67     68     69     70     71 
+ 16000   7000   5000  13000   5000   3000   1000   3000 
+    72     73     74     75     76     77     78 
+  5000   3000   4000   2000   1000   2000   2000 
+> mean(age)
+[1] 29.33287
+> median(age)
+[1] 26
+> hist(age)
+>
+```
+
+<p align="center">
+<img src="/gfiles/fig4.png" width="600px">
+</p>
