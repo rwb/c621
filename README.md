@@ -498,29 +498,36 @@ x>=(y+2)
 >
 ```
 
-* Vectors
+* Vectors: we use the c() to create a vector; c stands for concatenation or combining elements into a vector.
 
 ```R
-x <- c(3,4,7,2,9,5)
+x <- c(-3,4,7,2,9,5)
 x
 y <- c(2,3,5,1,2,4)
 y
 x+y
+sum(x)
+sum(y)
 ```
 
 ```Rout
-> x <- c(3,4,7,2,9,5)
+> x <- c(-3,4,7,2,9,5)
 > x
-[1] 3 4 7 2 9 5
+[1] -3  4  7  2  9  5
 > y <- c(2,3,5,1,2,4)
 > y
 [1] 2 3 5 1 2 4
 > x+y
-[1]  5  7 12  3 11  9
+[1] -1  7 12  3 11  9
+>
+> sum(x)
+[1] 24
+> sum(y)
+[1] 17
 > 
 ```
 
-* Functions
+* Built-in R Functions: we already used one above, the sum() function. Here it is again along with some others.
 
 ```R
 x <- c(3,4,7,2,9,5)
@@ -543,6 +550,16 @@ min(x)
 ifelse(mean(x)>median(x),"mean is bigger than median","mean is not bigger than median")
 purplecow <- ifelse(median(x)>mean(x),"mediaan is bigger than mean","median is not bigger than mean")
 purplecow
+x
+lx <- log(x)
+lx
+elx <- exp(lx)
+elx
+sum(x)
+sum(lx)
+sum(elx)
+rank(x)
+rank(lx)
 ```
 
 ```Rout
@@ -582,7 +599,26 @@ purplecow
 > purplecow <- ifelse(median(x)>mean(x),"mediaan is bigger than mean","median is not bigger than mean")
 > purplecow
 [1] "median is not bigger than mean"
->
+> x
+[1] 3 4 7 2 9 5
+> lx <- log(x)
+> lx
+[1] 1.0986123 1.3862944 1.9459101 0.6931472 2.1972246
+[6] 1.6094379
+> elx <- exp(lx)
+> elx
+[1] 3 4 7 2 9 5
+> sum(x)
+[1] 30
+> sum(lx)
+[1] 8.930626
+> sum(elx)
+[1] 30
+> rank(x)
+[1] 2 3 5 1 6 4
+> rank(lx)
+[1] 2 3 5 1 6 4
+> 
 ```
 
 * We can also use familiar formulas from elementary statistics to make our own calculations:
