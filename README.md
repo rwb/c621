@@ -733,3 +733,25 @@ i2
 1428949 1427749 1429130 1428387 1428961 1429747 1427077 
 > 
 ```
+
+* We can also draw random numbers from a normal distribution. We can use the random numbers to draw a histogram.
+
+```R
+z <- rnorm(n=7,mean=0,sd=1)
+z
+
+z2 <- rnorm(n=1e7,mean=70,sd=10)
+hist(z2)
+```
+
+```Rout
+> z <- rnorm(n=7,mean=0,sd=1)
+> z
+[1] -0.8937032  0.6196616 -0.8823563  0.4166921 -0.7184740
+[6]  0.3612151 -0.1511227
+> 
+```
+
+<p align="center">
+<img src="/gfiles/fig3.png" width="600px">
+</p>
