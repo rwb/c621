@@ -697,7 +697,7 @@ rz
 >
 ```
 
-* Now, we look at how to generate random numbers. Here are a few examples:
+* Now, we look at how to generate random numbers. Here are a few examples with uniform random numbers:
 
 ```R
 ### uniform distribution
