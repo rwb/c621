@@ -670,10 +670,17 @@ sqrt(1/(n-1)*sum((x-mean(x))^2))
 * Here are 3 ways to generate a sequence of numbers:
 
 ```R
+# first way
+
 x <- seq(from=1,to=7,by=1)
 x
+
+# second way
+
 y <- 1:7
 y
+
+# third way
 
 z <- vector()
 for(i in 1:7){
@@ -683,12 +690,19 @@ z
 ```
 
 ```Rout
+> # first way
+> 
 > x <- seq(from=1,to=7,by=1)
 > x
 [1] 1 2 3 4 5 6 7
+> 
+> # second way
+> 
 > y <- 1:7
 > y
 [1] 1 2 3 4 5 6 7
+> 
+> # third way
 > 
 > z <- vector()
 > for(i in 1:7){
@@ -696,7 +710,7 @@ z
 +   }
 > z
 [1] 1 2 3 4 5 6 7
->
+> 
 ```
 
 * Here are the rounding, ceiling, and floor functions:
