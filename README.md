@@ -891,7 +891,7 @@ age
 
 * Based on these results, we see that the population distribution of age at release from prison is skewed so that cases at the lower end of the age scale are more prevalent than cases at the higher end of the age scale.
 * When this happens, we expect the population mean to exceed the population median -- which is what we have.
-* Now, let's draw a single simple random sample of 1500 cases from this population.
+* Now, let's draw a single simple random sample of 500 cases from this population.
 
 ```R
 i <- sample(1:length(age),size=500,replace=T)
