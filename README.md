@@ -895,16 +895,16 @@ age
 
 ```R
 set.seed(14)
-i <- sample(1:length(age),size=500,replace=T)
-ss.age <- age[i]
+k <- sample(1:length(age),size=500,replace=T)
+ss.age <- age[k]
 hist(ss.age)
 mean(ss.age)
 median(ss.age)
 ```
 ```Rout
 > set.seed(14)
-> i <- sample(1:length(age),size=500,replace=T)
-> ss.age <- age[i]
+> k <- sample(1:length(age),size=500,replace=T)
+> ss.age <- age[k]
 > hist(ss.age)
 > mean(ss.age)
 [1] 29.28
@@ -1053,50 +1053,37 @@ trap
 * We now consider an alternative approach called the *bootstrap*.
 
 ```R
-library(boot)
+bootmean <- vector()
 
-ssa <- data.frame(id=1:500,ss.age)
-
-bootmean <- function(data,i){
-  b <- data[i,]
-  ma <- mean(b$ss.age)
-  return(ma)
+for(i in 1:1e6){
+  b <- sample(1:500,size=500,replace=T)
+  boot.age <- ss.age[b]
+  bootmean[i] <- mean(boot.age)
   }
 
-b1 <- boot(data=ssa,statistic=bootmean,R=1e5)
-b1
-bcl <- boot.ci(b1,conf=0.88,type="bca",index=1)[4]$bca[4:5]
-bcl
+mean(bootmean)
+sd(bootmean)
+quantile(bootmean,0.06)
+quantile(bootmean,0.94)
 ```
 ```Rout
-> ssa <- data.frame(id=1:500,ss.age)
+> bootmean <- vector()
 > 
-> bootmean <- function(data,i){
-+   b <- data[i,]
-+   ma <- mean(b$ss.age)
-+   return(ma)
+> for(i in 1:1e6){
++   b <- sample(1:500,size=500,replace=T)
++   boot.age <- ss.age[b]
++   bootmean[i] <- mean(boot.age)
 +   }
 > 
-> b1 <- boot(data=ssa,statistic=bootmean,R=1e5)
-> b1
-
-ORDINARY NONPARAMETRIC BOOTSTRAP
-
-
-Call:
-boot(data = ssa, statistic = bootmean, R = 1e+05)
-
-
-Bootstrap Statistics :
-    original     bias    std. error
-t1*    29.28 -1.218e-05   0.4740156
-> 
-> bcl <- boot.ci(b1,conf=0.88,type="bca",index=1)[4]$bca[4:5]
-> bcl
-[1] 28.566 30.044
+> mean(bootmean)
+[1] 29.27922
+> sd(bootmean)
+[1] 0.4739802
+> quantile(bootmean,0.06)
+    6% 
+28.548 
+> quantile(bootmean,0.94)
+   94% 
+30.024 
 > 
 ```
-
-* So, now we have 2 sets of confidence intervals: (1) normal distribution: [28.540,30.020]; and (2) bootstrap: [28.566,30.044].
-
-```R
