@@ -894,6 +894,7 @@ age
 * Now, let's draw a single simple random sample of 500 cases from this population.
 
 ```R
+set.seed(14)
 i <- sample(1:length(age),size=500,replace=T)
 ss.age <- age[i]
 hist(ss.age)
@@ -901,17 +902,18 @@ mean(ss.age)
 median(ss.age)
 ```
 ```Rout
+> set.seed(14)
 > i <- sample(1:length(age),size=500,replace=T)
 > ss.age <- age[i]
 > hist(ss.age)
 > mean(ss.age)
-[1] 29.074
+[1] 29.28
 > median(ss.age)
 [1] 26
 > 
 ```
 <p align="center">
-<img src="/gfiles/fig5.png" width="600px">
+<img src="/gfiles/fig5a.png" width="600px">
 </p>
 
 * Now, let's calculate a 88% confidence interval for the sample mean:
@@ -945,12 +947,12 @@ xbar+ucl.mult*std.err
 > # calculate estimate of the mean
 > xbar <- mean(ss.age)
 > xbar
-[1] 29.074
+[1] 29.28
 > 
 > # calculate the standard error
 > std.err <- sd(ss.age)/sqrt(500)
 > std.err
-[1] 0.4571334
+[1] 0.4748285
 > 
 > # identify the multipliers for the hypothesized sampling
 > # distribution of sample means
@@ -965,13 +967,13 @@ xbar+ucl.mult*std.err
 > # calculate the lower confidence limit
 > 
 > xbar+lcl.mult*std.err
-[1] 28.36204
+[1] 28.54048
 > 
 > # calculate the upper confidence limit
 > 
 > xbar+ucl.mult*std.err
-[1] 29.78596
->
+[1] 30.01952
+> 
 ```
 
 * Notice that in this particular sample, our *procedure* has *trapped* (covered) the true population parameter value -- 29.33287.
@@ -1002,6 +1004,7 @@ sd(xbarvec)
 mean(stderrvec)
 trap <- ifelse(lclvec<mean(age) & uclvec>mean(age),"hit","miss")
 table(trap)
+hist(xbarvec)
 ```
 ```Rout
 > lcl.mult <- qt(p=0.06,df=500-1)
@@ -1026,17 +1029,17 @@ table(trap)
 +   }
 > 
 > mean(xbarvec)
-[1] 29.33225
+[1] 29.33304
 > sd(xbarvec)
-[1] 0.4731045
+[1] 0.4740103
 > mean(stderrvec)
-[1] 0.4735261
+[1] 0.4735767
 > trap <- ifelse(lclvec<mean(age) & uclvec>mean(age),"hit","miss")
 > table(trap)
 trap
    hit   miss 
-880090 119910 
->
+879535 120465 
+> 
 ```
 <p align="center">
 <img src="/gfiles/fig6.png" width="600px">
@@ -1046,3 +1049,7 @@ trap
 * The average standard error is quite close to the actual standard deviation of the sampling distribution (valid standard error).
 * Note that the fraction of hits is approximately 88% which is equal to the coverage rate we were seeking (accurate coverage).
 * Also note that the sampling distribution of sample means is approximately normal even though the original population distribution of ages at the time of release from prison was definitely not normal. This is an example manifestation of the *central limit theorem*.
+* Thus far, we have used analytic formulas for calculating the standard error and confidence interval.
+* We now consider an alternative approach called the *bootstrap*.
+
+```R
