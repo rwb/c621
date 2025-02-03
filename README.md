@@ -1063,6 +1063,8 @@ for(i in 1:1e6){
 
 mean(bootmean)
 sd(bootmean)
+xbar+lcl.mult*sd(bootmean)
+xbar+ucl.mult*sd(bootmean)
 quantile(bootmean,0.06)
 quantile(bootmean,0.94)
 ```
@@ -1076,14 +1078,47 @@ quantile(bootmean,0.94)
 +   }
 > 
 > mean(bootmean)
-[1] 29.27922
+[1] 29.28077
 > sd(bootmean)
-[1] 0.4739802
+[1] 0.4742992
+> xbar+lcl.mult*sd(bootmean)
+[1] 28.54131
+> xbar+ucl.mult*sd(bootmean)
+[1] 30.01869
 > quantile(bootmean,0.06)
-    6% 
-28.548 
+   6% 
+28.55 
 > quantile(bootmean,0.94)
    94% 
 30.024 
+> 
+```
+
+* Now, let's consider the bootstrap as applied to the sample median:
+
+```R
+bootmedian <- vector()
+
+for(i in 1:1e6){
+  b <- sample(1:500,size=500,replace=T)
+  boot.age <- ss.age[b]
+  bootmedian[i] <- median(boot.age)
+  }
+
+library(coxed)
+bca(bootmedian,conf.level=0.88)
+```
+```Rout
+> bootmedian <- vector()
+> 
+> for(i in 1:1e6){
++   b <- sample(1:500,size=500,replace=T)
++   boot.age <- ss.age[b]
++   bootmedian[i] <- median(boot.age)
++   }
+> 
+> library(coxed)
+> bca(bootmedian,conf.level=0.88)
+[1] 26.0 27.5
 > 
 ```
