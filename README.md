@@ -1053,3 +1053,50 @@ trap
 * We now consider an alternative approach called the *bootstrap*.
 
 ```R
+library(boot)
+
+ssa <- data.frame(id=1:500,ss.age)
+
+bootmean <- function(data,i){
+  b <- data[i,]
+  ma <- mean(b$ss.age)
+  return(ma)
+  }
+
+b1 <- boot(data=ssa,statistic=bootmean,R=1e5)
+b1
+bcl <- boot.ci(b1,conf=0.88,type="bca",index=1)[4]$bca[4:5]
+bcl
+```
+```Rout
+> ssa <- data.frame(id=1:500,ss.age)
+> 
+> bootmean <- function(data,i){
++   b <- data[i,]
++   ma <- mean(b$ss.age)
++   return(ma)
++   }
+> 
+> b1 <- boot(data=ssa,statistic=bootmean,R=1e5)
+> b1
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = ssa, statistic = bootmean, R = 1e+05)
+
+
+Bootstrap Statistics :
+    original     bias    std. error
+t1*    29.28 -1.218e-05   0.4740156
+> 
+> bcl <- boot.ci(b1,conf=0.88,type="bca",index=1)[4]$bca[4:5]
+> bcl
+[1] 28.566 30.044
+> 
+```
+
+* So, now we have 2 sets of confidence intervals: (1) normal distribution: [28.540,30.020]; and (2) bootstrap: [28.566,30.044].
+
+```R
