@@ -1041,3 +1041,6 @@ trap
 <p align="center">
 <img src="/gfiles/fig6.png" width="600px">
 </p>
+
+* Note that the fraction of hits is approximately 88% which is equal to the coverage rate we were seeking.
+* Also note that the sampling distribution of sample means is approximately normal even though the original population distribution of ages at the time of release from prison was definitely not normal. This is an example manifestation of the *central limit theorem*.
