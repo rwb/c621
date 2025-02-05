@@ -1048,7 +1048,7 @@ trap
 * The average of the sample means is quite close to the true population mean (unbiased).
 * The average standard error is quite close to the actual standard deviation of the sampling distribution (valid standard error).
 * Note that the fraction of hits is approximately 88% which is equal to the coverage rate we were seeking (accurate coverage).
-* Also note that the sampling distribution of sample means is approximately normal even though the original population distribution of ages at the time of release from prison was definitely not normal. This is an example manifestation of the *central limit theorem*.
+* Also note that the sampling distribution of sample means is approximately normal even though the original population distribution of ages at the time of release from prison was definitely not normal. This is a manifestation of the *central limit theorem*.
 * Thus far, we have used analytic formulas for calculating the standard error and confidence interval.
 * We now consider an alternative approach called the *bootstrap*.
 
