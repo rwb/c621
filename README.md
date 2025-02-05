@@ -1094,31 +1094,24 @@ quantile(bootmean,0.94)
 > 
 ```
 
-* Now, let's consider the bootstrap as applied to the sample median:
+#### Practice Exercises - week of 2/3/25
+
+* Suppose we obtain data from the local prison recording the length of time incarcerated (in years) for 300 people released from prison over a 3-month period. The data look like this:
+
+```Rout
+  0   1   2   3   4   5   7 
+ 67 110  68  39  10   5   1 
+>
+```
+
+which can be converted into a dataset by:
 
 ```R
-bootmedian <- vector()
-
-for(i in 1:1e6){
-  b <- sample(1:500,size=500,replace=T)
-  boot.age <- ss.age[b]
-  bootmedian[i] <- median(boot.age)
-  }
-
-library(coxed)
-bca(bootmedian,conf.level=0.88)
+t <- c(rep(0,67),rep(1,110),rep(2,68),rep(3,39),rep(4,10),rep(5,5),7)
+table(t)
 ```
-```Rout
-> bootmedian <- vector()
-> 
-> for(i in 1:1e6){
-+   b <- sample(1:500,size=500,replace=T)
-+   boot.age <- ss.age[b]
-+   bootmedian[i] <- median(boot.age)
-+   }
-> 
-> library(coxed)
-> bca(bootmedian,conf.level=0.88)
-[1] 26.0 27.5
-> 
-```
+
+Now, with this dataset in hand, calculate the mean number of years served for the 300 people and a 92% confidence interval using both the t-distribution and the bootstrap. Compare the results using the two methods. What conclusions can you draw based on the results you've observed?
+
+* The distribution of time served in the first problem is skewed. Why can we use the t-distribution (which is symmetric) to develop a valid confidence interval for the mean of time served?
+* Suppose I tell you that the population mean of time served is 1.61. Comment on whether your 92% confidence interval has successfully trapped the true population parameter value.
