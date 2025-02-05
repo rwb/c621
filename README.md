@@ -1115,3 +1115,4 @@ Now, with this dataset in hand, calculate the mean number of years served for th
 
 * The distribution of time served in the first problem is skewed. Why can we use the t-distribution (which is symmetric) to develop a valid confidence interval for the mean of time served?
 * Suppose I tell you that the population mean of time served is 1.61. Comment on whether your 92% confidence interval has successfully trapped the true population parameter value.
+* *Note*: recommended reading for this week: Chapter 8.1 of Freedman (introduction to the bootstrap) and Chapter 10 of Weisburd and Britt (particularly the sections on pp. 224-226 and pp. 234-239).
