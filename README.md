@@ -1535,5 +1535,5 @@ quantile(bootmedian.ss,0.945)
 ```
 
 <p align="center">
-<img src="/gfiles/fig7.png" width="500px">
+<img src="/gfiles/fig8.png" width="500px">
 </p>
