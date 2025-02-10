@@ -395,6 +395,11 @@ trap
 ### Lesson 2 - Monday 2/3/25
 
 * Before we turn to confidence intervals for medians, we will spend some time looking at how R works.
+* First assignment will be distributed on Monday 2/17/25 and will be due on Monday 2/24/25.
+* By now you should have downloaded R and begun reading Chapter 20 of Weisburd and Britt.
+
+#### R Primer
+
 * You can use R interactively or in batch mode.
 * Need to have a text editor such as Notepad (windows) or TextEdit (mac) that allows you to work with plain text.
 * R Studio also has a text editor and many students enjoy using it.
@@ -833,6 +838,8 @@ sample(1:5,size=3,replace=T)
 [1] 3 2 5
 >
 ```
+
+#### Topic 1: Confidence Interval for a Sample Mean
 
 * Now, let's review the procedure for calculating a XX% confidence interval for a sample mean. In this case, we have a measure of the age at release from prison for a population of inmates returning to the community. Here is the population distribution:
   
@@ -1552,7 +1559,7 @@ quantile(bootmedian.ss,0.945)
 
 #### Topic 3: Linear Correlation
 
-* Relevant reading: chapter 14 of Weisburd and Britt.
+* Relevant reading: chapters 6 (review) and 14 of Weisburd and Britt.
 * The relationship between 2 interval level scales is often referred to as a linear correlation.
 * A linear correlation is a measure of association (strength of relationship).
 * Commonly used measure: Pearson's Correlation Coefficient
@@ -1561,8 +1568,200 @@ quantile(bootmedian.ss,0.945)
 * A problem that arises is that a correlation is constrained to vary within a range (-1,1).
 * This means that a correlation coefficient *cannot* have a normal sampling distribution.
 * And this means that the central limit theorem is not applicable to the correlation coefficient.
-
-
-```
+* Let's begin by creating a sample dataset (N=1250) and calculate the correlation (using both a formula and the R cor() function).
 
 ```R
+library(MASS)
+
+# set random number seed for reproducibility
+
+set.seed(231)
+
+# create a sample data set
+
+N <- 1250
+V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.07,0.07,1),2,2))
+x <- V[,1]
+y <- V[,2]
+
+# numerator of correlation coefficient formula
+
+num <- sum((x-mean(x))*(y-mean(y)))
+
+# denominator of correlation coefficient formula
+
+den <- sqrt(sum((x-mean(x))^2))*sqrt(sum((y-mean(y))^2))
+
+# correlation coefficient estimate
+
+num/den
+
+# R function
+
+cor(x,y)
+```
+
+* Here is our output:
+
+```Rout
+> library(MASS)
+> 
+> # set random number seed for reproducibility
+> 
+> set.seed(231)
+> 
+> # create a sample data set
+> 
+> N <- 1250
+> V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.07,0.07,1),2,2))
+> x <- V[,1]
+> y <- V[,2]
+> 
+> # numerator of correlation coefficient formula
+> 
+> num <- sum((x-mean(x))*(y-mean(y)))
+> 
+> # denominator of correlation coefficient formula
+> 
+> den <- sqrt(sum((x-mean(x))^2))*sqrt(sum((y-mean(y))^2))
+> 
+> # correlation coefficient estimate
+> 
+> num/den
+[1] 0.08560983
+> 
+> # R function
+> 
+> cor(x,y)
+[1] 0.08560983
+>
+```
+
+* Note that the population correlation coefficient is +0.07 while the correlation coefficient in our sample of N=1250 is about 0.086.
+* Weisburd and Britt's chapter 14 gives a scale for interpreting the magnitude of a correlation coefficient on page 390.
+* The difference between the population and sample correlations is due to sampling error.
+* Up to this point, we have engaged with 2 of the major functions of statistical science: (1) point estimation; and (2) interval estimation.
+* We now add a third function to this list: hypothesis testing.
+* Suppose we wish to test the hypothesis that the population correlation coefficient is equal to zero (a hypothesis we already know is false because I already told you that the population correlation is equal to 0.07).
+* In the real world, however, we don't know what the population parameter value is so a hypothesis test would be useful.
+* To test a hypothesis, we have to consider that there are 2 types of errors: Type I (alpha) and Type 2 (beta) errors.
+* A Type 1 error occurs when we reject a hypothesis that is true.
+* A Type 2 error occurs when we fail to reject a hypothesis that is false.
+* We can control the chance of making a Type 2 error by adjusting our sample size (holding everything else constant).
+* When we test a hypothesis, we have to establish a decision rule.
+* Normally, the decision rule is based on a *p*-value so we can control the chance of making a Type 1 error.
+* If Ho is the hypothesis (usually called the *null hypothesis*) to be tested: Wasserman (2004) states that "Informally, the p-value is a measure of the evidence against Ho: the smaller the p-value, the stronger the evidence against Ho" (p. 156).
+* Wasserman also offers a warning: "A large p-value is not strong evidence in favor of Ho" (p. 157).
+* More formally, the p-value is p(get a result at least as extreme as the one we got in our sample | Ho is true).
+* So, a p-value is a probability.
+* Often, social scientists will reject Ho is the p-value, p, is less than 0.05.
+* This is an arbitrary cutoff but one that is nonetheless often used.
+* If we reject Ho when p ≤ 0.05, we recognize that there is a 5% (small) chance of making a Type 1 error (rejecting Ho when Ho is true).
+* A p-value decision rule for rejecting a hypothesis should be stated in *advance*.
+* It is improper to look at your data first and then make a decision rule based on the results you get.
+* Define a critical region for the test statistic; if the test statistic falls in the critical region, we decide to reject Ho.
+* Here is our R code:
+
+```R
+library(MASS)
+
+# set random number seed
+
+set.seed(231)
+
+# create a sample data set
+
+N <- 1250
+V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.07,0.07,1),2,2))
+x <- V[,1]
+y <- V[,2]
+
+# numerator of correlation coefficient formula
+
+num <- sum((x-mean(x))*(y-mean(y)))
+
+# denominator of correlation coefficient formula
+
+den <- sqrt(sum((x-mean(x))^2))*sqrt(sum((y-mean(y))^2))
+
+# correlation coefficient estimate
+
+num/den
+
+# R function
+
+cor(x,y)
+
+# statistical inference
+# permutation test p-value testing
+# test hypothesis that true correlation coefficient = 0
+# alternative hypothesis is that true correlation coefficient
+# is not equal to zero
+
+pvec <- vector()
+
+for(i in 1:1e5){
+  xs <- sample(x,replace=F)
+  pvec[i] <- cor(xs,y)
+  }
+
+# define the critical region
+# 0.05 significance level, two-tailed test
+
+quantile(pvec,0.025)
+quantile(pvec,0.975)
+
+# create histogram of the permutation distribution
+# of correlation coefficients. how unusual would it
+# be to get a correlation as big as the one we got
+# if we were just calculating correlations on randomly
+# shuffled datasets?
+
+hist(pvec)
+abline(v=quantile(pvec,0.025),lty=2,lwd=2,col="blue")
+abline(v=quantile(pvec,0.975),lty=2,lwd=2,col="blue")
+abline(v=cor(x,y),lty=2,lwd=2,col="darkred")
+```
+
+* And here are our results:
+
+```Rout
+> # statistical inference
+> # permutation test p-value testing
+> # test hypothesis that true correlation coefficient = 0
+> # alternative hypothesis is that true correlation coefficient
+> # is not equal to zero
+> 
+> pvec <- vector()
+> 
+> for(i in 1:1e5){
++   xs <- sample(x,replace=F)
++   pvec[i] <- cor(xs,y)
++   }
+> 
+> # define the critical region
+> # 0.05 significance level, two-tailed test
+> 
+> quantile(pvec,0.025)
+       2.5% 
+-0.05532854 
+> quantile(pvec,0.975)
+     97.5% 
+0.05540046 
+> 
+> # create histogram of the permutation distribution
+> # of correlation coefficients. how unusual would it
+> # be to get a correlation as big as the one we got
+> # if we were just calculating correlations on randomly
+> # shuffled datasets?
+> 
+> hist(pvec)
+> abline(v=quantile(pvec,0.025),lty=2,lwd=2,col="blue")
+> abline(v=quantile(pvec,0.975),lty=2,lwd=2,col="blue")
+> abline(v=cor(x,y),lty=2,lwd=2,col="darkred")
+>
+```
+
+<p align="center">
+<img src="/gfiles/fig9.png" width="500px">
+</p>
