@@ -1188,7 +1188,8 @@ ucl.mult
 > ucl.mult <- qt(p=0.96,df=300-1)
 > ucl.mult
 [1] 1.756656
-> 
+>
+```
 
 * To calculate the confidence limits, we use the following code:
 
