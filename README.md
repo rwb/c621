@@ -1264,3 +1264,41 @@ quantile(bootmean,0.96)
 >
 ```
 
+* Now, I want to return to the issue of the sampling distribution of the sample median.
+* Suppose we have the following large population of risk assessment scores:
+
+```R
+# set random number seed
+
+set.seed(314)
+
+# specify the population
+
+yp  <- abs(rnorm(n=1e6,mean=0,sd=2))
+mny <- mean(yp)
+mny
+mdy <- median(yp)
+mdy
+hist(yp)
+```
+```Rout
+> # set random number seed
+> 
+> set.seed(314)
+> 
+> # specify the population
+> 
+> yp  <- abs(rnorm(n=1e6,mean=0,sd=2))
+> mny <- mean(yp)
+> mny
+[1] 1.596291
+> mdy <- median(yp)
+> mdy
+[1] 1.349637
+```
+
+* Here is the population histogram:
+
+<p align="center">
+<img src="/gfiles/fig7.png" width="600px">
+</p>
