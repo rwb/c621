@@ -1856,6 +1856,7 @@ sample estimates:
 
 #### Topic 5: Scatterplots
 
+* Relevant reading: Weisburd and Britt, Chapter 15; Sheather Chapter 2.1
 * A scatterplot displays the joint distribution of the independent and dependent variable.
 * By joint distribution, I mean that we plot each data point according to both its location on *x* and *y*.
 * Here is the R code to generate a scatterplot:
@@ -1868,3 +1869,171 @@ plot(x,y)
 <img src="/gfiles/fig10.png" width="500px">
 </p>
 
+#### Topic 6: Least Squares
+
+* Relevant reading: Weisburd and Britt, Chapter 15; Sheather Chapter 2.1
+* If we want to draw a "best fitting" line through these points, how would we do that?
+* One way would be to draw a line that minimizes the deviations between the individual data points and the line itself.
+* The problem here is that negative deviations cancel out positive deviations.
+* There are a couple of alternatives.
+* First is the so-called least squares line:
+
+```R
+# estimate a regression line - part I
+# least squares solution
+
+int   <- seq(from=-3,to=3,by=0.001)
+slope <- seq(from=-3,to=3,by=0.001)
+g <- expand.grid(int,slope)
+head(g)
+
+int   <- g$Var1
+slope <- g$Var2
+
+sse <- vector()
+
+for(i in 1:36012001){
+  yfit <- int[i]+slope[i]*x
+  sse[i] <- sum((y-yfit)^2)
+  }
+
+F <- data.frame(int,slope,sse)
+Fsort <- F[order(sse),]
+head(Fsort)
+
+int.hat <- Fsort$int[1]
+slope.hat <- Fsort$slope[1]
+
+yxminus3 <- int.hat+slope.hat*(-3)
+yxplus3 <- int.hat+slope.hat*3
+segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
+```
+
+* Here are the results:
+
+```Rout
+> # estimate a regression line - part I
+> # least squares solution
+> 
+> int   <- seq(from=-3,to=3,by=0.001)
+> slope <- seq(from=-3,to=3,by=0.001)
+> g <- expand.grid(int,slope)
+> head(g)
+    Var1 Var2
+1 -3.000   -3
+2 -2.999   -3
+3 -2.998   -3
+4 -2.997   -3
+5 -2.996   -3
+6 -2.995   -3
+> 
+> int   <- g$Var1
+> slope <- g$Var2
+> 
+> sse <- vector()
+> 
+> for(i in 1:36012001){
++   yfit <- int[i]+slope[i]*x
++   sse[i] <- sum((y-yfit)^2)
++   }
+> 
+> F <- data.frame(int,slope,sse)
+> Fsort <- F[order(sse),]
+> head(Fsort)
+           int slope      sse
+18516101 0.015 0.085 1208.151
+18510100 0.015 0.084 1208.152
+18516100 0.014 0.085 1208.152
+18510099 0.014 0.084 1208.153
+18516102 0.016 0.085 1208.153
+18510101 0.016 0.084 1208.153
+> 
+> int.hat <- Fsort$int[1]
+> slope.hat <- Fsort$slope[1]
+> 
+> yxminus3 <- int.hat+slope.hat*(-3)
+> yxplus3 <- int.hat+slope.hat*3
+> segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
+```
+
+* Another option is the least absolute value line:
+
+```R
+# estimate a regression line - part II
+# least absolute value of residuals solution
+
+int   <- seq(from=-3,to=3,by=0.001)
+slope <- seq(from=-3,to=3,by=0.001)
+g <- expand.grid(int,slope)
+head(g)
+
+int   <- g$Var1
+slope <- g$Var2
+
+slad <- vector()
+
+for(i in 1:36012001){
+  yfit <- int[i]+slope[i]*x
+  slad[i] <- sum(abs(y-yfit))
+  }
+
+F <- data.frame(int,slope,slad)
+Fsort <- F[order(slad),]
+head(Fsort)
+
+int.hat <- Fsort$int[1]
+slope.hat <- Fsort$slope[1]
+
+yxminus3 <- int.hat+slope.hat*(-3)
+yxplus3 <- int.hat+slope.hat*3
+segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="red")
+```
+
+* Here is the output:
+
+```Rout
+> int   <- seq(from=-3,to=3,by=0.001)
+> slope <- seq(from=-3,to=3,by=0.001)
+> g <- expand.grid(int,slope)
+> head(g)
+    Var1 Var2
+1 -3.000   -3
+2 -2.999   -3
+3 -2.998   -3
+4 -2.997   -3
+5 -2.996   -3
+6 -2.995   -3
+> 
+> int   <- g$Var1
+> slope <- g$Var2
+> 
+> slad <- vector()
+> 
+> for(i in 1:36012001){
++   yfit <- int[i]+slope[i]*x
++   slad[i] <- sum(abs(y-yfit))
++   }
+> 
+> F <- data.frame(int,slope,slad)
+> Fsort <- F[order(slad),]
+> head(Fsort)
+            int slope     slad
+18522068 -0.019 0.086 977.4612
+18516067 -0.019 0.085 977.4623
+18516068 -0.018 0.085 977.4624
+18522069 -0.018 0.086 977.4630
+18522067 -0.020 0.086 977.4639
+18516066 -0.020 0.085 977.4639
+> 
+> int.hat <- Fsort$int[1]
+> slope.hat <- Fsort$slope[1]
+> 
+> yxminus3 <- int.hat+slope.hat*(-3)
+> yxplus3 <- int.hat+slope.hat*3
+> segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="red")
+>
+```
+
+<p align="center">
+<img src="/gfiles/fig11.png" width="500px">
+</p>
