@@ -1120,7 +1120,10 @@ Now, with this dataset in hand, calculate the mean number of years served for th
 ### Lesson 3 - Monday 2/10/25
 
 * Reminder: first assignment will be distributed next Monday (2/17/25).
-* Let's begin by solving last week's practice problem.
+* You will have 1 week to work on it.
+
+#### Topic 1 Practice Problem
+
 * Here is our dataset comprised of 300 people released from prison:
 
 ```R
@@ -1264,7 +1267,10 @@ quantile(bootmean,0.96)
 >
 ```
 
+#### Topic 2: Confidence Intervals for Medians
+
 * Now, I want to return to the issue of the sampling distribution of the sample median.
+* I will also include the sample mean to reinforce what we covered for Topic 1.
 * Suppose we have the following large population of risk assessment scores:
 
 ```R
@@ -1332,6 +1338,7 @@ ucl.mult
 * For the sample median, we cannot invoke the *t*-distribution because the central limit theorem does not apply to the sampling distribution of the sample median.
 * Instead we will have to use the bootstrap.
 * But we can verify that the bootstrap works as intended for this problem.
+* Note that this code will take a long time to run.
 
 ```R
 # draw repeated samples from the population
@@ -1537,3 +1544,25 @@ quantile(bootmedian.ss,0.945)
 <p align="center">
 <img src="/gfiles/fig8.png" width="500px">
 </p>
+
+* Notice that both of the estimated 89% confidence intervals (one for the mean, one for the median) include or *trap* the true population parameter values.
+* Our simulation study relied on drawing 10,000 samples and we now know that we have about an 89% chance of drawing a sample whose confidence interval includes the true population parameter value.
+* This underscores the fact that the population parameter is fixed while the confidence interval bounds vary from sample to sample (based on sampling error).
+* This concludes our discussion of topics 1 and 2.
+
+#### Topic 3: Linear Correlation
+
+* Relevant reading: chapter 14 of Weisburd and Britt.
+* The relationship between 2 interval level scales is often referred to as a linear correlation.
+* A linear correlation is a measure of association (strength of relationship).
+* Commonly used measure: Pearson's Correlation Coefficient
+* Normalized to lie on scale from -1 (perfect negative relationship) to 0 (no relationship) to +1 (perfect positive relationship).
+* Just like a sample mean or sample median varies from sample to sample, so too does a correlation vary from sample to sample.
+* A problem that arises is that a correlation is constrained to vary within a range (-1,1).
+* This means that a correlation coefficient *cannot* have a normal sampling distribution.
+* And this means that the central limit theorem is not applicable to the correlation coefficient.
+
+
+```
+
+```R
