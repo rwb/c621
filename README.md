@@ -1116,3 +1116,150 @@ Now, with this dataset in hand, calculate the mean number of years served for th
 * The distribution of time served in the first problem is skewed. Why can we use the t-distribution (which is symmetric) to develop a valid confidence interval for the mean of time served?
 * Suppose I tell you that the population mean of time served is 1.61. Comment on whether your 92% confidence interval has successfully trapped the true population parameter value.
 * *Note*: recommended reading for this week: Chapter 8.1 of Freedman (introduction to the bootstrap) and Chapter 10 of Weisburd and Britt (particularly the sections on pp. 224-226 and pp. 234-239).
+
+### Lesson 3 - Monday 2/10/25
+
+* Reminder: first assignment will be distributed next Monday (2/17/25).
+* Let's begin by solving last week's practice problem.
+* Here is our dataset comprised of 300 people released from prison:
+
+```R
+t <- c(rep(0,67),rep(1,110),rep(2,68),rep(3,39),rep(4,10),rep(5,5),7)
+table(t)
+```
+```Rout
+> t <- c(rep(0,67),rep(1,110),rep(2,68),rep(3,39),rep(4,10),rep(5,5),7)
+> table(t)
+t
+  0   1   2   3   4   5   7 
+ 67 110  68  39  10   5   1 
+> 
+```
+
+* We begin by setting a random number seed (for reproducibility).
+
+```R
+# set random number seed
+set.seed(308)
+```
+
+* Next, we use analytical formulas to calculate the sample mean and the standard error of the sample mean:
+
+```R
+# calculate estimate of the mean
+xbar <- mean(t)
+xbar
+
+# calculate the standard error
+std.err <- sd(t)/sqrt(300)
+std.err
+```
+```Rout
+> # calculate estimate of the mean
+> xbar <- mean(t)
+> xbar
+[1] 1.45
+> 
+> # calculate the standard error
+> std.err <- sd(t)/sqrt(300)
+> std.err
+[1] 0.06973832
+>
+```
+
+* Now, we need to obtain our *t*-values based on the 4th and 96th percentiles of the *t*-distribution with 300-1=299 degrees of freedom:
+
+```R
+# calculate 4th and 96th %iles of t-distribution
+# with 300-1 df
+
+lcl.mult <- qt(p=0.04,df=300-1)
+lcl.mult
+ucl.mult <- qt(p=0.96,df=300-1)
+ucl.mult
+```
+```Rout
+> # calculate 4th and 96th %iles of t-distribution
+> # with 300-1 df
+> 
+> lcl.mult <- qt(p=0.04,df=300-1)
+> lcl.mult
+[1] -1.756656
+> ucl.mult <- qt(p=0.96,df=300-1)
+> ucl.mult
+[1] 1.756656
+> 
+
+* To calculate the confidence limits, we use the following code:
+
+```R
+# calculate confidence interval
+xbar+lcl.mult*std.err
+xbar+ucl.mult*std.err
+```
+```Rout
+> # calculate confidence interval
+> xbar+lcl.mult*std.err
+[1] 1.327494
+> xbar+ucl.mult*std.err
+[1] 1.572506
+>
+```
+
+* We can also use the bootstrap:
+
+```R
+# bootstrap
+
+bootmean <- vector()
+
+for(i in 1:1e6){
+  b <- sample(1:300,size=300,replace=T)
+  boot.priors <- t[b]
+  bootmean[i] <- mean(boot.priors)
+  }
+
+mean(bootmean)
+sd(bootmean)
+xbar+lcl.mult*sd(bootmean)
+xbar+ucl.mult*sd(bootmean)
+
+# percentile bootstrap (first-order accurate)
+
+quantile(bootmean,0.04)
+quantile(bootmean,0.96)
+```
+
+* And, we can see that the bootstrap gives us a similar answer:
+
+```Rout
+> # bootstrap
+> 
+> bootmean <- vector()
+> 
+> for(i in 1:1e6){
++   b <- sample(1:300,size=300,replace=T)
++   boot.priors <- t[b]
++   bootmean[i] <- mean(boot.priors)
++   }
+> 
+> mean(bootmean)
+[1] 1.450008
+> sd(bootmean)
+[1] 0.06961999
+> xbar+lcl.mult*sd(bootmean)
+[1] 1.327702
+> xbar+ucl.mult*sd(bootmean)
+[1] 1.572298
+> 
+> # percentile bootstrap (first-order accurate)
+> 
+> quantile(bootmean,0.04)
+  4% 
+1.33 
+> quantile(bootmean,0.96)
+     96% 
+1.573333 
+>
+```
+
