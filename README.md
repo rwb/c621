@@ -36,8 +36,8 @@ The various topics I plan to discuss in this course are listed below in coverage
 1. confidence interval for a mean
 2. confidence interval for a median
 3. linear correlation
-4. scatterplots
-5. confidence interval for a correlation
+4. confidence interval for a correlation
+5. scatterplots
 6. least squares
 7. maximum likelihood
 8. Gauss-Markov theorem (section 5.2 of Freedman)
@@ -1637,6 +1637,8 @@ cor(x,y)
 >
 ```
 
+#### Topic 4: Confidence Interval for a Correlation
+
 * Note that the population correlation coefficient is +0.07 while the correlation coefficient in our sample of N=1250 is about 0.086.
 * Weisburd and Britt's chapter 14 gives a scale for interpreting the magnitude of a correlation coefficient on page 390.
 * The difference between the population and sample correlations is due to sampling error.
@@ -1765,3 +1767,104 @@ abline(v=cor(x,y),lty=2,lwd=2,col="darkred")
 <p align="center">
 <img src="/gfiles/fig9.png" width="500px">
 </p>
+
+* Since the observed sample correlation is in the critical region, we reject the hypothesis that the population correlation is equal to zero
+* We can also address this issue using the bootstrap:
+
+```R
+# statistical inference using bootstrap
+# yields a confidence interval
+
+bvec <- vector()
+
+for(i in 1:1e6){
+  b <- sample(1:1250,size=1250,replace=T)
+  bvec[i] <- cor(x[b],y[b])
+  }
+
+quantile(bvec,0.025)
+quantile(bvec,0.975)
+
+# generate histogram of bvec
+# gives us the expected sampling
+# distribution of bootstrapped correlations
+# 
+
+hist(bvec)
+abline(v=quantile(bvec,0.025),lty=2,lwd=2,col="darkred")
+abline(v=quantile(bvec,0.975),lty=2,lwd=2,col="darkred")
+```
+
+* Here is our output:
+
+```Rout
+> # statistical inference using bootstrap
+> # yields a confidence interval
+> 
+> bvec <- vector()
+> 
+> for(i in 1:1e6){
++   b <- sample(1:1250,size=1250,replace=T)
++   bvec[i] <- cor(x[b],y[b])
++   }
+> 
+> quantile(bvec,0.025)
+      2.5% 
+0.03339516 
+> quantile(bvec,0.975)
+    97.5% 
+0.1372181 
+> 
+```
+
+* Since this is a 95% confidence interval, we have a two-tailed test of the hypothesis that the population correlation coefficient is equal to zero.
+* The confidence interval does not include zero, so we reject Ho.
+* R also has a procedure for calculating the significance test and confidence interval:
+
+```R
+# statistical inference using cor.test
+# relies on normality assumption
+
+cor.test(x,y)
+```
+
+which gives the following output:
+
+```Rout
+> cor.test(x,y)
+
+	Pearson's product-moment correlation
+
+data:  x and y
+t = 3.0355, df = 1248, p-value = 0.002451
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.03030782 0.14038932
+sample estimates:
+       cor 
+0.08560983 
+```
+
+* Notice that the confidence interval is similar but not identical to bootstrap confidence interval.
+* Correlations do not have a normal sampling distribution (see Weisburd and Britt, pp. 618-619).
+* Weisburd and Britt (page 409) provide the formula for the *t*-statistic:
+* The confidence interval is described in Weisburd and Britt on pp. 618-620.
+* Note that this is an approximate formula; there are several of these formulas in the literature.
+* The one in your book is a reasonable approximation.
+* It gives us a result that is close to but not exactly the same as the cor.test() procedure.
+* The substantive result is in agreement with what we get from cor.test() and the bootstrap.
+
+#### Topic 5: Scatterplots
+
+* A scatterplot displays the joint distribution of the independent and dependent variable.
+* By joint distribution, I mean that we plot each data point according to both its location on *x* and *y*.
+* Here is the R code to generate a scatterplot:
+
+```R
+plot(x,y)
+```
+
+<p align="center">
+<img src="/gfiles/fig10.png" width="500px">
+</p>
+
