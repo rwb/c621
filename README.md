@@ -1302,3 +1302,238 @@ hist(yp)
 <p align="center">
 <img src="/gfiles/fig7.png" width="600px">
 </p>
+
+* Suppose we repeatedly sample from this population with a sample size of N=483.
+* Also suppose we have been asked to study the 89% confidence interval coverage for both the sample mean and median.
+* For the sample mean, we will need to get the multipliers associated with the 5.5th and 94.5th percentiles of the *t*-distribution:
+
+```R
+# t-multipliers for 89% confidence interval
+# with df=483-1 
+
+lcl.mult <- qt(p=0.055,df=483-1)
+lcl.mult
+ucl.mult <- qt(p=0.945,df=483-1)
+ucl.mult
+```
+```Rout
+> # t-multipliers for 89% confidence interval
+> # with df=483-1 
+> 
+> lcl.mult <- qt(p=0.055,df=483-1)
+> lcl.mult
+[1] -1.601145
+> ucl.mult <- qt(p=0.945,df=483-1)
+> ucl.mult
+[1] 1.601145
+>
+```
+
+* For the sample median, we cannot invoke the *t*-distribution because the central limit theorem does not apply to the sampling distribution of the sample median.
+* Instead we will have to use the bootstrap.
+* But we can verify that the bootstrap works as intended for this problem.
+
+```R
+# draw repeated samples from the population
+
+xbar      <- vector()
+medn      <- vector()
+lclmean   <- vector()
+uclmean   <- vector()
+lclmedian <- vector()
+uclmedian <- vector()
+
+for(i in 1:1e4){
+  s <- sample(1:1e6,size=483,replace=T)
+  ys <- yp[s]
+
+  # calculate mean and median for each sample
+
+  xbar[i] <- mean(ys)
+  medn[i] <- median(ys)
+
+  # calculate the standard error of the mean
+
+  std.err <- sd(ys)/sqrt(483)
+
+  # calculate confidence interval for the mean
+
+  lclmean[i] <- mean(ys)+lcl.mult*std.err
+  uclmean[i] <- mean(ys)+ucl.mult*std.err
+
+  # bootstrap
+
+  bootmedian <- vector()
+
+  for(j in 1:3e3){
+    b <- sample(1:483,size=483,replace=T)
+    boot.ys <- ys[b]
+    bootmedian[j] <- median(boot.ys)
+    }
+
+  lclmedian[i] <- quantile(bootmedian,0.055)
+  uclmedian[i] <- quantile(bootmedian,0.945)
+  }
+
+mean(ifelse(lclmean<mny & uclmean>mny,1,0))
+mean(ifelse(lclmedian<mdy & uclmedian>mdy,1,0))
+```
+
+* Here are the results:
+
+```Rout
+> # set random number seed
+> 
+> set.seed(314)
+> 
+> # specify the population
+> 
+> yp  <- abs(rnorm(n=1e6,mean=0,sd=2))
+> mny <- mean(yp)
+> mny
+[1] 1.596291
+> mdy <- median(yp)
+> mdy
+[1] 1.349637
+> hist(yp)
+> 
+> 
+> # t-multipliers for 89% confidence interval
+> # with df=483-1 
+> 
+> lcl.mult <- qt(p=0.055,df=483-1)
+> lcl.mult
+[1] -1.601145
+> ucl.mult <- qt(p=0.945,df=483-1)
+> ucl.mult
+[1] 1.601145
+> 
+> 
+> 
+> 
+> # draw repeated samples from the population
+> 
+> xbar      <- vector()
+> medn      <- vector()
+> lclmean   <- vector()
+> uclmean   <- vector()
+> lclmedian <- vector()
+> uclmedian <- vector()
+> 
+> for(i in 1:1e4){
++   s <- sample(1:1e6,size=483,replace=T)
++   ys <- yp[s]
++ 
++   # calculate mean and median for each sample
++ 
++   xbar[i] <- mean(ys)
++   medn[i] <- median(ys)
++ 
++   # calculate the standard error of the mean
++ 
++   std.err <- sd(ys)/sqrt(483)
++ 
++   # calculate confidence interval for the mean
++ 
++   lclmean[i] <- mean(ys)+lcl.mult*std.err
++   uclmean[i] <- mean(ys)+ucl.mult*std.err
++ 
++   # bootstrap
++ 
++   bootmedian <- vector()
++ 
++   for(j in 1:3e3){
++     b <- sample(1:483,size=483,replace=T)
++     boot.ys <- ys[b]
++     bootmedian[j] <- median(boot.ys)
++     }
++ 
++   lclmedian[i] <- quantile(bootmedian,0.055)
++   uclmedian[i] <- quantile(bootmedian,0.945)
++   }
+> 
+> mean(ifelse(lclmean<mny & uclmean>mny,1,0))
+[1] 0.8849
+> mean(ifelse(lclmedian<mdy & uclmedian>mdy,1,0))
+[1] 0.8893
+>
+```
+
+* As we can see, our approach to creating the confidence interval for the sample mean (using the *t*-distribution) and the sample median (using the bootstrap) yielded very close to the expected 89% coverage rates.
+* So, this is what is called a Monte Carlo simulation study to examine the repeated sampling performance of the two estimators.
+* Let's now consider what we get for the 2 confidence intervals for the last (10,000th) sample we drew from the population.
+* This would be the process we would follow in the more conventional case where we would only draw a single sample.
+* Here is our R code:
+
+```R
+# calculate 89% confidence interval for median
+# in the 10,000th sample that we drew
+
+hist(ys)
+mean(ys)
+median(ys)
+
+# calculate the standard error of the mean
+
+std.err <- sd(ys)/sqrt(483)
+
+# calculate confidence interval for the mean
+
+mean(ys)+lcl.mult*std.err
+mean(ys)+ucl.mult*std.err
+
+bootmedian.ss <- vector()
+
+for(j in 1:3e3){
+  b <- sample(1:483,size=483,replace=T)
+  boot.ys <- ys[b]
+  bootmedian.ss[j] <- median(boot.ys)
+  }
+
+quantile(bootmedian.ss,0.055)
+quantile(bootmedian.ss,0.945)
+```
+
+* And here is our output:
+  
+```Rout
+> # calculate 89% confidence interval for median
+> # in the 10,000th sample that we drew
+> 
+> hist(ys)
+> mean(ys)
+[1] 1.612869
+> median(ys)
+[1] 1.297095
+> 
+> # calculate the standard error of the mean
+> 
+> std.err <- sd(ys)/sqrt(483)
+> 
+> # calculate confidence interval for the mean
+> 
+> mean(ys)+lcl.mult*std.err
+[1] 1.523321
+> mean(ys)+ucl.mult*std.err
+[1] 1.702417
+> 
+> bootmedian.ss <- vector()
+> 
+> for(j in 1:3e3){
++   b <- sample(1:483,size=483,replace=T)
++   boot.ys <- ys[b]
++   bootmedian.ss[j] <- median(boot.ys)
++   }
+> 
+> quantile(bootmedian.ss,0.055)
+    5.5% 
+1.187871 
+> quantile(bootmedian.ss,0.945)
+   94.5% 
+1.435155 
+>
+```
+
+<p align="center">
+<img src="/gfiles/fig7.png" width="500px">
+</p>
