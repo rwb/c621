@@ -1131,7 +1131,7 @@ Now, with this dataset in hand, calculate the mean number of years served for th
 
 #### Topic 1 Practice Problem
 
-* Here is our dataset comprised of 300 people released from prison:
+* Here is our dataset comprised of 300 people released from prison; the data measure time served in prison at the time of release:
 
 ```R
 t <- c(rep(0,67),rep(1,110),rep(2,68),rep(3,39),rep(4,10),rep(5,5),7)
@@ -1226,8 +1226,8 @@ bootmean <- vector()
 
 for(i in 1:1e6){
   b <- sample(1:300,size=300,replace=T)
-  boot.priors <- t[b]
-  bootmean[i] <- mean(boot.priors)
+  boot.years <- t[b]
+  bootmean[i] <- mean(boot.years)
   }
 
 mean(bootmean)
@@ -1250,8 +1250,8 @@ quantile(bootmean,0.96)
 > 
 > for(i in 1:1e6){
 +   b <- sample(1:300,size=300,replace=T)
-+   boot.priors <- t[b]
-+   bootmean[i] <- mean(boot.priors)
++   boot.years <- t[b]
++   bootmean[i] <- mean(boot.years)
 +   }
 > 
 > mean(bootmean)
@@ -1853,6 +1853,16 @@ sample estimates:
 * The one in your book is a reasonable approximation.
 * It gives us a result that is close to but not exactly the same as the cor.test() procedure.
 * The substantive result is in agreement with what we get from cor.test() and the bootstrap.
+
+#### Practice Problems
+
+1. Consider the following dataset: ```
+
+### Lesson 4: Monday 2/17/25
+
+* First assignment will be distributed today. It will be due on 2/24/25.
+* In today's class we explore the use of scatterplots and regression lines.
+
 
 #### Topic 5: Scatterplots
 
