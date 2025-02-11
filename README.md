@@ -1875,7 +1875,7 @@ Based on this sample, you are to:
 * use the bootstrap to calculate a 87% confidence interval for the population median
 * choose one of the confidence intervals you calculated above and provide a written interpretation of that interval.
 
-2. Suppose have a sample of 88 cities. For each of the cities, the unemployment rate (u) and the crime rate (c) have been measured and expressed in z-score terms (i.e., each variable has been normalized to have a mean of 0 and a standard deviation of 1). The population correlation is 0.032. Here is the dataset:
+2. Suppose we have a sample of 88 cities. For each of the cities, the unemployment rate (u) and the crime rate (c) have been measured and expressed in z-score terms (i.e., each variable has been normalized to have a mean of 0 and a standard deviation of 1). The population correlation is 0.032. Here is the dataset:
 
 ```R
 library(MASS)
@@ -1888,12 +1888,21 @@ c <- V[,2]
 
 * calculate the Pearson correlation between *u* and *c*, using either the textbook formula or the formula used in class.
 * use the cor() function to calculate the Pearson correlation and verify that you get the same answer
-* use the permutation test to determine whether the hypothesis that the population correlation is equal to zero (Ho) should be rejected.
+* conduct a permutation test to determine whether the hypothesis that the population correlation is equal to zero (Ho) should be rejected.
 * use the bootstrap to calculate a 93% confidence interval for the correlation coefficient.
 * determine whether the hypothesis that the population correlation coefficient is equal to zero should be rejected based on the confidence interval.
 * use the cor.test() function to determine whether the hypothesis that the population correlation coefficient is equal to zero should be rejected.
 * since you know the population correlation coefficient, determine whether the 93% confidence interval actually trapped the true population value.
 * is Ho true or false?; Considering your hypothesis tests, which ones led you to the correct decision?; which ones missed the mark?
+
+3. Let's say we have a large population of persons released from prison. Each person has a number of years of formal education. The mean of that population distribution is 10.5 years. The population years of education variable is specified below:
+   
+```R
+set.seed (78)
+yp <- rnorm(n=1e6,mean=10.5,sd=2)
+```
+With this population in hand, conduct a Monte Carlo simulation study where you examine the performance of a 92% confidence interval for the population mean procedure based on the t-distribution. For your simulation study, you should draw 100,000 (1e5) samples of size N = 38 and you should calculate the coverage rate for your confidence interval procedure.
+
 
 ### Lesson 4: Monday 2/17/25
 
