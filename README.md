@@ -1856,13 +1856,49 @@ sample estimates:
 
 #### Practice Problems
 
-1. Consider the following dataset: ```
+1. Consider the following sample of 78 persons drawn from a population of persons arrested within the past year in a large city. For each person in the sample, we have an offense gravity score, *ys* (higher scores correspond to more serious offenses).
+
+```R
+set.seed(387)
+ys  <- abs(rnorm(n=78,mean=0,sd=1.4))
+hist(ys)
+```
+
+Based on this sample, you are to:
+
+* calculate the sample mean
+* calculate the standard error of the sample mean
+* calculate the sample median
+* use the *t*-distribution to calculate a 93% confidence interval for the population mean
+* use the bootstrap to calculate a 93% confidence interval for the population mean
+* use the bootstrap to calculate a 91% confidence interval for the population median
+* use the bootstrap to calculate a 87% confidence interval for the population median
+* choose one of the confidence intervals you calculated above and provide a written interpretation of that interval.
+
+2. Suppose have a sample of 88 cities. For each of the cities, the unemployment rate (u) and the crime rate (c) have been measured and expressed in z-score terms (i.e., each variable has been normalized to have a mean of 0 and a standard deviation of 1). The population correlation is 0.032. Here is the dataset:
+
+```R
+library(MASS)
+set.seed(55)
+N <- 88
+V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.032,0.032,1),2,2))
+u <- V[,1]
+c <- V[,2]
+```
+
+* calculate the Pearson correlation between *u* and *c*, using either the textbook formula or the formula used in class.
+* use the cor() function to calculate the Pearson correlation and verify that you get the same answer
+* use the permutation test to determine whether the hypothesis that the population correlation is equal to zero (Ho) should be rejected.
+* use the bootstrap to calculate a 93% confidence interval for the correlation coefficient.
+* determine whether the hypothesis that the population correlation coefficient is equal to zero should be rejected based on the confidence interval.
+* use the cor.test() function to determine whether the hypothesis that the population correlation coefficient is equal to zero should be rejected.
+* since you know the population correlation coefficient, determine whether the 93% confidence interval actually trapped the true population value.
+* is Ho true or false?; Considering your hypothesis tests, which ones led you to the correct decision?; which ones missed the mark?
 
 ### Lesson 4: Monday 2/17/25
 
 * First assignment will be distributed today. It will be due on 2/24/25.
 * In today's class we explore the use of scatterplots and regression lines.
-
 
 #### Topic 5: Scatterplots
 
