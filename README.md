@@ -2120,7 +2120,7 @@ Problem 2:
 >
 
 # Since my observed correlation (-0.015) lies between the 2.5th and 97.5th percentiles,
-# of the permutation distribution I fail to rejct Ho.
+# of the permutation distribution I fail to reject Ho.
 ```
 
 <p align="center">
