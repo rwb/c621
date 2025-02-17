@@ -1422,8 +1422,7 @@ mean(ifelse(lclmedian<mdy & uclmedian>mdy,1,0))
 > ucl.mult
 [1] 1.601145
 > 
-> 
-> 
+>  
 > 
 > # draw repeated samples from the population
 > 
@@ -1908,6 +1907,87 @@ With this population in hand, conduct a Monte Carlo simulation study where you e
 
 * First assignment will be distributed today. It will be due on 2/24/25.
 * In today's class we explore the use of scatterplots and regression lines.
+
+#### Lesson 3 Practice Problems
+
+1. Here is the histogram:
+
+<p align="center">
+<img src="/gfiles/fig9x.png" width="500px">
+</p>
+
+* calculate the sample mean
+
+```Rout
+> mean(ys)
+[1] 1.074752
+> 1/length(ys)*sum(ys)
+[1] 1.074752
+>
+```
+
+* calculate the standard error of the sample mean
+
+```Rout
+> sd(ys)/sqrt(length(ys))
+[1] 0.1007956
+>
+> mvec <- vector()
+> 
+> for(i in 1:1e5){
++   b <- sample(1:78,size=78,replace=T)
++   ysb <- ys[b]
++   mvec[i] <- mean(ysb)
++   }
+> 
+> mean(mvec)
+[1] 1.07506
+> sd(mvec)
+[1] 0.1001861
+>
+```
+
+* calculate the sample median:
+
+```Rout
+> median(ys)
+[1] 0.8273744
+>
+> # middle position
+> # even number of scores
+> # 78+1 = 79
+> # 79/2 = 39.5
+> # identify 39th and 40th observations in the dataset
+> 
+> sort(ys)[39]
+[1] 0.8207189
+> sort(ys)[40]
+[1] 0.83403
+> 
+> (sort(ys)[39]+sort(ys)[40])/2
+[1] 0.8273744
+>
+```
+
+* use the *t*-distribution to calculate a 93% confidence interval for the population mean
+
+```
+> # t-multipliers for 93% confidence interval
+> # with df=78-1 
+> 
+> lcl.mult <- qt(p=0.035,df=78-1)
+> lcl.mult
+[1] -1.837459
+> ucl.mult <- qt(p=0.965,df=78-1)
+> ucl.mult
+[1] 1.837459
+>
+> mean(ys)+lcl.mult*sd(ys)/sqrt(length(ys))
+[1] 0.8895437
+> mean(ys)+ucl.mult*sd(ys)/sqrt(length(ys))
+[1] 1.259959
+>
+```
 
 #### Topic 5: Scatterplots
 
