@@ -2715,7 +2715,7 @@ F-statistic: 9.214 on 1 and 1248 DF,  p-value: 0.002451
 
 * The intercept is the estimated value of the outcome variable when the indpendent variable is set to zero.
 * The slope is the estimated amount of change in the outcome when the independent variable increases by 1 unit.
-* Gauss-Markov Theorem: If x is fixed (as opposed to random), the average of the error terms is zero, the error terms have constant variance, and the error terms are independent of each other, then the linear regression model (often referred to as the ordinary least squares estimator) is BLUE.
+* Gauss-Markov Theorem: If x is fixed, the average of the error terms is zero, the error terms have constant variance, and the error terms are independent of each other, then the linear regression model (often referred to as the ordinary least squares estimator) is BLUE.
 * BLUE means Best Linear Unbiased Estimator.
 * Best means *most efficient* (smallest variance).
 * Linear means a linear model of the form: $y = a+bx+e$ where *a* is the intercept term, *b* is the slope term, *x* is the independent variable, and *e* is the error or residual term.
