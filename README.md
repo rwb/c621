@@ -2120,13 +2120,33 @@ Problem 2:
 >
 
 # Since my observed correlation (-0.015) lies between the 2.5th and 97.5th percentiles,
-# of the permutation distribution I fail to reject Ho.
+# of the permutation distribution (i.e., it is not in the critical region) I fail to reject Ho.
 ```
 
 <p align="center">
 <img src="/gfiles/fig9y.png" width="500px">
 </p>
 
+* use the bootstrap to calculate a 93% confidence interval for the correlation coefficient.
+
+```Rout
+> cvec <- vector()
+>  
+> for(i in 1:1e5){
++   b <- sample(1:88,size=88,replace=T)
++   cvec[i] <- cor(u[b],c[b]) 
++   }
+>  
+> mean(cvec)
+[1] -0.01328255
+> quantile(cvec,0.035)
+      3.5% 
+-0.1941188 
+> quantile(cvec,0.965)
+    96.5% 
+0.1738613 
+>
+```
 
 #### Topic 5: Scatterplots
 
@@ -2230,7 +2250,7 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
 > segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
 ```
 
-* Another option is the least absolute value line:
+* Another option is to draw the least absolute value line:
 
 ```R
 # estimate a regression line - part II
