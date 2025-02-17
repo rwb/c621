@@ -2209,6 +2209,35 @@ Since all of my significance tests failed to reject Ho, they all led me to make 
 size is small. This means my test has low *power*.
 ```
 
+Problem 3: With the given population, conduct a Monte Carlo simulation study where you examine the performance of a 92% confidence interval for the population mean procedure based on the t-distribution. For your simulation study, you should draw 100,000 (1e5) samples of size N = 38 and you should calculate the coverage rate for your confidence interval procedure.
+
+```Rout
+> set.seed (78)
+> yp <- rnorm(n=1e6,mean=10.5,sd=2)
+> 
+> t.mult.lcl <- qt(p=0.04,df=38-1)
+> t.mult.ucl <- qt(p=0.96,df=38-1)
+> 
+> lcl <- vector()
+> ucl <- vector()
+> 
+> for(i in 1:1e5){
++   s <- sample(1:length(yp),size=38,replace=T)
++   ys <- yp[s]
++   mean.ys <- mean(ys)
++   se.ys <- sd(ys)/sqrt(38)
++   lcl[i] <- mean.ys+t.mult.lcl*se.ys
++   ucl[i] <- mean.ys+t.mult.ucl*se.ys
++   }
+> 
+> trap <- ifelse(lcl<10.5 & ucl>10.5,1,0)
+> mean(trap)
+[1] 0.92041
+>
+```
+
+Note that the coverage rate is very close to the expected 92%.
+
 #### Topic 5: Scatterplots
 
 * Relevant reading: Weisburd and Britt, Chapter 15; Sheather Chapter 2.1
