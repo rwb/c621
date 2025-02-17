@@ -2721,4 +2721,3 @@ F-statistic: 9.214 on 1 and 1248 DF,  p-value: 0.002451
 * Linear means a linear model of the form: $y = a+bx+e$ where *a* is the intercept term, *b* is the slope term, *x* is the independent variable, and *e* is the error or residual term.
 * Unbiased means the parameter estimates are correct, *on average*.
 * An estimator is a formula that produces an estimate. There are other estimators that are not the *best*, not *linear*, and *biased*. These estimators will sometimes have other properties that make them appealing.
-* *Note*: the Gauss-Markov assumptions are all met in the dataset with which we have been working.
