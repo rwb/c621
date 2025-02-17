@@ -2068,6 +2068,62 @@ or we could do this:
 There is an 87% chance that the last confidence interval calculated, [0.731,1.023] includes the true population median.
 ```
 
+Problem 2:
+
+* calculate the Pearson correlation between u and c, using either the textbook formula or the formula used in class.
+
+```Rout
+> # numerator of correlation coefficient formula
+> 
+> num <- sum((u-mean(u))*(c-mean(c)))
+> 
+> # denominator of correlation coefficient formula
+> 
+> den <- sqrt(sum((u-mean(u))^2))*sqrt(sum((c-mean(c))^2))
+> 
+> # correlation coefficient estimate
+> 
+> num/den
+[1] -0.01464133
+>
+```
+
+* use the cor() function to calculate the Pearson correlation and verify that you get the same answer
+
+```Rout
+> cor(u,c)
+[1] -0.01464133
+>
+```
+
+* conduct a permutation test to determine whether the hypothesis that the population correlation is equal to zero (Ho) should be rejected.
+
+```Rout
+# I am doing my test with a p < 0.05 significance level (two-tailed test)
+# My critical region, expressed in terms of the permutation distribution,
+# will be the area below the 2.5th and the area above the 97.5th percentiles
+# If my actual correlation lies within the critical region, I will reject Ho
+
+> p <- vector()
+> 
+> for(i in 1:3000){
++   up <- sample(u,replace=F)
++   p[i] <- cor(up,c)
++   }
+> 
+> quantile(p,0.025)
+      2.5% 
+-0.2136093 
+> quantile(p,0.975)
+    97.5% 
+0.2139003 
+>
+
+# Since my observed correlation (-0.015) lies between the 2.5th and 97.5th percentiles,
+# of the permutation distribution I fail to rejct Ho.
+```
+
+
 #### Topic 5: Scatterplots
 
 * Relevant reading: Weisburd and Britt, Chapter 15; Sheather Chapter 2.1
