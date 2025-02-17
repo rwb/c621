@@ -2636,7 +2636,7 @@ int
 * Third, we estiamte the variance (standard deviation) of the error term (sometimes called the residual sum of squares). Note that the error term for an individual case is given by $\hat{e}_i = Y_i - \hat{Y}_i$. The "^" symbol means the *predicted* or *estimated* value of $e$ or $Y$. Then, we have:
 
 <p align="center">
-<img src="/gfiles/var-eqn.png" width="300px">
+<img src="/gfiles/var-eqn.png" width="200px">
 </p>
 
 ```R
@@ -2715,9 +2715,10 @@ F-statistic: 9.214 on 1 and 1248 DF,  p-value: 0.002451
 
 * The intercept is the estimated value of the outcome variable when the indpendent variable is set to zero.
 * The slope is the estimated amount of change in the outcome when the independent variable increases by 1 unit.
-* Gauss-Markov Theorem: If x is fixed, the average of the error terms is zero, and the error term is independent of (orthogonal to) of the predictor variable(s), then the linear regression model (ordinary least squares is BLUE.
+* Gauss-Markov Theorem: If x is fixed, the average of the error terms is zero, the error terms have constant variance, and the error terms are independent of each other, then the linear regression model (often referred to as the ordinary least squares estimator) is BLUE.
 * BLUE means Best Linear Unbiased Estimator.
 * Best means *most efficient*.
 * Linear means a linear model of the form: $y = a+bx+e$ where *a* is the intercept term, *b* is the slope term, *x* is the independent variable, and *e* is the error or residual term.
 * Unbiased means the parameter estimates are correct, *on average*.
 * An estimator is a formula that produces an estimate. There are other estimators that are not the *best*, not *linear*, and *biased*. These estimators will sometimes have other properties that make them appealing.
+* *Note*: the Gauss-Markov assumptions are all met in the dataset with which we have been working.
