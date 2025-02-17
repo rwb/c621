@@ -2243,6 +2243,39 @@ Note that the coverage rate is very close to the expected 92%.
 * Relevant reading: Weisburd and Britt, Chapter 15; Sheather Chapter 2.1
 * A scatterplot displays the joint distribution of the independent and dependent variable.
 * By joint distribution, I mean that we plot each data point according to both its location on *x* and *y*.
+* Let's regenerate the data we were working with last week:
+
+```R
+library(MASS)
+set.seed(231)
+N <- 1250
+V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.07,0.07,1),2,2))
+x <- V[,1]
+y <- V[,2]
+num <- sum((x-mean(x))*(y-mean(y)))
+den <- sqrt(sum((x-mean(x))^2))*sqrt(sum((y-mean(y))^2))
+num/den
+cor(x,y)
+```
+
+* Here is our intitial output:
+
+```Rout
+> library(MASS)
+> set.seed(231)
+> N <- 1250
+> V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.07,0.07,1),2,2))
+> x <- V[,1]
+> y <- V[,2]
+> num <- sum((x-mean(x))*(y-mean(y)))
+> den <- sqrt(sum((x-mean(x))^2))*sqrt(sum((y-mean(y))^2))
+> num/den
+[1] 0.08560983
+> cor(x,y)
+[1] 0.08560983
+>
+```
+
 * Here is the R code to generate a scatterplot:
 
 ```R
@@ -2266,17 +2299,18 @@ plot(x,y)
 # estimate a regression line - part I
 # least squares solution
 
-int   <- seq(from=-3,to=3,by=0.001)
-slope <- seq(from=-3,to=3,by=0.001)
+int   <- seq(from=-3,to=3,by=0.01)
+slope <- seq(from=-3,to=3,by=0.01)
 g <- expand.grid(int,slope)
 head(g)
 
 int   <- g$Var1
 slope <- g$Var2
+nrow(g)
 
 sse <- vector()
 
-for(i in 1:36012001){
+for(i in 1:361201){
   yfit <- int[i]+slope[i]*x
   sse[i] <- sum((y-yfit)^2)
   }
@@ -2299,24 +2333,27 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
 > # estimate a regression line - part I
 > # least squares solution
 > 
-> int   <- seq(from=-3,to=3,by=0.001)
-> slope <- seq(from=-3,to=3,by=0.001)
+> int   <- seq(from=-3,to=3,by=0.01)
+> slope <- seq(from=-3,to=3,by=0.01)
 > g <- expand.grid(int,slope)
 > head(g)
-    Var1 Var2
-1 -3.000   -3
-2 -2.999   -3
-3 -2.998   -3
-4 -2.997   -3
-5 -2.996   -3
-6 -2.995   -3
+   Var1 Var2
+1 -3.00   -3
+2 -2.99   -3
+3 -2.98   -3
+4 -2.97   -3
+5 -2.96   -3
+6 -2.95   -3
 > 
 > int   <- g$Var1
 > slope <- g$Var2
+> nrow(g)
+[1] 361201
+> 
 > 
 > sse <- vector()
 > 
-> for(i in 1:36012001){
+> for(i in 1:361201){
 +   yfit <- int[i]+slope[i]*x
 +   sse[i] <- sum((y-yfit)^2)
 +   }
@@ -2324,13 +2361,13 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
 > F <- data.frame(int,slope,sse)
 > Fsort <- F[order(sse),]
 > head(Fsort)
-           int slope      sse
-18516101 0.015 0.085 1208.151
-18510100 0.015 0.084 1208.152
-18516100 0.014 0.085 1208.152
-18510099 0.014 0.084 1208.153
-18516102 0.016 0.085 1208.153
-18510101 0.016 0.084 1208.153
+        int slope      sse
+185411 0.02  0.08 1208.208
+185410 0.01  0.08 1208.210
+186011 0.01  0.09 1208.215
+186012 0.02  0.09 1208.223
+184810 0.02  0.07 1208.443
+184809 0.01  0.07 1208.454
 > 
 > int.hat <- Fsort$int[1]
 > slope.hat <- Fsort$slope[1]
@@ -2338,6 +2375,7 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
 > yxminus3 <- int.hat+slope.hat*(-3)
 > yxplus3 <- int.hat+slope.hat*3
 > segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
+> 
 ```
 
 * Another option is to draw the least absolute value line:
@@ -2346,8 +2384,8 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="blue")
 # estimate a regression line - part II
 # least absolute value of residuals solution
 
-int   <- seq(from=-3,to=3,by=0.001)
-slope <- seq(from=-3,to=3,by=0.001)
+int   <- seq(from=-3,to=3,by=0.01)
+slope <- seq(from=-3,to=3,by=0.01)
 g <- expand.grid(int,slope)
 head(g)
 
@@ -2356,7 +2394,7 @@ slope <- g$Var2
 
 slad <- vector()
 
-for(i in 1:36012001){
+for(i in 1:361201){
   yfit <- int[i]+slope[i]*x
   slad[i] <- sum(abs(y-yfit))
   }
@@ -2376,24 +2414,27 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="red")
 * Here is the output:
 
 ```Rout
-> int   <- seq(from=-3,to=3,by=0.001)
-> slope <- seq(from=-3,to=3,by=0.001)
+> # estimate a regression line - part II
+> # least absolute value of residuals solution
+> 
+> int   <- seq(from=-3,to=3,by=0.01)
+> slope <- seq(from=-3,to=3,by=0.01)
 > g <- expand.grid(int,slope)
 > head(g)
-    Var1 Var2
-1 -3.000   -3
-2 -2.999   -3
-3 -2.998   -3
-4 -2.997   -3
-5 -2.996   -3
-6 -2.995   -3
+   Var1 Var2
+1 -3.00   -3
+2 -2.99   -3
+3 -2.98   -3
+4 -2.97   -3
+5 -2.96   -3
+6 -2.95   -3
 > 
 > int   <- g$Var1
 > slope <- g$Var2
 > 
 > slad <- vector()
 > 
-> for(i in 1:36012001){
+> for(i in 1:361201){
 +   yfit <- int[i]+slope[i]*x
 +   slad[i] <- sum(abs(y-yfit))
 +   }
@@ -2401,13 +2442,13 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="red")
 > F <- data.frame(int,slope,slad)
 > Fsort <- F[order(slad),]
 > head(Fsort)
-            int slope     slad
-18522068 -0.019 0.086 977.4612
-18516067 -0.019 0.085 977.4623
-18516068 -0.018 0.085 977.4624
-18522069 -0.018 0.086 977.4630
-18522067 -0.020 0.086 977.4639
-18516066 -0.020 0.085 977.4639
+         int slope     slad
+186008 -0.02  0.09 977.4879
+186009 -0.01  0.09 977.5055
+185407 -0.02  0.08 977.5135
+185408 -0.01  0.08 977.5359
+186609 -0.02  0.10 977.5547
+186007 -0.03  0.09 977.5645
 > 
 > int.hat <- Fsort$int[1]
 > slope.hat <- Fsort$slope[1]
@@ -2415,9 +2456,24 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="red")
 > yxminus3 <- int.hat+slope.hat*(-3)
 > yxplus3 <- int.hat+slope.hat*3
 > segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="red")
->
+> 
 ```
 
 <p align="center">
 <img src="/gfiles/fig11.png" width="500px">
 </p>
+
+* Notice the two lines are slightly different.
+* As we will see later, the least squares solution has some particularly appealing properties.
+
+#### Topic 7: Maximum Likelihood
+
+* Relevant reading: section 7.1 of Freedman and Sheather, pp. 90-91; also see definitions of maximum likelihood in Weisburd and Britt.
+* In topic 6, we defined the LS estimator as the (unique) solution that minimizes the sum of the squared differences between predicted and actual values.
+* So topic 6 describes a *minimization* problem.
+* We now turn to a maximization problem: find the (unique) solution that maximizes the probability of the data looking the way they do.
+* Using probability notation, we find the model, M, that maximizes the probability of the data, y, p(y|M)
+* p(y|M) is called the likelihood function and the value of M that maximizes p(y|M) is called the maximum likelihood estimate.
+* Let's illustrate with an example.
+
+```R
