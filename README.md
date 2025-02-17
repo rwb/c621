@@ -2241,7 +2241,7 @@ Note that the coverage rate is very close to the expected 92%.
 #### Topic 5: Scatterplots
 
 * Relevant reading: Weisburd and Britt, Chapter 15; Sheather Chapter 2.1
-* A scatterplot displays the joint distribution of the independent and dependent variable.
+* A scatterplot displays the joint distribution of the independent variable (x) and the dependent variable (y).
 * By joint distribution, I mean that we plot each data point according to both its location on *x* and *y*.
 * Let's regenerate the data we were working with last week:
 
