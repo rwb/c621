@@ -2123,6 +2123,10 @@ Problem 2:
 # of the permutation distribution I fail to rejct Ho.
 ```
 
+<p align="center">
+<img src="/gfiles/fig9y.png" width="500px">
+</p>
+
 
 #### Topic 5: Scatterplots
 
