@@ -2296,6 +2296,17 @@ plot(x,y)
 * First is the so-called least squares line:
 
 ```R
+library(MASS)
+set.seed(231)
+N <- 1250
+V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.07,0.07,1),2,2))
+x <- V[,1]
+y <- V[,2]
+num <- sum((x-mean(x))*(y-mean(y)))
+den <- sqrt(sum((x-mean(x))^2))*sqrt(sum((y-mean(y))^2))
+num/den
+cor(x,y)
+
 # estimate a regression line - part I
 # least squares solution
 
@@ -2477,3 +2488,236 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="red")
 * Let's illustrate with an example.
 
 ```R
+library(MASS)
+set.seed(231)
+N <- 1250
+V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.07,0.07,1),2,2))
+x <- V[,1]
+y <- V[,2]
+num <- sum((x-mean(x))*(y-mean(y)))
+den <- sqrt(sum((x-mean(x))^2))*sqrt(sum((y-mean(y))^2))
+num/den
+cor(x,y)
+
+int   <- seq(from=-3,to=3,by=0.01)
+slope <- seq(from=-3,to=3,by=0.01)
+sigma <- seq(from=0,to=3,by=0.1)
+g <- expand.grid(int,slope,sigma)
+head(g)
+
+int   <- g$Var1
+slope <- g$Var2
+sigma <- g$Var3
+
+loglike <- vector()
+
+for(i in 1:11197231){
+  yfit <- int[i]+slope[i]*x
+  pt1 <- 1/sqrt(2*pi*sigma[i]^2)
+  pt2 <- -(y-yfit)^2
+  pt3 <- 2*sigma[i]^2
+  pt4 <- -pt2/pt3
+  lpdf <- log(pt1*exp(pt2/pt3))
+  loglike[i] <- sum(lpdf)
+  }
+
+F <- data.frame(int,slope,sigma,loglike)
+Fsort <- F[order(loglike,decreasing=T),]
+head(Fsort)
+```
+```Rout
+> int   <- seq(from=-3,to=3,by=0.01)
+> slope <- seq(from=-3,to=3,by=0.01)
+> sigma <- seq(from=0,to=3,by=0.1)
+> g <- expand.grid(int,slope,sigma)
+> head(g)
+   Var1 Var2 Var3
+1 -3.00   -3    0
+2 -2.99   -3    0
+3 -2.98   -3    0
+4 -2.97   -3    0
+5 -2.96   -3    0
+6 -2.95   -3    0
+> 
+> int   <- g$Var1
+> slope <- g$Var2
+> sigma <- g$Var3
+> 
+> loglike <- vector()
+> 
+> for(i in 1:11197231){
++   yfit <- int[i]+slope[i]*x
++   pt1 <- 1/sqrt(2*pi*sigma[i]^2)
++   pt2 <- -(y-yfit)^2
++   pt3 <- 2*sigma[i]^2
++   pt4 <- -pt2/pt3
++   lpdf <- log(pt1*exp(pt2/pt3))
++   loglike[i] <- sum(lpdf)
++   }
+> 
+> F <- data.frame(int,slope,sigma,loglike)
+> Fsort <- F[order(loglike,decreasing=T),]
+> head(Fsort)
+         int slope sigma   loglike
+3797421 0.02  0.08     1 -1752.777
+3797420 0.01  0.08     1 -1752.778
+3798021 0.01  0.09     1 -1752.780
+3798022 0.02  0.09     1 -1752.785
+3796820 0.02  0.07     1 -1752.895
+3796819 0.01  0.07     1 -1752.900
+>
+```
+* This is a first principles observation: maximum likelihood and least squares are leading us to the same estimates for the intercept and the slope. They will yield slightly different estimates for the variance (or standard deviation) of the error term but we will address this later in the semester.
+
+#### Topic 8: Gauss-Markov Theorem
+
+* We now discuss the closed-form (analytic) formulas for intercept, slope, and variance of the error term.
+* First, we estimate the slope:
+
+<p align="center">
+<img src="/gfiles/slope-eqn.png" width="300px">
+</p>
+
+* Here is the R code:
+
+```R
+library(MASS)
+set.seed(231)
+N <- 1250
+V <- mvrnorm(n=N,mu=c(0,0),Sigma=matrix(c(1,0.07,0.07,1),2,2))
+x <- V[,1]
+y <- V[,2]
+num <- sum((x-mean(x))*(y-mean(y)))
+den <- sqrt(sum((x-mean(x))^2))*sqrt(sum((y-mean(y))^2))
+num/den
+cor(x,y)
+
+pt1 <- x-mean(x)
+pt2 <- y-mean(y)
+pt3 <- (x-mean(x))^2
+slope.num <- sum(pt1*pt2)
+slope.den <- sum(pt3)
+slope <- slope.num/slope.den
+slope
+```
+```Rout
+> pt1 <- x-mean(x)
+> pt2 <- y-mean(y)
+> pt3 <- (x-mean(x))^2
+> slope.num <- sum(pt1*pt2)
+> slope.den <- sum(pt3)
+> slope <- slope.num/slope.den
+> slope
+[1] 0.0846087
+>
+```
+
+* Second, we estimate the intercept term:
+
+<p align="center">
+<img src="/gfiles/int-eqn.png" width="300px">
+</p>
+
+```R
+ybar <- mean(y)
+xbar <- mean(x)
+int <- ybar-slope*xbar
+int
+```
+```Rout
+> ybar <- mean(y)
+> xbar <- mean(x)
+> int <- ybar-slope*xbar
+> int
+[1] 0.01487913
+>
+```
+
+* Third, we estiamte the variance (standard deviation) of the error term (sometimes called the residual sum of squares). Note that the error term for an individual case is given by $\hat{e}_i = Y_i - \hat{Y}_i$. The "^" symbol means the *predicted* or *estimated* value of $e$ or $Y$. Then, we have:
+
+<p align="center">
+<img src="/gfiles/var-eqn.png" width="300px">
+</p>
+
+```R
+e <- y-(int+slope*x)
+esq <- e*e
+sigsq <- 1/(N-2)*sum(esq)
+sigsq
+sig <- sqrt(sigsq)
+sig
+```
+```Rout
+> e <- y-(int+slope*x)
+> esq <- e*e
+> sigsq <- 1/(N-2)*sum(esq)
+> sigsq
+[1] 0.9680698
+> 
+> sig <- sqrt(sigsq)
+> sig
+[1] 0.9839054
+>
+```
+
+* We can also calculate the proportion of the variance of the outcome variable that is explained by the independent variable, $r^2$.
+
+```R
+tss <- sum((y-ybar)^2)
+tss
+rss <- sum((y-(int+slope*x))^2)
+rsq <- 1-rss/tss
+rsq
+sqrt(rsq)
+```
+```Rout
+> tss <- sum((y-ybar)^2)
+> tss
+[1] 1217.071
+> rss <- sum((y-(int+slope*x))^2)
+> rsq <- 1-rss/tss
+> rsq
+[1] 0.007329043
+> sqrt(rsq)
+[1] 0.08560983
+>
+```
+
+* Now, let's verify our results using the linear regression function in R:
+
+```R
+summary(lm(y~1+x))
+```
+```Rout
+> summary(lm(y~1+x))
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.5020 -0.6206 -0.0334  0.6681  3.0366 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)   
+(Intercept)  0.01488    0.02785   0.534  0.59325   
+x            0.08461    0.02787   3.035  0.00245 **
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.9839 on 1248 degrees of freedom
+Multiple R-squared:  0.007329,	Adjusted R-squared:  0.006534 
+F-statistic: 9.214 on 1 and 1248 DF,  p-value: 0.002451
+
+>
+```
+
+* The intercept is the estimated value of the outcome variable when the indpendent variable is set to zero.
+* The slope is the estimated amount of change in the outcome when the independent variable increases by 1 unit.
+* Gauss-Markov Theorem: If x is fixed, the average of the error terms is zero, and the error term is independent of (orthogonal to) of the predictor variable(s), then the linear regression model (ordinary least squares is BLUE.
+* BLUE means Best Linear Unbiased Estimator.
+* Best means *most efficient*.
+* Linear means a linear model of the form: $y = a+bx+e$ where *a* is the intercept term, *b* is the slope term, *x* is the independent variable, and *e* is the error or residual term.
+* Unbiased means the parameter estimates are correct, *on average*.
+* An estimator is a formula that produces an estimate. There are other estimators that are not the *best*, not *linear*, and *biased*. These estimators will sometimes have other properties that make them appealing.
