@@ -2148,6 +2148,67 @@ Problem 2:
 >
 ```
 
+* determine whether the hypothesis that the population correlation coefficient is equal to zero should be rejected based on the confidence interval.
+
+```Rout
+The Ho should not be rejected based on this evidence.
+```
+
+* use the cor.test() function to determine whether the hypothesis that the population correlation coefficient is equal to zero should be rejected.
+
+```Rout
+> cor.test(u,c)
+
+	Pearson's product-moment correlation
+
+data:  u and c
+t = -0.13579, df = 86, p-value = 0.8923
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.2233985  0.1954001
+sample estimates:
+        cor 
+-0.01464133 
+
+>
+
+Note: since the confidence interval includes the number zero, we fail to reject Ho at a 95% confidence level.
+```
+
+* I can also use cor.test() to calculate the 93% confidence interval:
+
+```Rout
+> cor.test(u,c,conf.level=0.93)
+
+	Pearson's product-moment correlation
+
+data:  u and c
+t = -0.13579, df = 86, p-value = 0.8923
+alternative hypothesis: true correlation is not equal to 0
+93 percent confidence interval:
+ -0.2080877  0.1799073
+sample estimates:
+        cor 
+-0.01464133 
+
+>
+```
+
+* since you know the population correlation coefficient (0.032), determine whether the 93% confidence interval actually trapped the true population value.
+
+```Rout
+Yes, the confidence interval did trap the true population parameter value.
+```
+
+* is Ho true or false?; Considering your hypothesis tests, which ones led you to the correct decision?; which ones missed the mark?
+
+```Rout
+Ho is false (the population correlation is not equal to zero).
+Since all of my significance tests failed to reject Ho, they all led me to make a Type I error.
+*Note*: a problem here is that the population correlation is small (close to zero) and my sample
+size is small. This means my test has low *power*.
+```
+
 #### Topic 5: Scatterplots
 
 * Relevant reading: Weisburd and Britt, Chapter 15; Sheather Chapter 2.1
