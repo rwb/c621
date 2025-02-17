@@ -2726,3 +2726,30 @@ F-statistic: 9.214 on 1 and 1248 DF,  p-value: 0.002451
 <p align="center">
 <img src="/gfiles/expectation.png" width="300px">
 </p>
+
+* Now, if a = 0.01488 and b = 0.08461, then we can calculate the *expected value* of the outcome when x = 0 by:
+
+```R
+a <- 0.01488
+b <- 0.08461
+a+b*0
+```
+```Rout
+> a <- 0.01488
+> b <- 0.08461
+> a+b*0
+[1] 0.01488
+>
+```
+
+which is just the intercept. Now, if we set x to 1, we have:
+
+```Rout
+> a <- 0.01488
+> b <- 0.08461
+> a+b*1
+[1] 0.09949
+>
+```
+
+* Notice that the difference between the two expectations, E(y|x=1)-E(y|x=0) = 0.09949-0.01488 = 0.08461, which is the value of b (the slope). So, the slope represents the amount of change in the expected value of the outcome when the independent variable increases by 1 unit.
