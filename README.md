@@ -2005,24 +2005,68 @@ or we could do this:
 ```Rout
 > mvec <- vector()
 > 
-> for(i in 1:1e4){
+> for(i in 1:1e5){
 +   b <- sample(1:78,size=78,replace=T)
 +   ysb <- ys[b]
 +   mvec[i] <- mean(ysb)
 +   }
 > 
 > mean(mvec)
-[1] 1.075117
+[1] 1.075087
 > quantile(mvec,0.035)
      3.5% 
-0.8988115 
+0.8983753 
 > quantile(mvec,0.965)
-  96.5% 
-1.26625 
+   96.5% 
+1.260841 
+> 
+```
+
+* use the bootstrap to calculate a 91% confidence interval for the population median
+
+```Rout
+> mvec <- vector()
+> 
+> for(i in 1:1e5){
++   b <- sample(1:78,size=78,replace=T)
++   ysb <- ys[b]
++   mvec[i] <- median(ysb)
++   }
+> 
+> quantile(mvec,0.045)
+     4.5% 
+0.7164798 
+> quantile(mvec,0.955)
+   95.5% 
+1.069519 
 >
 ```
 
+* use the bootstrap to calculate a 87% confidence interval for the population median
 
+```Rout
+> mvec <- vector()
+> 
+> for(i in 1:1e5){
++   b <- sample(1:78,size=78,replace=T)
++   ysb <- ys[b]
++   mvec[i] <- median(ysb)
++   }
+> 
+> quantile(mvec,0.065)
+     6.5% 
+0.7306622 
+> quantile(mvec,0.935)
+   93.5% 
+1.022807 
+>
+```
+
+* choose one of the confidence intervals you calculated above and provide a written interpretation of that interval.
+
+```Rout
+There is an 87% chance that the last confidence interval calculated, [0.731,1.023] includes the true population median.
+```
 
 #### Topic 5: Scatterplots
 
