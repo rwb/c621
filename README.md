@@ -2464,7 +2464,7 @@ segments(x0=-3,y0=yxminus3,x1=3,y1=yxplus3,lty=1,lwd=2,col="red")
 </p>
 
 * Notice the two lines are slightly different.
-* As we will see later, the least squares solution has some particularly appealing properties.
+* As we will see later, the least squares solution has compelling properties that merit its centrality in applied use.
 
 #### Topic 7: Maximum Likelihood
 
