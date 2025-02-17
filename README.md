@@ -2727,6 +2727,7 @@ F-statistic: 9.214 on 1 and 1248 DF,  p-value: 0.002451
 <img src="/gfiles/expectation.png" width="300px">
 </p>
 
+* There is no error term on this equation (which is an important distinction).
 * Now, if a = 0.01488 and b = 0.08461, then we can calculate the *expected value* of the outcome when x = 0 by:
 
 ```R
