@@ -1931,20 +1931,21 @@ With this population in hand, conduct a Monte Carlo simulation study where you e
 ```Rout
 > sd(ys)/sqrt(length(ys))
 [1] 0.1007956
->
+> 
 > mvec <- vector()
 > 
-> for(i in 1:1e5){
+> for(i in 1:1e4){
 +   b <- sample(1:78,size=78,replace=T)
 +   ysb <- ys[b]
 +   mvec[i] <- mean(ysb)
 +   }
 > 
 > mean(mvec)
-[1] 1.07506
-> sd(mvec)
-[1] 0.1001861
->
+[1] 1.07545
+> bootse <- sd(mvec)
+> bootse
+[1] 0.09972524
+> 
 ```
 
 * calculate the sample median:
@@ -1988,6 +1989,40 @@ With this population in hand, conduct a Monte Carlo simulation study where you e
 [1] 1.259959
 >
 ```
+
+* use the bootstrap to calculate a 93% confidence interval for the population mean:
+
+```Rout
+> mean(ys)+lcl.mult*bootse
+[1] 0.8915105
+> mean(ys)+ucl.mult*bootse
+[1] 1.257993
+>
+```
+
+or we could do this:
+
+```Rout
+> mvec <- vector()
+> 
+> for(i in 1:1e4){
++   b <- sample(1:78,size=78,replace=T)
++   ysb <- ys[b]
++   mvec[i] <- mean(ysb)
++   }
+> 
+> mean(mvec)
+[1] 1.075117
+> quantile(mvec,0.035)
+     3.5% 
+0.8988115 
+> quantile(mvec,0.965)
+  96.5% 
+1.26625 
+>
+```
+
+
 
 #### Topic 5: Scatterplots
 
