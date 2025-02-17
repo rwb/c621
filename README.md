@@ -2717,7 +2717,7 @@ F-statistic: 9.214 on 1 and 1248 DF,  p-value: 0.002451
 * The slope is the estimated amount of change in the outcome when the independent variable increases by 1 unit.
 * Gauss-Markov Theorem: If x is fixed, the average of the error terms is zero, the error terms have constant variance, and the error terms are independent of each other, then the linear regression model (often referred to as the ordinary least squares estimator) is BLUE.
 * BLUE means Best Linear Unbiased Estimator.
-* Best means *most efficient*.
+* Best means *most efficient* (smallest variance).
 * Linear means a linear model of the form: $y = a+bx+e$ where *a* is the intercept term, *b* is the slope term, *x* is the independent variable, and *e* is the error or residual term.
 * Unbiased means the parameter estimates are correct, *on average*.
 * An estimator is a formula that produces an estimate. There are other estimators that are not the *best*, not *linear*, and *biased*. These estimators will sometimes have other properties that make them appealing.
