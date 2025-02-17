@@ -1101,7 +1101,7 @@ quantile(bootmean,0.94)
 > 
 ```
 
-#### Practice Exercises - week of 2/3/25
+#### Practice Problems (week 2)
 
 * Suppose we obtain data from the local prison recording the length of time incarcerated (in years) for 300 people released from prison over a 3-month period. The data look like this:
 
@@ -1853,7 +1853,7 @@ sample estimates:
 * It gives us a result that is close to but not exactly the same as the cor.test() procedure.
 * The substantive result is in agreement with what we get from cor.test() and the bootstrap.
 
-#### Practice Problems
+#### Practice Problems (week 3)
 
 1. Consider the following sample of 78 persons drawn from a population of persons arrested within the past year in a large city. For each person in the sample, we have an offense gravity score, *ys* (higher scores correspond to more serious offenses).
 
