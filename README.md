@@ -2516,7 +2516,7 @@ for(i in 1:11197231){
   pt1 <- 1/sqrt(2*pi*sigma[i]^2)
   pt2 <- -(y-yfit)^2
   pt3 <- 2*sigma[i]^2
-  pt4 <- -pt2/pt3
+  pt4 <- pt2/pt3
   lpdf <- log(pt1*exp(pt2/pt3))
   loglike[i] <- sum(lpdf)
   }
@@ -2550,7 +2550,7 @@ head(Fsort)
 +   pt1 <- 1/sqrt(2*pi*sigma[i]^2)
 +   pt2 <- -(y-yfit)^2
 +   pt3 <- 2*sigma[i]^2
-+   pt4 <- -pt2/pt3
++   pt4 <- pt2/pt3
 +   lpdf <- log(pt1*exp(pt2/pt3))
 +   loglike[i] <- sum(lpdf)
 +   }
@@ -2713,7 +2713,7 @@ F-statistic: 9.214 on 1 and 1248 DF,  p-value: 0.002451
 >
 ```
 
-* The intercept is the estimated value of the outcome variable when the indpendent variable is set to zero.
+* The intercept is the estimated value of the outcome variable when the independent variable is set to zero.
 * The slope is the estimated amount of change in the outcome when the independent variable increases by 1 unit.
 * Gauss-Markov Theorem: If x is fixed, the average of the error terms is zero (no specification error), the error terms have constant variance (homoscedasticity), and the error terms are independent of each other, then the linear regression model (often referred to as the ordinary least squares estimator) is BLUE.
 * BLUE means Best Linear Unbiased Estimator.
@@ -2761,11 +2761,13 @@ Instructions: please review the guidelines for assignments and submission of ass
 
 1. Consider the following dataset:
 
+```Rout
 > table(y)
 y
  0  1  2  3  4  5  6 
  8 27 22 30  3  9  1 
-> 
+>
+```
 
 In this case, *y* is based on a sample of 15-year-old juveniles appearing in the local juvenile court last month and measures the number of prior juvenile court appearances for each person. 
 
