@@ -2769,12 +2769,12 @@ y
 
 In this case, *y* is based on a sample of 15-year-old juveniles appearing in the local juvenile court last month and measures the number of prior juvenile court appearances for each person. 
 
-a. Calculate the average number of prior court appearances in the sample (5pts).
-b. Calculate the standard error of the sample mean (5pts).
-c. Use the appropriate percentiles of the t-distribution to calculate a 89% confidence interval for the mean (7pts).
-d. Use the bootstrap to create a 89% confidence interval for the mean (7pts).
-e. Explain why we can use the t-distribution (which is symmetric) to develop a 89% confidence interval for the mean (which is based on raw data points that are skewed); (4pts).
-f. Use the bootstrap to calculate a 97% confidence interval for the median (7pts).
+- a. Calculate the average number of prior court appearances in the sample (5pts).
+- b. Calculate the standard error of the sample mean (5pts).
+- c. Use the appropriate percentiles of the t-distribution to calculate a 89% confidence interval for the mean (7pts).
+- d. Use the bootstrap to create a 89% confidence interval for the mean (7pts).
+- e. Explain why we can use the t-distribution (which is symmetric) to develop a 89% confidence interval for the mean (which is based on raw data points that are skewed); (4pts).
+- f. Use the bootstrap to calculate a 97% confidence interval for the median (7pts).
 
 2. Here is a dataset with 2 variables, *x* and *y*:
 
@@ -2789,15 +2789,15 @@ y <- c(0.3464074,1.4334348,-0.5924495,1.1842742,
        0.2745064,-0.4594763,0.7329235,1.5497059,
       -1.0191696)
 
-a. Use the cor() function and the formula-based approach to calculate the correlation coefficient between *x* and *y* (5pts).
-b. Use the cor.test() function to calculate a 83% confidence interval for the correlation (5pts).
-c. Use the bootstrap to calculate a 83% confidence interval for the correlation (7pts).
-d. Based on the evidence in 2b and 2c, report what you conclude about a hypothesis test that the population correlation coefficient is equal to zero. Explain your reasoning (5pts).
-e. Conduct a permutation test of the hypothesis that the population correlation coefficient is equal to zero. Conduct your test at the p < 0.07 significance level (two-tailed). Report your conclusion and create a histogram of the permutation distribution to summarize your results (10pts).
-f. Create a scatterplot showing the joint distribution of *x* and *y*. (5pts).
-g. Estimate a linear regression model using the lm() function (5pts).
-h. Using your estimates in 2g, calculate the expected value of the outcome variable when x is -1; then calculate the expected value of the outcome variable x is +2. What is the difference between the two expected outcomes? How does this difference relate to what you see in 2g? Hint: focus on the estimated slope coefficient. (7pts).
-i. Use the formulas described in Topic 8 to calculate the slope, intercept, and residual standard error estimates. Verify that your calculations agree with those from the summary table estimated in 2g (4pts).
+- a. Use the cor() function and the formula-based approach to calculate the correlation coefficient between *x* and *y* (5pts).
+- b. Use the cor.test() function to calculate a 83% confidence interval for the correlation (5pts).
+- c. Use the bootstrap to calculate a 83% confidence interval for the correlation (7pts).
+- d. Based on the evidence in 2b and 2c, report what you conclude about a hypothesis test that the population correlation coefficient is equal to zero. Explain your reasoning (5pts).
+- e. Conduct a permutation test of the hypothesis that the population correlation coefficient is equal to zero. Conduct your test at the p < 0.07 significance level (two-tailed). Report your conclusion and create a histogram of the permutation distribution to summarize your results (10pts).
+- f. Create a scatterplot showing the joint distribution of *x* and *y*. (5pts).
+- g. Estimate a linear regression model using the lm() function (5pts).
+- h. Using your estimates in 2g, calculate the expected value of the outcome variable when x is -1; then calculate the expected value of the outcome variable x is +2. What is the difference between the two expected outcomes? How does this difference relate to what you see in 2g? Hint: focus on the estimated slope coefficient. (7pts).
+- i. Use the formulas described in Topic 8 to calculate the slope, intercept, and residual standard error estimates. Verify that your calculations agree with those from the summary table estimated in 2g (4pts).
 
 3. You are given the following population of risk assessment scores.
 
