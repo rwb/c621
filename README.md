@@ -2780,6 +2780,7 @@ In this case, *y* is based on a sample of 15-year-old juveniles appearing in the
 
 2. Here is a dataset with 2 variables, *x* and *y*:
 
+```R
 x <- c(-0.47977510,1.16861329,-2.46667866,0.17826383,
        -0.60534305,-0.80975857,-1.05864910,0.25372928,
         0.15288052,-0.86883576,-1.82683789,0.10042614,  
@@ -2790,6 +2791,7 @@ y <- c(0.3464074,1.4334348,-0.5924495,1.1842742,
        1.0493061,-1.1020648,0.1192672,0.6126463,
        0.2745064,-0.4594763,0.7329235,1.5497059,
       -1.0191696)
+```
 
 - a. Use the cor() function and the formula-based approach to calculate the correlation coefficient between *x* and *y* (5pts).
 - b. Use the cor.test() function to calculate a 83% confidence interval for the correlation (5pts).
