@@ -2811,3 +2811,7 @@ yp <- rnorm(n=1e5,mean=7,sd=0.5)
 ```
 
 Conduct a Monte Carlo study of the performance of the 93% confidence interval for the mean using the t-distribution. For this study, you should draw 100,000 samples of size N=10 (with replacement) from the population. Based on this exercise, what do you conclude about the validity of the procedure used to calculate this confidence interval? (12pts).
+
+#### Questions from Students About the Assignment
+
+1. There have been a couple of questions about proper programming or interpretation of the bootstrap in Question 1. I am very limited in my ability to answer these sorts of questions at this point but what I will say to all of you is that I encourage you to look back at the practice problems that we did and connect what you are being asked to do in the assignment back to what you (we) did when we solved the practice problems. Good luck!
