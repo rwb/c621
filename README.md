@@ -2815,3 +2815,7 @@ Conduct a Monte Carlo study of the performance of the 93% confidence interval fo
 #### Questions from Students About the Assignment
 
 1. There have been a couple of questions about proper programming or interpretation of the bootstrap in Question 1. Because this is a graded assignment, I am very limited in being able to answer these sorts of questions at this point but what I will say to all of you is that I encourage you to look back at the practice problems that we did and connect what you are being asked to do in the assignment back to what you (we) did when we solved the practice problems. This may involve you going back and working through a practice problem from start to finish in order to be able to solve a related problem on the assignment. Good luck!
+
+2. For creating the scatter plot in Question 2 Part F on the assignment, should we also include a regression line or additional labels?
+
+My response: I recommend doing only what the question is asking you to do.
