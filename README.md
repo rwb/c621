@@ -3043,7 +3043,7 @@ abline(m3c,col="red")
 
 #### Topic 11: Regression with a categorical (binary) independent variable
 
-* We will start a new R session for this unit,
+* We will start a new R session for this unit.
 
 ```R
 # categorical independent variable (treatment)
