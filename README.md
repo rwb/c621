@@ -2980,6 +2980,8 @@ data.frame(rvalues,yvalues)
 
 #### Topic 10: Linear regression with unstandardized variables
 
+* Keep the same R session open from Topic 9 above.
+
 ```R
 # first, put r in its standardized metric
 # and put y in its raw metric
@@ -3040,6 +3042,8 @@ abline(m3c,col="red")
 ```
 
 #### Topic 11: Regression with a categorical (binary) independent variable
+
+* We will start a new R session for this unit,
 
 ```R
 # categorical independent variable (treatment)
