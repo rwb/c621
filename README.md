@@ -2820,7 +2820,7 @@ Conduct a Monte Carlo study of the performance of the 93% confidence interval fo
 
 My response: I recommend doing only what the question is asking you to do.
 
-### Lesson 5: Monday 2/17/25
+### Lesson 5: Monday 2/24/25
 
 * Reminder: first assignment is due tonight at 11:59pm on ELMS.
 * Tonight, we will focus on topics 9, 10, and 11.
