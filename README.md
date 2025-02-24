@@ -3041,6 +3041,8 @@ plot(x=rraw3,y=yraw3,pch=19)
 abline(m3c,col="red")
 ```
 
+### Lesson 6: Monday 3/3/25
+
 #### Topic 11: Regression with a categorical (binary) independent variable
 
 * We will start a new R session for this unit.
