@@ -2819,3 +2819,288 @@ Conduct a Monte Carlo study of the performance of the 93% confidence interval fo
 2. For creating the scatter plot in Question 2 Part F on the assignment, should we also include a regression line or additional labels?
 
 My response: I recommend doing only what the question is asking you to do.
+
+### Lesson 5: Monday 2/17/25
+
+* Reminder: first assignment is due tonight at 11:59pm on ELMS.
+* Tonight, we will focus on topics 9, 10, and 11.
+* Relevant reading for tonight's topics is in Chapter 15 of Weisburd and Britt, 2.1-2.2 of Sheather's book, and 2.1-2.2 of Freedman's book
+
+#### Topic 9: Linear regression with standardized variables
+
+```R
+# options for numbers on printout
+
+options(scipen=100)
+
+# set random number seed for reproducibility
+
+set.seed(487)
+
+# create a sample data set
+# r = risk score
+# y = offense score
+
+N <- 1e5
+r <- 100+rnorm(n=N,mean=0,sd=10)
+e <- rnorm(n=N,mean=0,sd=10)
+y <- 27+1/7*r+e
+
+# standardize the predictor/outcome variables
+
+rs <- (r-mean(r))/sd(r)
+ys <- (y-mean(y))/sd(y)
+
+# estimate the population statistical model
+
+M <- lm(ys~1+rs)
+M
+
+# calculate the population Pearson correlation
+
+cor(rs,ys)
+
+# create a scatterplot
+
+plot(rs,ys,pch=19)
+abline(M,lty=1,lwd=2,col="red")
+abline(h=-3:3,lty=3,lwd=0.8)
+abline(v=-3:3,lty=3,lwd=0.8)
+
+# draw a few samples
+
+s1 <- sample(1:N,size=100,replace=T)
+s2 <- sample(1:N,size=100,replace=T)
+s3 <- sample(1:N,size=100,replace=T)
+s4 <- sample(1:N,size=100,replace=T)
+s5 <- sample(1:N,size=100,replace=T)
+s6 <- sample(1:N,size=100,replace=T)
+
+y1 <- (y[s1]-mean(y[s1]))/sd(y[s1])
+y2 <- (y[s2]-mean(y[s2]))/sd(y[s2])
+y3 <- (y[s3]-mean(y[s3]))/sd(y[s3])
+y4 <- (y[s4]-mean(y[s4]))/sd(y[s4])
+y5 <- (y[s5]-mean(y[s5]))/sd(y[s5])
+y6 <- (y[s6]-mean(y[s6]))/sd(y[s6])
+
+r1 <- (r[s1]-mean(r[s1]))/sd(r[s1])
+r2 <- (r[s2]-mean(r[s2]))/sd(r[s2])
+r3 <- (r[s3]-mean(r[s3]))/sd(r[s3])
+r4 <- (r[s4]-mean(r[s4]))/sd(r[s4])
+r5 <- (r[s5]-mean(r[s5]))/sd(r[s5])
+r6 <- (r[s6]-mean(r[s6]))/sd(r[s6])
+
+m1 <- lm(y1~1+r1)
+m2 <- lm(y2~1+r2)
+m3 <- lm(y3~1+r3)
+m4 <- lm(y4~1+r4)
+m5 <- lm(y5~1+r5)
+m6 <- lm(y6~1+r6)
+
+par(mfrow=c(2,3))
+
+plot(x=r1,y=y1,pch=19)
+abline(m1,lty=1,lwd=2,col="red")
+
+plot(x=r2,y=y2,pch=19)
+abline(m2,lty=1,lwd=2,col="red")
+
+plot(x=r3,y=y3,pch=19)
+abline(m3,lty=1,lwd=2,col="red")
+
+plot(x=r4,y=y4,pch=19)
+abline(m4,lty=1,lwd=2,col="red")
+
+plot(x=r5,y=y5,pch=19)
+abline(m5,lty=1,lwd=2,col="red")
+
+plot(x=r6,y=y6,pch=19)
+abline(m6,lty=1,lwd=2,col="red")
+
+# let's draw some larger samples
+
+s1 <- sample(1:N,size=1000,replace=T)
+s2 <- sample(1:N,size=1000,replace=T)
+s3 <- sample(1:N,size=1000,replace=T)
+s4 <- sample(1:N,size=1000,replace=T)
+s5 <- sample(1:N,size=1000,replace=T)
+s6 <- sample(1:N,size=1000,replace=T)
+
+y1 <- (y[s1]-mean(y[s1]))/sd(y[s1])
+y2 <- (y[s2]-mean(y[s2]))/sd(y[s2])
+y3 <- (y[s3]-mean(y[s3]))/sd(y[s3])
+y4 <- (y[s4]-mean(y[s4]))/sd(y[s4])
+y5 <- (y[s5]-mean(y[s5]))/sd(y[s5])
+y6 <- (y[s6]-mean(y[s6]))/sd(y[s6])
+
+r1 <- (r[s1]-mean(r[s1]))/sd(r[s1])
+r2 <- (r[s2]-mean(r[s2]))/sd(r[s2])
+r3 <- (r[s3]-mean(r[s3]))/sd(r[s3])
+r4 <- (r[s4]-mean(r[s4]))/sd(r[s4])
+r5 <- (r[s5]-mean(r[s5]))/sd(r[s5])
+r6 <- (r[s6]-mean(r[s6]))/sd(r[s6])
+
+m1 <- lm(y1~1+r1)
+m2 <- lm(y2~1+r2)
+m3 <- lm(y3~1+r3)
+m4 <- lm(y4~1+r4)
+m5 <- lm(y5~1+r5)
+m6 <- lm(y6~1+r6)
+
+par(mfrow=c(2,3))
+
+plot(x=r1,y=y1,pch=19)
+abline(m1,lty=1,lwd=2,col="red")
+
+plot(x=r2,y=y2,pch=19)
+abline(m2,lty=1,lwd=2,col="red")
+
+plot(x=r3,y=y3,pch=19)
+abline(m3,lty=1,lwd=2,col="red")
+
+plot(x=r4,y=y4,pch=19)
+abline(m4,lty=1,lwd=2,col="red")
+
+plot(x=r5,y=y5,pch=19)
+abline(m5,lty=1,lwd=2,col="red")
+
+plot(x=r6,y=y6,pch=19)
+abline(m6,lty=1,lwd=2,col="red")
+
+# interpret model 3
+
+boxplot(r3,y3)
+summary(m3)
+cor.test(r3,y3)
+
+rvalues <- -3:3
+yvalues <- 0+0.201*rvalues
+data.frame(rvalues,yvalues)
+```
+
+#### Topic 10: Linear regression with unstandardized variables
+
+```R
+# first, put r in its standardized metric
+# and put y in its raw metric
+
+yraw3 <- y[s3]
+rstd3 <- (r[s3]-mean(r[s3]))/sd(r[s3])
+hist(yraw3)
+
+m3a <- lm(yraw3~1+rstd3)
+summary(m3a)
+cor.test(rstd3,yraw3)
+
+rvalues <- -3:3
+yvalues <- 41.4086+1.9741*rvalues
+data.frame(rvalues,yvalues)
+
+# put r in its raw metric
+# put y in its standardized metric
+
+ystd3 <- (y[s3]-mean(y[s3]))/sd(y[s3])
+rraw3 <- r[s3]
+
+hist(rraw3)
+
+m3b <- lm(ystd3~1+rraw3)
+summary(m3b)
+cor.test(rraw3,ystd3)
+
+rvalues <- seq(from=70,to=130,by=10)
+yvalues <- -2.004471+0.019987*rvalues
+data.frame(rvalues,yvalues)
+
+# put r in its raw metric
+# put y in its raw metric
+
+yraw3 <- y[s3]
+rraw3 <- r[s3]
+
+m3c <- lm(yraw3~1+rraw3)
+summary(m3c)
+cor.test(rraw3,yraw3)
+
+rvalues <- seq(from=70,to=130,by=10)
+yvalues <- 21.76159+0.19590*rvalues
+data.frame(rvalues,yvalues)
+
+# scatterplots
+
+par(mfrow=c(2,2))
+plot(x=rstd3,y=ystd3,pch=19)
+abline(m3,col="red")
+plot(x=rstd3,y=yraw3,pch=19)
+abline(m3a,col="red")
+plot(x=rraw3,y=ystd3,pch=19)
+abline(m3b,col="red")
+plot(x=rraw3,y=yraw3,pch=19)
+abline(m3c,col="red")
+```
+
+#### Topic 11: Regression with a categorical (binary) independent variable
+
+```R
+# categorical independent variable (treatment)
+# think of an addiction severity score as the outcome (y)
+
+set.seed(329)
+
+N <- 1e5
+treatment <- rbinom(n=N,size=1,p=0.5)
+e <- rnorm(n=N,mean=10,sd=1)
+y <- -1/5*treatment+e
+d <- data.frame(treatment,y)
+
+# boxplot of population distribution of y
+# stratified by treatment group
+
+boxplot(d$y~d$treatment)
+
+# separate population cases into 2 datasets
+
+table(d$treatment)
+sd0 <- subset(d,treatment==0)
+nrow(sd0)
+sd1 <- subset(d,treatment==1)
+nrow(sd1)
+
+# calculate population outcome means
+
+mean(sd0$y)
+mean(sd1$y)
+
+# calculate difference between means for
+# the two groups in the population
+
+mean(sd1$y)-mean(sd0$y)
+
+# estimate a population regression model
+
+M <- lm(y~1+treatment,data=d)
+M
+
+# draw a random sample from the population
+
+s <- sample(1:N,size=300,replace=T)
+ys <- y[s]
+ts <- treatment[s]
+samp <- data.frame(ts,ys)
+
+# estimate a regression using the sample
+
+ms <- lm(ys~1+ts,data=samp)
+summary(ms)
+
+y.group0 <- 9.93052
+y.group0
+y.group1 <- 9.93052+(-0.15636)
+y.group1
+y.group1-y.group0
+
+# calculate a t-test for the difference between
+# the two means
+
+t.test(ys~ts,data=samp,var.equal=T)
+```
