@@ -3059,7 +3059,7 @@ y <- 9-1/8*x+rnorm(n=832,mean=0,sd=2.1)
 * Create a table where you show how the expected value of the standardized *y* varies with the standardized *x*.
 * Test the hypothesis that the population correlation coefficient/slope is equal to zero at the *p* < .05 significance level. What evidence do you cite to support your conclusion?
 * Estimate a linear regression and correlation using the unstandardized versions of *x* and *y*.
-* Create scatterplots (with regression lines) that show the joint distribution of *x* and *y* and the standardized version of *x* and *y*.
+* Create scatterplots (with regression lines) that show the joint distribution of *x* and *y* and the standardized version of *x* and *y*. Summarize the relationship that you see between *x* and *y* based on the information in the scatterplots.
 
 ### Lesson 6: Monday 3/3/25
 
