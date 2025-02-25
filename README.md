@@ -3066,9 +3066,11 @@ head(d,n=12)
 Problem 2 - Read in the following dataset:
 
 ```R
-set.seed(202)
+set.seed(397)
 x <- rnorm(n=309,mean=7,sd=2)
 y <- 3+0*x+rnorm(n=309,mean=0,sd=1.5)
+d <- data.frame(x,y)
+head(d,n=12)
 ```
 
 * Convert *x* and *y* into z-score form.
