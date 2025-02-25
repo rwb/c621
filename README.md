@@ -3049,6 +3049,8 @@ Problem 1 - Read in the following dataset:
 set.seed(202)
 x <- rnorm(n=832,mean=15,sd=2.2)
 y <- 9-1/8*x+rnorm(n=832,mean=0,sd=2.1)
+d <- data.frame(x,y)
+head(d,n=12)
 ```
 
 * Convert *x* and *y* into z-score form.
@@ -3060,6 +3062,25 @@ y <- 9-1/8*x+rnorm(n=832,mean=0,sd=2.1)
 * Test the hypothesis that the population correlation coefficient/slope is equal to zero at the *p* < .05 significance level. What evidence do you cite to support your conclusion?
 * Estimate a linear regression and correlation using the unstandardized versions of *x* and *y*.
 * Create scatterplots (with regression lines) that show the joint distribution of *x* and *y* and the standardized version of *x* and *y*. Summarize the relationship that you see between *x* and *y* based on the information in the scatterplots.
+
+Problem 2 - Read in the following dataset:
+
+```R
+set.seed(202)
+x <- rnorm(n=309,mean=7,sd=2)
+y <- 3+0*x+rnorm(n=309,mean=0,sd=1.5)
+```
+
+* Convert *x* and *y* into z-score form.
+* Calculate the Pearson correlation coefficient summarizing the linear relationship between *x* and *y*.
+* Calculate the Pearson correlation coefficient summarizing the linear relationship between the standardized versions of *x* and *y*.
+* Estimate a linear regression where the outcome is the standardized version of *y* and the independent variable is the standardized version of *x*.
+* Compare the slope coefficient from the linear regression to the correlation coefficient; what do you conclude?
+* Create a table where you show how the expected value of the standardized *y* varies with the standardized *x*.
+* Test the hypothesis that the population correlation coefficient/slope is equal to zero at the *p* < .05 significance level. What evidence do you cite to support your conclusion?
+* Estimate a linear regression and correlation using the unstandardized versions of *x* and *y*.
+* Create scatterplots (with regression lines) that show the joint distribution of *x* and *y* and the standardized version of *x* and *y*. Summarize the relationship that you see between *x* and *y* based on the information in the scatterplots.
+
 
 ### Lesson 6: Monday 3/3/25
 
