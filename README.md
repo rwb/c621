@@ -2855,20 +2855,87 @@ ys <- (y-mean(y))/sd(y)
 
 M <- lm(ys~1+rs)
 M
+```
 
+* Note that this code generates the population and estimates the population regression when both the independent and outcome variables are standardized (i.e., a mean of zero and a standard deviation of 1).
+
+```Rout
+> # options for numbers on printout
+> 
+> options(scipen=100)
+> 
+> # set random number seed for reproducibility
+> 
+> set.seed(487)
+> 
+> # create a sample data set
+> # r = risk score
+> # y = offense score
+> 
+> N <- 1e5
+> r <- 100+rnorm(n=N,mean=0,sd=10)
+> e <- rnorm(n=N,mean=0,sd=10)
+> y <- 27+1/7*r+e
+> 
+> # standardize the predictor/outcome variables
+> 
+> rs <- (r-mean(r))/sd(r)
+> ys <- (y-mean(y))/sd(y)
+> 
+> # estimate the population statistical model
+> 
+> M <- lm(ys~1+rs)
+> M
+
+Call:
+lm(formula = ys ~ 1 + rs)
+
+Coefficients:
+          (Intercept)                     rs  
+0.0000000000000003728  0.1436803493136980803  
+
+>
+```
+
+* Next, we calculate the Pearson correlation coefficient:
+
+```R
 # calculate the population Pearson correlation
 
 cor(rs,ys)
+```
 
+* Here is the output:
+
+```Rout
+> # calculate the population Pearson correlation
+> 
+> cor(rs,ys)
+[1] 0.1436803
+```
+
+* Notice that this correlation coefficient is equal to the slope coefficient estimated in the population regression equation.
+* Here is the code to create a scatterplot for the population:
+
+```R
 # create a scatterplot
 
 plot(rs,ys,pch=19)
 abline(M,lty=1,lwd=2,col="red")
 abline(h=-3:3,lty=3,lwd=0.8)
 abline(v=-3:3,lty=3,lwd=0.8)
+```
 
-# draw a few samples
+* Here is what the scatterplot looks like:
 
+<p align="center">
+<img src="/gfiles/fig91.png" width="600px">
+</p>
+
+* So far, we've just been looking at the population. Now, we will draw several samples of size N = 100 from the population.
+* At the end of this code block we get a panel of scatterplots summarizing the results for each of the samples.
+
+```R
 s1 <- sample(1:N,size=100,replace=T)
 s2 <- sample(1:N,size=100,replace=T)
 s3 <- sample(1:N,size=100,replace=T)
@@ -2916,9 +2983,17 @@ abline(m5,lty=1,lwd=2,col="red")
 
 plot(x=r6,y=y6,pch=19)
 abline(m6,lty=1,lwd=2,col="red")
+```
 
-# let's draw some larger samples
+* Here are the resulting plots:
 
+<p align="center">
+<img src="/gfiles/fig92.png" width="600px">
+</p>
+
+* These were samples of size N = 100 each. Now let's draw samples of size N = 1000 each and see what changes:
+
+```R
 s1 <- sample(1:N,size=1000,replace=T)
 s2 <- sample(1:N,size=1000,replace=T)
 s3 <- sample(1:N,size=1000,replace=T)
@@ -2966,7 +3041,17 @@ abline(m5,lty=1,lwd=2,col="red")
 
 plot(x=r6,y=y6,pch=19)
 abline(m6,lty=1,lwd=2,col="red")
+```
 
+* Here is our output:
+
+<p align="center">
+<img src="/gfiles/fig93.png" width="600px">
+</p>
+
+* Next, let's focus on the estimates we get from our 3rd sample of size 1,000 cases above.
+
+```
 # interpret model 3
 
 boxplot(r3,y3)
@@ -2976,6 +3061,64 @@ cor.test(r3,y3)
 rvalues <- -3:3
 yvalues <- 0+0.201*rvalues
 data.frame(rvalues,yvalues)
+```
+
+* Here is our output. First, the boxplot (showing the ranges of our independent and outcome variables). Then, we will look at the model that was estimated for the 3rd sample and the predictions that the model makes conditioning on different values of the predictor variables.
+
+<p align="center">
+<img src="/gfiles/fig93.png" width="500px">
+</p>
+
+```Rout
+> summary(m3)
+
+Call:
+lm(formula = y3 ~ 1 + r3)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.5627 -0.6689 -0.0437  0.6238  3.5271 
+
+Coefficients:
+                          Estimate             Std. Error
+(Intercept) -0.0000000000000001449  0.0309902612584614726
+r3           0.2014077078535495835  0.0310057680201316112
+            t value      Pr(>|t|)    
+(Intercept)   0.000             1    
+r3            6.496 0.00000000013 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.98 on 998 degrees of freedom
+Multiple R-squared:  0.04057,	Adjusted R-squared:  0.0396 
+F-statistic:  42.2 on 1 and 998 DF,  p-value: 0.0000000001301
+
+> cor.test(r3,y3)
+
+	Pearson's product-moment correlation
+
+data:  r3 and y3
+t = 6.4958, df = 998, p-value = 0.0000000001301
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.1411773 0.2601526
+sample estimates:
+      cor 
+0.2014077 
+
+> 
+> rvalues <- -3:3
+> yvalues <- 0+0.201*rvalues
+> data.frame(rvalues,yvalues)
+  rvalues yvalues
+1      -3  -0.603
+2      -2  -0.402
+3      -1  -0.201
+4       0   0.000
+5       1   0.201
+6       2   0.402
+7       3   0.603
+>
 ```
 
 #### Topic 10: Linear regression with unstandardized variables
