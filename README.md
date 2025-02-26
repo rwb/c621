@@ -3124,6 +3124,8 @@ sample estimates:
 #### Topic 10: Linear regression with unstandardized variables
 
 * Keep the same R session open from Topic 9 above.
+* We will now consider what happens if we study the relationship between the unstandardized version of the outcome variable and the standardized version of the independent variable.
+* Again, our focus here is on what happens in the 3rd sample we drew up above.
 
 ```R
 # first, put r in its standardized metric
@@ -3131,7 +3133,6 @@ sample estimates:
 
 yraw3 <- y[s3]
 rstd3 <- (r[s3]-mean(r[s3]))/sd(r[s3])
-hist(yraw3)
 
 m3a <- lm(yraw3~1+rstd3)
 summary(m3a)
@@ -3140,10 +3141,69 @@ cor.test(rstd3,yraw3)
 rvalues <- -3:3
 yvalues <- 41.4086+1.9741*rvalues
 data.frame(rvalues,yvalues)
+```
 
-# put r in its raw metric
-# put y in its standardized metric
+* Here is our output:
 
+```Rout
+> yraw3 <- y[s3]
+> rstd3 <- (r[s3]-mean(r[s3]))/sd(r[s3])
+> 
+> m3a <- lm(yraw3~1+rstd3)
+> summary(m3a)
+
+Call:
+lm(formula = yraw3 ~ 1 + rstd3)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-25.118  -6.557  -0.428   6.115  34.571 
+
+Coefficients:
+            Estimate Std. Error t value             Pr(>|t|)
+(Intercept)  41.4086     0.3038 136.323 < 0.0000000000000002
+rstd3         1.9741     0.3039   6.496        0.00000000013
+               
+(Intercept) ***
+rstd3       ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9.606 on 998 degrees of freedom
+Multiple R-squared:  0.04057,	Adjusted R-squared:  0.0396 
+F-statistic:  42.2 on 1 and 998 DF,  p-value: 0.0000000001301
+
+> cor.test(rstd3,yraw3)
+
+	Pearson's product-moment correlation
+
+data:  rstd3 and yraw3
+t = 6.4958, df = 998, p-value = 0.0000000001301
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.1411773 0.2601526
+sample estimates:
+      cor 
+0.2014077 
+
+> 
+> rvalues <- -3:3
+> yvalues <- 41.4086+1.9741*rvalues
+> data.frame(rvalues,yvalues)
+  rvalues yvalues
+1      -3 35.4863
+2      -2 37.4604
+3      -1 39.4345
+4       0 41.4086
+5       1 43.3827
+6       2 45.3568
+7       3 47.3309
+>
+```
+
+* Next, we analyze the understandardized version of the independent variable and the standardized version of the outcome (the opposite of what we did in the last example):
+
+```R
 ystd3 <- (y[s3]-mean(y[s3]))/sd(y[s3])
 rraw3 <- r[s3]
 
@@ -3156,10 +3216,68 @@ cor.test(rraw3,ystd3)
 rvalues <- seq(from=70,to=130,by=10)
 yvalues <- -2.004471+0.019987*rvalues
 data.frame(rvalues,yvalues)
+```
 
-# put r in its raw metric
-# put y in its raw metric
+* Here is our output -- again, this is all for the 3rd sample:
 
+```Rout
+> ystd3 <- (y[s3]-mean(y[s3]))/sd(y[s3])
+> rraw3 <- r[s3]
+> 
+> hist(rraw3)
+> 
+> m3b <- lm(ystd3~1+rraw3)
+> summary(m3b)
+
+Call:
+lm(formula = ystd3 ~ 1 + rraw3)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.5627 -0.6689 -0.0437  0.6238  3.5271 
+
+Coefficients:
+             Estimate Std. Error t value      Pr(>|t|)    
+(Intercept) -2.004471   0.310131  -6.463 0.00000000016 ***
+rraw3        0.019987   0.003077   6.496 0.00000000013 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.98 on 998 degrees of freedom
+Multiple R-squared:  0.04057,	Adjusted R-squared:  0.0396 
+F-statistic:  42.2 on 1 and 998 DF,  p-value: 0.0000000001301
+
+> cor.test(rraw3,ystd3)
+
+	Pearson's product-moment correlation
+
+data:  rraw3 and ystd3
+t = 6.4958, df = 998, p-value = 0.0000000001301
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.1411773 0.2601526
+sample estimates:
+      cor 
+0.2014077 
+
+> 
+> rvalues <- seq(from=70,to=130,by=10)
+> yvalues <- -2.004471+0.019987*rvalues
+> data.frame(rvalues,yvalues)
+  rvalues   yvalues
+1      70 -0.605381
+2      80 -0.405511
+3      90 -0.205641
+4     100 -0.005771
+5     110  0.194099
+6     120  0.393969
+7     130  0.593839
+>
+```
+
+* Finally, we examine what happens when we work with the unstandardized versions of both the independent and the outcome variables:
+
+```R
 yraw3 <- y[s3]
 rraw3 <- r[s3]
 
@@ -3170,9 +3288,68 @@ cor.test(rraw3,yraw3)
 rvalues <- seq(from=70,to=130,by=10)
 yvalues <- 21.76159+0.19590*rvalues
 data.frame(rvalues,yvalues)
+```
 
-# scatterplots
+* Here is our output:
 
+```Rout
+> yraw3 <- y[s3]
+> rraw3 <- r[s3]
+> 
+> m3c <- lm(yraw3~1+rraw3)
+> summary(m3c)
+
+Call:
+lm(formula = yraw3 ~ 1 + rraw3)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-25.118  -6.557  -0.428   6.115  34.571 
+
+Coefficients:
+            Estimate Std. Error t value         Pr(>|t|)    
+(Intercept) 21.76159    3.03978   7.159 0.00000000000157 ***
+rraw3        0.19590    0.03016   6.496 0.00000000013008 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9.606 on 998 degrees of freedom
+Multiple R-squared:  0.04057,	Adjusted R-squared:  0.0396 
+F-statistic:  42.2 on 1 and 998 DF,  p-value: 0.0000000001301
+
+> cor.test(rraw3,yraw3)
+
+	Pearson's product-moment correlation
+
+data:  rraw3 and yraw3
+t = 6.4958, df = 998, p-value = 0.0000000001301
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.1411773 0.2601526
+sample estimates:
+      cor 
+0.2014077 
+
+> 
+> rvalues <- seq(from=70,to=130,by=10)
+> yvalues <- 21.76159+0.19590*rvalues
+> data.frame(rvalues,yvalues)
+  rvalues  yvalues
+1      70 35.47459
+2      80 37.43359
+3      90 39.39259
+4     100 41.35159
+5     110 43.31059
+6     120 45.26959
+7     130 47.22859
+>
+```
+
+* In each of the examples above, we note that the substantive conclusions are the same.
+* The results are hard to compare, however, since the variables are expressed in different metrics.
+* Here are a series of scatterplots to show the results are actually exactly the same across the different analyses.
+
+```R
 par(mfrow=c(2,2))
 plot(x=rstd3,y=ystd3,pch=19)
 abline(m3,col="red")
@@ -3183,6 +3360,10 @@ abline(m3b,col="red")
 plot(x=rraw3,y=yraw3,pch=19)
 abline(m3c,col="red")
 ```
+
+<p align="center">
+<img src="/gfiles/fig95.png" width="600px">
+</p>
 
 #### Practice Problems for Week of 2/24/25-3/3/25
 
