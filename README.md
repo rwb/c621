@@ -3595,7 +3595,6 @@ mean in group 0 mean in group 1
 * There are three versions of the measurement error problem.
 * Version 1: measurement error in the dependent variable.
 * Version 2: measurement error in the independent variable.
-* Version 3: measurement error in both the predictor(s) and the outcome.
 * We deal with the correctly measured case first:
 
 ```R
@@ -3862,3 +3861,76 @@ sd(slopevec.err)
 [1] 0.08431833
 >
 ```
+
+* Regression coefficients are unbiased when only the DV is measured with error.
+* The regression coefficient for an IV is biased toward zero when the IV is measured with error.
+* If there is more than one variable in the statistical model, then the bias can affect our conclusions about the coefficients for other variables.
+* We will return to this issue when we reach multivariate regression later in the semester.
+
+#### Topic 13: Extrapolation
+
+* Extrapolation occurs when we make predictions off the support of the data we have available for our study.
+* Let's consider an example:
+  
+```R
+set.seed(202)
+x <- rnorm(n=300,mean=5.7,sd=1.3)
+y <- 7-0.1*x+rnorm(n=300,mean=0,sd=1.6)
+M <- lm(y~1+x)
+summary(M)
+plot(x,y,pch=19)
+abline(h=2:11,lty=3,lwd=0.8)
+abline(v=2:10,lty=3,lwd=0.8)
+abline(M,lty=1,lwd=3,col="red")
+```
+
+* Here is the output:
+
+```Rout
+> set.seed(202)
+> x <- rnorm(n=300,mean=5.7,sd=1.3)
+> y <- 7-0.1*x+rnorm(n=300,mean=0,sd=1.6)
+> M <- lm(y~1+x)
+> summary(M)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.5123 -1.1212 -0.0856  1.0991  4.2859 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  7.09237    0.41448  17.111   <2e-16 ***
+x           -0.14577    0.06996  -2.084    0.038 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.618 on 298 degrees of freedom
+Multiple R-squared:  0.01436,	Adjusted R-squared:  0.01105 
+F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
+
+> plot(x,y,pch=19)
+> abline(h=2:11,lty=3,lwd=0.8)
+> abline(v=2:10,lty=3,lwd=0.8)
+> abline(M,lty=1,lwd=3,col="red")
+>
+```
+
+<p align="center">
+<img src="/gfiles/hist-plots.png" width="600px">
+</p>
+
+* The question of extrapolation revolves around whether we are justified in making predictions about the distribution of *y* when we move into more sparse regions of *x*.
+* As an example, we could use this model to make a prediction about the expected value of *y* when *x* is equal to 12.
+* The prediction would be:
+
+```Rout
+> ey <- 7.09237-0.14577*12
+> ey
+[1] 5.34313
+>
+```
+
+* But how justified would we be in making such a prediction when we don't have any observations in our data with *x* equal to 12?
