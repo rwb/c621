@@ -3414,6 +3414,8 @@ head(d,n=12)
 * Tonight, we turn to the problem of estimating a linear regression model with a binary independent variable (Topic 11; Section 2.6 of Sheather's book).
 * Following that we will consider the problem of measurement error; (Blalock et al., 1970; [link](https://www.jstor.org/stable/270784))
 * And then we will turn to the problem of extrapolation (Manski, 1993; [link](https://www.jstor.org/stable/271005))
+* We will have an overview of topic #14 (causal inference and omitted variables). You should look at Freedman Chapter 1 for a discussion of this issue.
+* You can also look at the Minneapolis Domestic Violence Experiment ([link](https://www.jstor.org/stable/pdf/2288920.pdf)).
 
 #### Topic 11: Regression with a categorical (binary) independent variable
 
