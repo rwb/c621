@@ -3919,7 +3919,7 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 ```
 
 <p align="center">
-<img src="/gfiles/hist-plots.png" width="600px">
+<img src="/gfiles/scatter-extrapolation.png" width="600px">
 </p>
 
 * The question of extrapolation revolves around whether we are justified in making predictions about the distribution of *y* when we move into more sparse regions of *x*.
