@@ -3939,10 +3939,14 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 
 #### Topic 14: Causal Inference and Omitted Variables
 
+* An overview of the problem:
+ 
 <p align="center">
 <img src="/gfiles/g1.png" width="600px">
 </p>
 
+* And how random assignment of treatment solves the problem:
+  
 <p align="center">
 <img src="/gfiles/g2.png" width="600px">
 </p>
