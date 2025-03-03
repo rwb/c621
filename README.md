@@ -3411,8 +3411,10 @@ head(d,n=12)
 ### Lesson 6: Monday 3/3/25
 
 * Reminder: next assignment will be distributed next week and will be due after spring break.
-* Tonight, we turn to the problem of estimating a linear regression model with a binary independent variable (Topic 11).
-  
+* Tonight, we turn to the problem of estimating a linear regression model with a binary independent variable (Topic 11; Section 2.6 of Sheather's book).
+* Following that we will consider the problem of measurement error; (Blalock et al., 1970; [link](https://www.jstor.org/stable/270784))
+* And then we will turn to the problem of extrapolation (Manski, 1993; [link](https://www.jstor.org/stable/271005))
+
 #### Topic 11: Regression with a categorical (binary) independent variable
 
 * Here is some R code to generate a population dataset with a "treatment" independent variable and a continuous (addiction severity score) outcome.
