@@ -3587,6 +3587,13 @@ mean in group 0 mean in group 1
 >
 ```
 
-* Now, I am going to make a change to the population:
+* The purpose of this exercise is to establish an equivalence between what we learn from a linear regression model with a binary independent variable and a two-sample *t*-test (assuming the variances of the groups are equal).
+* We will return to the problem of what happens when the variances are not equal (topic 16).
 
-```R
+#### Topic 12: (Random) Measurement error
+
+* There are three versions of the measurement error problem.
+* Version 1: measurement error in the dependent variable.
+* Version 2: measurement error in the independent variable.
+* Version 3: measurement error in both the predictor(s) and the outcome.
+* We deal with version 1 first.
