@@ -3939,6 +3939,7 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 
 #### Topic 14: Causal Inference and Omitted Variables
 
+* Relevant reading for this section: Freedman (Chapter 1)
 * An overview of the problem:
  
 <p align="center">
