@@ -3934,3 +3934,13 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 ```
 
 * But how justified would we be in making such a prediction when we don't have any observations in our data with *x* equal to 12?
+
+#### Topic 14: Causal Inference and Omitted Variables
+
+<p align="center">
+<img src="/gfiles/g1.png" width="600px">
+</p>
+
+<p align="center">
+<img src="/gfiles/g2.png" width="600px">
+</p>
