@@ -3410,16 +3410,15 @@ head(d,n=12)
 
 ### Lesson 6: Monday 3/3/25
 
+* Reminder: next assignment will be distributed next week and will be due after spring break.
+* Tonight, we turn to the problem of estimating a linear regression model with a binary independent variable (Topic 11).
+  
 #### Topic 11: Regression with a categorical (binary) independent variable
 
-* We will start a new R session for this unit.
-
+* Here is some R code to generate a population dataset with a "treatment" independent variable and a continuous (addiction severity score) outcome.
+  
 ```R
-# categorical independent variable (treatment)
-# think of an addiction severity score as the outcome (y)
-
 set.seed(329)
-
 N <- 1e5
 treatment <- rbinom(n=N,size=1,p=0.5)
 e <- rnorm(n=N,mean=10,sd=1)
@@ -3430,32 +3429,82 @@ d <- data.frame(treatment,y)
 # stratified by treatment group
 
 boxplot(d$y~d$treatment)
+```
 
-# separate population cases into 2 datasets
+* Here is the resulting (population) boxplot:
 
+<p align="center">
+<img src="/gfiles/trt-boxplot.png" width="600px">
+</p>
+
+* Next, we separate the population into 2 datasets:
+
+```R
 table(d$treatment)
-sd0 <- subset(d,treatment==0)
-nrow(sd0)
-sd1 <- subset(d,treatment==1)
-nrow(sd1)
-
-# calculate population outcome means
-
-mean(sd0$y)
-mean(sd1$y)
+t0 <- subset(d,treatment==0)
+nrow(t0)
+t1 <- subset(d,treatment==1)
+nrow(t1)
+mean(t0$y)
+mean(t1$y)
 
 # calculate difference between means for
 # the two groups in the population
 
-mean(sd1$y)-mean(sd0$y)
+mean(t1$y)-mean(t0$y)
+```
 
-# estimate a population regression model
+* Here are the results (again, this is for the population data):
+  
+```Rout
+> table(d$treatment)
 
+    0     1 
+49779 50221 
+> t0 <- subset(d,treatment==0)
+> nrow(t0)
+[1] 49779
+> t1 <- subset(d,treatment==1)
+> nrow(t1)
+[1] 50221
+> mean(t0$y)
+[1] 9.995286
+> mean(t1$y)
+[1] 9.811327
+> 
+> # calculate difference between means for
+> # the two groups in the population
+> 
+> mean(t1$y)-mean(t0$y)
+[1] -0.1839596
+>
+```
+
+* Now, we estimate a population regression model:
+
+```R
 M <- lm(y~1+treatment,data=d)
 M
+```
+which gives the following output:
 
-# draw a random sample from the population
+```Rout
+> M <- lm(y~1+treatment,data=d)
+> M
 
+Call:
+lm(formula = y ~ 1 + treatment, data = d)
+
+Coefficients:
+(Intercept)    treatment  
+      9.995       -0.184  
+
+>
+```
+
+* Now, we draw a random sample from the population and perform some calculations:
+
+```R
 s <- sample(1:N,size=300,replace=T)
 ys <- y[s]
 ts <- treatment[s]
@@ -3477,3 +3526,67 @@ y.group1-y.group0
 
 t.test(ys~ts,data=samp,var.equal=T)
 ```
+
+* Here is our *sample* output:
+
+```Rout
+> s <- sample(1:N,size=300,replace=T)
+> ys <- y[s]
+> ts <- treatment[s]
+> samp <- data.frame(ts,ys)
+> 
+> # estimate a regression using the sample
+> 
+> ms <- lm(ys~1+ts,data=samp)
+> summary(ms)
+
+Call:
+lm(formula = ys ~ 1 + ts, data = samp)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.96639 -0.59833 -0.04011  0.57416  2.62609 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  9.93052    0.07825 126.901   <2e-16 ***
+ts          -0.15636    0.10887  -1.436    0.152    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.9423 on 298 degrees of freedom
+Multiple R-squared:  0.006875,	Adjusted R-squared:  0.003542 
+F-statistic: 2.063 on 1 and 298 DF,  p-value: 0.152
+
+> 
+> y.group0 <- 9.93052
+> y.group0
+[1] 9.93052
+> y.group1 <- 9.93052+(-0.15636)
+> y.group1
+[1] 9.77416
+> y.group1-y.group0
+[1] -0.15636
+> 
+> # calculate a t-test for the difference between
+> # the two means
+> 
+> t.test(ys~ts,data=samp,var.equal=T)
+
+	Two Sample t-test
+
+data:  ys by ts
+t = 1.4363, df = 298, p-value = 0.152
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.05788325  0.37061295
+sample estimates:
+mean in group 0 mean in group 1 
+       9.930517        9.774152 
+
+>
+```
+
+* Now, I am going to make a change to the population:
+
+```R
