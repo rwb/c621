@@ -3618,6 +3618,8 @@ mean(intvec)
 mean(slopevec)
 mean(sigmavec)
 median(sigmavec)
+sd(intvec)
+sd(slopevec)
 
 par(mfrow=c(1,3))
 hist(intvec)
@@ -3651,7 +3653,11 @@ hist(sigmavec)
 [1] 1.999042
 > median(sigmavec)
 [1] 1.998748
-> 
+> sd(intvec)
+[1] 0.5207726
+> sd(slopevec)
+[1] 0.08882824
+>
 > par(mfrow=c(1,3))
 > hist(intvec)
 > hist(slopevec)
@@ -3662,3 +3668,197 @@ hist(sigmavec)
 <p align="center">
 <img src="/gfiles/hist-plots.png" width="600px">
 </p>
+
+* Now, let's suppose our dependent variable is measured with random error.
+
+```R
+set.seed(358)
+
+intvec.true <- vector()
+slopevec.true <- vector()
+sigmavec.true <- vector()
+intvec.err <- vector()
+slopevec.err <- vector()
+sigmavec.err <- vector()
+
+for(i in 1:1e4){
+  x <- rnorm(n=300,mean=5.7,sd=1.3)
+  rme <- rnorm(n=300,mean=0,sd=0.5)
+  ytrue <- 7-0.05*x+rnorm(n=300,mean=0,sd=2)
+  yrme <- ytrue+rme
+  Mtrue <- lm(ytrue~1+x)
+  Merr <- lm(yrme~1+x)
+  intvec.true[i] <- coef(Mtrue)[1]
+  slopevec.true[i] <- coef(Mtrue)[2]
+  sigmavec.true[i] <- sigma(Mtrue)
+  intvec.err[i] <- coef(Merr)[1]
+  slopevec.err[i] <- coef(Merr)[2]
+  sigmavec.err[i] <- sigma(Merr)
+  }
+
+mean(intvec.true)
+mean(slopevec.true)
+mean(sigmavec.true)
+median(sigmavec.true)
+sd(intvec.true)
+sd(slopevec.true)
+
+mean(intvec.err)
+mean(slopevec.err)
+mean(sigmavec.err)
+median(sigmavec.err)
+sd(intvec.err)
+sd(slopevec.err)
+```
+
+* Here is our output:
+
+```Rout
+> set.seed(358)
+> 
+> intvec.true <- vector()
+> slopevec.true <- vector()
+> sigmavec.true <- vector()
+> intvec.err <- vector()
+> slopevec.err <- vector()
+> sigmavec.err <- vector()
+> 
+> for(i in 1:1e4){
++   x <- rnorm(n=300,mean=5.7,sd=1.3)
++   rme <- rnorm(n=300,mean=0,sd=0.5)
++   ytrue <- 7-0.05*x+rnorm(n=300,mean=0,sd=2)
++   yrme <- ytrue+rme
++   Mtrue <- lm(ytrue~1+x)
++   Merr <- lm(yrme~1+x)
++   intvec.true[i] <- coef(Mtrue)[1]
++   slopevec.true[i] <- coef(Mtrue)[2]
++   sigmavec.true[i] <- sigma(Mtrue)
++   intvec.err[i] <- coef(Merr)[1]
++   slopevec.err[i] <- coef(Merr)[2]
++   sigmavec.err[i] <- sigma(Merr)
++   }
+> 
+> mean(intvec.true)
+[1] 7.006265
+> mean(slopevec.true)
+[1] -0.05111041
+> mean(sigmavec.true)
+[1] 1.997589
+> median(sigmavec.true)
+[1] 1.996715
+> sd(intvec.true)
+[1] 0.5214808
+> sd(slopevec.true)
+[1] 0.08897388
+> 
+> mean(intvec.err)
+[1] 7.005513
+> mean(slopevec.err)
+[1] -0.05101773
+> mean(sigmavec.err)
+[1] 2.058758
+> median(sigmavec.err)
+[1] 2.058886
+> sd(intvec.err)
+[1] 0.5398686
+> sd(slopevec.err)
+[1] 0.09214619
+> 
+```
+
+* Next, let's see what happens when we induce random measurement error into our independent variable:
+
+```R
+set.seed(409)
+
+intvec.true <- vector()
+slopevec.true <- vector()
+sigmavec.true <- vector()
+intvec.err <- vector()
+slopevec.err <- vector()
+sigmavec.err <- vector()
+
+for(i in 1:1e4){
+  rme <- rnorm(n=300,mean=0,sd=0.5)
+  xtrue <- rnorm(n=300,mean=5.7,sd=1.3)
+  xerr <- xtrue+rme
+  y <- 7-0.05*xtrue+rnorm(n=300,mean=0,sd=2)
+  Mtrue <- lm(y~1+xtrue)
+  Merr <- lm(y~1+xerr)
+  intvec.true[i] <- coef(Mtrue)[1]
+  slopevec.true[i] <- coef(Mtrue)[2]
+  sigmavec.true[i] <- sigma(Mtrue)
+  intvec.err[i] <- coef(Merr)[1]
+  slopevec.err[i] <- coef(Merr)[2]
+  sigmavec.err[i] <- sigma(Merr)
+  }
+
+mean(intvec.true)
+mean(slopevec.true)
+mean(sigmavec.true)
+median(sigmavec.true)
+sd(intvec.true)
+sd(slopevec.true)
+
+mean(intvec.err)
+mean(slopevec.err)
+mean(sigmavec.err)
+median(sigmavec.err)
+sd(intvec.err)
+sd(slopevec.err)
+```
+
+* Here is our output:
+
+```Rout
+> set.seed(409)
+> 
+> intvec.true <- vector()
+> slopevec.true <- vector()
+> sigmavec.true <- vector()
+> intvec.err <- vector()
+> slopevec.err <- vector()
+> sigmavec.err <- vector()
+> 
+> for(i in 1:1e4){
++   rme <- rnorm(n=300,mean=0,sd=0.5)
++   xtrue <- rnorm(n=300,mean=5.7,sd=1.3)
++   xerr <- xtrue+rme
++   y <- 7-0.05*xtrue+rnorm(n=300,mean=0,sd=2)
++   Mtrue <- lm(y~1+xtrue)
++   Merr <- lm(y~1+xerr)
++   intvec.true[i] <- coef(Mtrue)[1]
++   slopevec.true[i] <- coef(Mtrue)[2]
++   sigmavec.true[i] <- sigma(Mtrue)
++   intvec.err[i] <- coef(Merr)[1]
++   slopevec.err[i] <- coef(Merr)[2]
++   sigmavec.err[i] <- sigma(Merr)
++   }
+> 
+> mean(intvec.true)
+[1] 7.000103
+> mean(slopevec.true)
+[1] -0.04992191
+> mean(sigmavec.true)
+[1] 1.998765
+> median(sigmavec.true)
+[1] 1.997828
+> sd(intvec.true)
+[1] 0.524732
+> sd(slopevec.true)
+[1] 0.08991167
+> 
+> mean(intvec.err)
+[1] 6.96308
+> mean(slopevec.err)
+[1] -0.04342411
+> mean(sigmavec.err)
+[1] 1.998874
+> median(sigmavec.err)
+[1] 1.997653
+> sd(intvec.err)
+[1] 0.494161
+> sd(slopevec.err)
+[1] 0.08431833
+>
+```
