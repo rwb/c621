@@ -3596,4 +3596,69 @@ mean in group 0 mean in group 1
 * Version 1: measurement error in the dependent variable.
 * Version 2: measurement error in the independent variable.
 * Version 3: measurement error in both the predictor(s) and the outcome.
-* We deal with version 1 first.
+* We deal with the correctly measured case first:
+
+```R
+set.seed(342)
+
+intvec <- vector()
+slopevec <- vector()
+sigmavec <- vector()
+
+for(i in 1:1e4){
+  x <- rnorm(n=300,mean=5.7,sd=1.3)
+  y <- 7-0.05*x+rnorm(n=300,mean=0,sd=2)
+  M <- lm(y~1+x)
+  intvec[i] <- coef(M)[1]
+  slopevec[i] <- coef(M)[2]
+  sigmavec[i] <- sigma(M)
+  }
+
+mean(intvec)
+mean(slopevec)
+mean(sigmavec)
+median(sigmavec)
+
+par(mfrow=c(1,3))
+hist(intvec)
+hist(slopevec)
+hist(sigmavec)
+```
+
+* Here is the output:
+
+```Rout
+> set.seed(342)
+> 
+> intvec <- vector()
+> slopevec <- vector()
+> sigmavec <- vector()
+> 
+> for(i in 1:1e4){
++   x <- rnorm(n=300,mean=5.7,sd=1.3)
++   y <- 7-0.05*x+rnorm(n=300,mean=0,sd=2)
++   M <- lm(y~1+x)
++   intvec[i] <- coef(M)[1]
++   slopevec[i] <- coef(M)[2]
++   sigmavec[i] <- sigma(M)
++   }
+> 
+> mean(intvec)
+[1] 6.99662
+> mean(slopevec)
+[1] -0.04912021
+> mean(sigmavec)
+[1] 1.999042
+> median(sigmavec)
+[1] 1.998748
+> 
+> par(mfrow=c(1,3))
+> hist(intvec)
+> hist(slopevec)
+> hist(sigmavec)
+>
+```
+
+<p align="center">
+<img src="/gfiles/hist-plots.png" width="600px">
+</p>
