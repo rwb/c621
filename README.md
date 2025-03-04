@@ -3953,3 +3953,7 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 <p align="center">
 <img src="/gfiles/g2.png" width="600px">
 </p>
+
+#### Practice Problems - From Lesson 6
+
+1. 
