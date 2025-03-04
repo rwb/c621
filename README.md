@@ -3956,4 +3956,32 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 
 #### Practice Problems - From Lesson 6
 
-1. 
+1. Enter the following dataset (*x* and *y*) into R:
+
+```Rout
+> d
+   x    y
+1  0  8.1
+2  0 10.6
+3  0  9.4
+4  0  9.1
+5  0 11.6
+6  0  9.6
+7  0 11.3
+8  1 10.0
+9  1 10.8
+10 1 10.9
+11 1 12.0
+12 1 12.6
+13 1 12.1
+14 1 10.9
+>
+```
+
+* estimate a linear regression model where *x* is the independent variable and *y* is the outcome variable.
+* use the *t*-test function (with equal variances) to test the hypothesis that the population treatment effect is equal to 0.
+* calculate the E(y|x=1) and E(y|x=0) (the predicted values of *y* when *x* is equal to 0 and 1, respectively.
+* calculate the difference between the expected values and verify that the difference is equal to the regression coefficient.
+* create a boxplot showing the distribution of *y* for each level of *x*.
+
+2. 
