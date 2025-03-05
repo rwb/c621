@@ -3980,8 +3980,32 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 
 * estimate a linear regression model where *x* is the independent variable and *y* is the outcome variable.
 * use the *t*-test function (with equal variances) to test the hypothesis that the population treatment effect is equal to 0.
-* calculate the E(y|x=1) and E(y|x=0) (the predicted values of *y* when *x* is equal to 0 and 1, respectively.
+* calculate the E(y|x=1) and E(y|x=0) (the predicted values of *y* when *x* is equal to 0 and 1, respectively).
 * calculate the difference between the expected values and verify that the difference is equal to the regression coefficient.
 * create a boxplot showing the distribution of *y* for each level of *x*.
 
-2. 
+2. Consider this N = 18 dataset with independent variable, *x*, and dependent variable *y*. There is also an random error-contaminated version of *x* called *xs*. Estimate linear regression models with each version of *x*. Interpret your results:
+
+```Rout
+> d
+     x  xs    y
+1  6.5 7.4 17.9
+2  9.5 7.9 22.9
+3  8.0 7.4 17.8
+4  7.3 7.3 18.4
+5  6.8 6.1 17.8
+6  8.9 7.9 21.6
+7  6.9 6.4 19.5
+8  6.8 7.4 21.2
+9  6.8 7.1 19.8
+10 7.3 6.4 24.0
+11 6.2 7.0 17.2
+12 7.1 5.5 19.1
+13 7.7 8.2 17.4
+14 6.9 5.6 20.0
+15 6.2 6.8 15.8
+16 6.1 5.6 18.2
+17 7.9 6.9 17.1
+18 9.0 8.2 21.5
+```
+
