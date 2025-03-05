@@ -4009,3 +4009,25 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 18 9.0 8.2 21.5
 ```
 
+3. Using the following N = 15 dataset (which includes *x*, *y*, and an error-contaminated version of *y* called *ys), estimate separate regressions for *y* and *ys*. Then, create scatterplots with regression lines for each analysis. Compare the results across the two analyses. What do you conclude about the effect of measurement error in *y*?
+
+```Rout
+> d
+     x    y       ys
+1  6.4 17.7 16.59572
+2  7.0 18.0 17.06185
+3  5.5 18.0 18.67862
+4  5.6 15.8 14.22250
+5  8.2 18.8 17.93006
+6  6.1 16.2 16.68468
+7  8.3 19.9 19.71395
+8  7.6 18.4 19.94555
+9  7.0 19.0 18.38862
+10 6.0 17.3 16.95224
+11 6.2 17.5 15.86348
+12 6.7 17.7 17.72038
+13 5.5 15.4 16.29174
+14 6.7 17.7 16.82725
+15 5.9 15.5 16.39005
+>
+```
