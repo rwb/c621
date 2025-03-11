@@ -5271,7 +5271,7 @@ Part I: Use the following dataset where we have 2 versions of *x* (x is well mea
 3. Calculate a 75% confidence interval for the slope coefficients in each regression.
 4. What decision do you make concerning Ho that the population slope is equal to zero for each regression (at the 75% confidence level)? 
 5. Explain how measurement error might be affecting the results that you see in the two regression analyses.
-6. If *x* is a measure of sentence severity and *y* is a measure of future criminal behavior, why would it be problematic to interpret the results of the regression analysis as evidence of a causal effect of *x* on *y*. Provide an example of what could go wrong.
+6. If *x* is a measure of sentence severity and *y* is a measure of future criminal behavior, why would it be problematic to interpret the results of the regression analysis as evidence of a causal effect of *x* on *y*. Desribe an example of what could go wrong.
 
 Part II: For this assignment, you will be using the homicide dataset I sent at the beginning of the last class; *i* refers to the estimated fraction of undocumented immigrants in the population; *h* refers to the number of homicides per 100,000 population.
 
