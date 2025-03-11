@@ -5249,3 +5249,43 @@ slope+qt(1-0.06,df=N-2)*se.b1
 
 * This tells us that the 93% confidence interval for the intercept *does not* include zero.
 * But the 88% confidence interval for the slope does include zero (which is consistent with our decision above when we failed to reject Ho).
+
+### Assignment #2 (Due on ELMS at 11:59pm on Tuesday 3/25/25)
+
+Instructions: please review the guidelines for assignments and submission of assignments in the syllabus above. You should not discuss this assignment with others; the work you submit should be your own work. If I receive questions related to the assignment that I judge to be of interest to the entire class, I will post them below with the answers. I will respond to all questions submitted by 11:59pm (ET) on Saturday 3/22/25. I will not be able to respond to any questions received after that time (so that all students will have ample time to take such questions into consideration before the submission deadline). Each problem below is worth 5 points. Good luck!
+
+Part I: Use the following dataset where we have 2 versions of *x* (x is well measured and xs is measured with error).
+
+```Rout
+> x
+ [1]  8.1  9.7  9.7  9.9  8.9  9.1  9.1 10.2  9.7  8.1
+> xs
+ [1]  8.3 10.3  9.8 10.3  8.6  9.1  9.7 11.1  9.2  9.2
+> y
+ [1]  8.9  8.9  9.8 10.6  7.9  8.4  9.6  9.4 11.8  9.3
+>
+```
+
+1. Use your formulas to calculate regressions of *y* on *x* and *y* on *xs*. Verify you get the same results using lm().
+2. Create a scatterplot to go with each regression. Be sure to include the regression line for each scatterplot.
+3. Calculate a 75% confidence interval for the slope coefficients in each regression.
+4. What decision do you make concerning Ho that the population slope is equal to zero for each regression (at the 75% confidence level)? 
+5. Explain how measurement error might be affecting the results that you see in the two regression analyses.
+6. If *x* is a measure of sentence severity and *y* is a measure of future criminal behavior, why would it be problematic to interpret the results of the regression analysis as evidence of a causal effect of *x* on *y*. Provide an example of what could go wrong.
+
+Part II: For this assignment, you will be using the homicide dataset I sent at the beginning of the last class; *i* refers to the estimated fraction of undocumented immigrants in the population; *h* refers to the number of homicides per 100,000 population.
+
+1. Use the cor.test() function to calculate a 93% confidence interval for the correlation between *i* and *h* for the year 2018.
+2. Standardize *i* and *h* for 2018 (mean zero and standard deviation one) and estimate a linear regression with *h* as the outcome.
+3. Calculate a 93% confidence interval for the slope coefficient in the regression you estimated in #2. Verify agreement with #1 above.
+4. Calculate the correlation between undocumented immigration rates (i) and homicide rates (h) for the year 2019.
+5. Create a scatterplot showing the regression line for *i* and *h* in the year 2019.
+6. What is the 87% confidence interval for the correlation coefficient of *i* and *h* in 2019? 
+7. If Ho is that the 2019 correlation between *i* and *h* is equal to zero, do you reject or fail to reject Ho (at the 87% confidence level)? What is the basis for your decision?
+8. Use your formulas to calculate the intercept and slope of the 2019 regression of *h* on *i*.
+9. Use your formulas to calculate the standard errors and *t*-statistics for the intercept and slope in #8.
+10. Verify that your results in #8 and #9 agree with the summary printout from the lm() function.
+11. Based on the regression in #10, calculate the expected value of *h* when *i* takes on the values: 1,2,3,4,5, and 6.
+12. Using your results in #11, what is E(h|i=5)-E(h|i=4)? How does this number compare to the slope coefficient you estimated in #8 and #11?
+13. What is the *p*-value for the slope *t*-statistic you estimated in #9? How does it compare to the *p*-value for the slope coefficient on the lm() printout in #10 above?
+14. Create a residual plot for your 2019 regression. Do you see anything that concerns you?
