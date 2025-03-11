@@ -5266,7 +5266,7 @@ Part I: Use the following dataset where we have 2 versions of *x* (x is well mea
 >
 ```
 
-1. Use your formulas to calculate regressions of *y* on *x* and *y* on *xs*. Verify you get the same results using lm().
+1. Use your formulas to calculate regressions of *y* on *x* and *y* on *xs* (just the intercept and slope estimates). Verify you get the same results using lm().
 2. Create a scatterplot to go with each regression. Be sure to include the regression line for each scatterplot.
 3. Calculate a 75% confidence interval for the slope coefficients in each regression.
 4. What decision do you make concerning Ho that the population slope is equal to zero for each regression (at the 75% confidence level)? 
