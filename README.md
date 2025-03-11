@@ -4029,3 +4029,206 @@ F-statistic: 4.341 on 1 and 298 DF,  p-value: 0.03805
 14 6.7 17.7 16.8
 15 5.9 15.5 16.4
 ```
+
+### Lesson 7: Monday 3/10/25
+
+* Reminder: next assignment will be posted on Tuesday 3/11/25 and will be due by 11:59pm (ET) on  Tuesday 3/25/25.
+* Tonight, we will work through recent practice problems.
+* Then, we will turn to topic 15 (predictions and residuals).
+
+#### Recent Practice Problems
+
+2/24/25: Problem 1 - Read in the following dataset:
+
+```R
+set.seed(202)
+x <- rnorm(n=832,mean=15,sd=2.2)
+y <- 9-1/8*x+rnorm(n=832,mean=0,sd=2.1)
+d <- data.frame(x,y)
+head(d,n=12)
+```
+
+* Here is the output:
+
+```Rout
+> set.seed(202)
+> x <- rnorm(n=832,mean=15,sd=2.2)
+> y <- 9-1/8*x+rnorm(n=832,mean=0,sd=2.1)
+> d <- data.frame(x,y)
+> head(d,n=12)
+          x         y
+1  12.51007  6.749658
+2  14.03091  7.826028
+3  14.25992  9.761354
+4  13.13649  6.314485
+5  14.67874  6.170043
+6  11.85279 11.141628
+7  13.29148  7.225280
+8  10.74671  6.644228
+9  15.68870  8.133211
+10 16.03103  6.177561
+11 14.69543  5.752079
+12 17.59574  5.099188
+>
+```
+
+* Convert *x* and *y* into z-score form.
+
+```R
+> # calculate std. versions of x and y
+> 
+> zx <- (x-mean(x))/sd(x)
+> zy <- (y-mean(y))/sd(y)
+> mean(zx)
+[1] -3.015208e-16
+> sd(zx)
+[1] 1
+> mean(zy)
+[1] 1.262345e-16
+> sd(zy)
+[1] 1
+>
+```
+
+* Calculate the Pearson correlation coefficient summarizing the linear relationship between *x* and *y*.
+
+```Rout
+> cor(x,y)
+[1] -0.1265627
+>
+```
+
+* Calculate the Pearson correlation coefficient summarizing the linear relationship between the standardized versions of *x* and *y*.
+
+```Rout
+> cor(zx,zy)
+[1] -0.1265627
+>
+```
+
+* Estimate a linear regression where the outcome is the standardized version of *y* and the independent variable is the standardized version of *x*.
+
+```Rout
+> options(scipen=100)
+> m <- lm(zy~1+zx)
+> summary(m)
+
+Call:
+lm(formula = zy ~ 1 + zx)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4011 -0.6514 -0.0215  0.6305  4.0540 
+
+Coefficients:
+                           Estimate              Std. Error t value
+(Intercept)  0.00000000000000005889  0.03441068785761793730   0.000
+zx          -0.12656269289509791687  0.03443138601759943712  -3.676
+            Pr(>|t|)    
+(Intercept) 1.000000    
+zx          0.000252 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.9926 on 830 degrees of freedom
+Multiple R-squared:  0.01602,	Adjusted R-squared:  0.01483 
+F-statistic: 13.51 on 1 and 830 DF,  p-value: 0.0002523
+
+> 
+```
+
+* Compare the slope coefficient from the linear regression to the correlation coefficient; what do you conclude?
+
+```Rout
+The estimates are the same.
+```
+
+* Create a table where you show how the expected value of the standardized *y* varies with the standardized *x*.
+
+```Rout
+> xseq <- -3:3
+> yfit <- 0+(-0.1265627)*xseq
+> data.frame(xseq,yfit)
+  xseq       yfit
+1   -3  0.3796881
+2   -2  0.2531254
+3   -1  0.1265627
+4    0  0.0000000
+5    1 -0.1265627
+6    2 -0.2531254
+7    3 -0.3796881
+>
+```
+
+* Test the hypothesis that the population correlation coefficient/slope is equal to zero at the *p* < .05 significance level. What evidence do you cite to support your conclusion?
+
+```Rout
+> cor.test(zx,zy)
+
+	Pearson's product-moment correlation
+
+data:  zx and zy
+t = -3.6758, df = 830, p-value = 0.0002523
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.1928710 -0.0591037
+sample estimates:
+       cor 
+-0.1265627 
+
+>
+```
+
+- Note: the 95% confidence interval for the correlation coefficient does not include zero. We reject the hypothesis that the population correlation coefficient is equal to zero.
+
+* Estimate a linear regression and correlation using the unstandardized versions of *x* and *y*.
+
+```Rout
+> # unstandardized
+> 
+> mu <- lm(y~1+x)
+> summary(mu)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.9533 -1.3317 -0.0439  1.2890  8.2881 
+
+Coefficients:
+            Estimate Std. Error t value             Pr(>|t|)    
+(Intercept)  8.79965    0.47497  18.527 < 0.0000000000000002 ***
+x           -0.11522    0.03135  -3.676             0.000252 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.029 on 830 degrees of freedom
+Multiple R-squared:  0.01602,	Adjusted R-squared:  0.01483 
+F-statistic: 13.51 on 1 and 830 DF,  p-value: 0.0002523
+
+>
+> cor.test(x,y)
+
+	Pearson's product-moment correlation
+
+data:  x and y
+t = -3.6758, df = 830, p-value = 0.0002523
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.1928710 -0.0591037
+sample estimates:
+       cor 
+-0.1265627 
+
+>
+```
+
+* Create scatterplots (with regression lines) that show the joint distribution of *x* and *y* and the standardized version of *x* and *y*. Summarize the relationship that you see between *x* and *y* based on the information in the scatterplots.
+
+<p align="center">
+<img src="/gfiles/scplots.png" width="600px">
+</p>
+
+- The association and the inference about the association are the same between the plots.
+- The measurement scales differ, but the substantive conclusions of the 2 analyses are the same.
