@@ -4550,3 +4550,197 @@ boxplot(y~x)
 <p align="center">
 <img src="/gfiles/scboxplot.png" width="600px">
 </p>
+
+3/3/25 Problem 2:  Consider this N = 18 dataset with independent variable, x, and dependent variable y. There is also an random error-contaminated version of x called xs. Estimate linear regression models, one with x and the other with xs. Compare and interpret the results from each estimation.
+
+```Rout
+> x <- c(6.5,9.5,8.0,7.3,6.8,8.9,6.9,6.8,6.8,7.3,6.2,7.1,7.7,6.9,6.2,6.1,7.9,9.0)
+> xs <- c(7.4,7.9,7.4,7.3,6.1,7.9,6.4,7.4,7.1,6.4,7.0,5.5,8.2,5.6,6.8,5.6,6.9,8.2)
+> y <- c(17.9,22.9,17.8,18.4,17.8,21.6,19.5,21.2,19.8,24.0,17.2,19.1,17.4,20.0,
++   15.8,18.2,17.1,21.5)
+> d <- data.frame(x,xs,y)
+> d
+     x  xs    y
+1  6.5 7.4 17.9
+2  9.5 7.9 22.9
+3  8.0 7.4 17.8
+4  7.3 7.3 18.4
+5  6.8 6.1 17.8
+6  8.9 7.9 21.6
+7  6.9 6.4 19.5
+8  6.8 7.4 21.2
+9  6.8 7.1 19.8
+10 7.3 6.4 24.0
+11 6.2 7.0 17.2
+12 7.1 5.5 19.1
+13 7.7 8.2 17.4
+14 6.9 5.6 20.0
+15 6.2 6.8 15.8
+16 6.1 5.6 18.2
+17 7.9 6.9 17.1
+18 9.0 8.2 21.5
+>
+```
+
+* Here are the regression results:
+
+```Rout
+> m1 <- lm(y~1+x)
+> m2 <- lm(y~1+xs)
+> summary(m1)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.8678 -0.8610  0.1543  0.9551  4.7441 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)   
+(Intercept)  10.5952     3.4652   3.058  0.00752 **
+x             1.1864     0.4688   2.531  0.02226 * 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.927 on 16 degrees of freedom
+Multiple R-squared:  0.2858,	Adjusted R-squared:  0.2412 
+F-statistic: 6.404 on 1 and 16 DF,  p-value: 0.02226
+
+> summary(m2)
+
+Call:
+lm(formula = y ~ 1 + xs)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4275 -1.6480 -0.0662  1.5907  4.9361 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)   
+(Intercept)  16.4458     4.4070   3.732  0.00182 **
+xs            0.4091     0.6295   0.650  0.52501   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.251 on 16 degrees of freedom
+Multiple R-squared:  0.02572,	Adjusted R-squared:  -0.03518 
+F-statistic: 0.4223 on 1 and 16 DF,  p-value: 0.525
+
+>
+```
+
+* Both slope coefficients are positive but the coefficient for *xs* is smaller (attenuated) in comparison to the coefficient for *x*. Remember that in this dataset, xs = x+e where e is an error term with a mean of zero (meaning that positive errors tend to cancel out negative errors).
+
+3/3/25 Problem 3: Using the following N = 15 dataset (which includes *x*, *y*, and an error-contaminated version of *y* called *ys), estimate separate regressions for *y* and *ys*. Then, create scatterplots with regression lines for each analysis. Compare the results across the two analyses. What do you conclude about the effect of measurement error in *y*?
+
+```Rout
+     x    y   ys
+1  6.4 17.7 16.6
+2  7.0 18.0 17.1
+3  5.5 18.0 18.7
+4  5.6 15.8 14.2
+5  8.2 18.8 17.9
+6  6.1 16.2 16.7
+7  8.3 19.9 19.7
+8  7.6 18.4 19.9
+9  7.0 19.0 18.4
+10 6.0 17.3 17.0
+11 6.2 17.5 15.9
+12 6.7 17.7 17.7
+13 5.5 15.4 16.3
+14 6.7 17.7 16.8
+15 5.9 15.5 16.4
+```
+
+* Here is the output:
+
+```Rout
+> x <- c(6.4,7.0,5.5,5.6,8.2,6.1,8.3,7.6,7.0,6.0,6.2,6.7,5.5,6.7,5.9)
+> y <- c(17.7,18.0,18.0,15.8,18.8,16.2,19.9,18.4,19.0,17.3,17.5,17.7,15.4,17.7,15.5)
+> ys <- c(16.6,17.1,18.7,14.2,17.9,16.7,19.7,19.9,18.4,17.0,15.9,17.7,16.3,16.8,16.4)
+> d <- data.frame(x,y,ys)
+> d
+     x    y   ys
+1  6.4 17.7 16.6
+2  7.0 18.0 17.1
+3  5.5 18.0 18.7
+4  5.6 15.8 14.2
+5  8.2 18.8 17.9
+6  6.1 16.2 16.7
+7  8.3 19.9 19.7
+8  7.6 18.4 19.9
+9  7.0 19.0 18.4
+10 6.0 17.3 17.0
+11 6.2 17.5 15.9
+12 6.7 17.7 17.7
+13 5.5 15.4 16.3
+14 6.7 17.7 16.8
+15 5.9 15.5 16.4
+>
+```
+
+* Here are the regressions:
+
+```Rout
+> m1 <- lm(y~1+x)
+> m2 <- lm(ys~1+x)
+> summary(m1)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.22880 -0.60213  0.03253  0.40187  1.74053 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   9.8061     1.5649   6.266  2.9e-05 ***
+x             1.1733     0.2357   4.977 0.000253 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.7996 on 13 degrees of freedom
+Multiple R-squared:  0.6558,	Adjusted R-squared:  0.6293 
+F-statistic: 24.77 on 1 and 13 DF,  p-value: 0.000253
+
+> summary(m2)
+
+Call:
+lm(formula = ys ~ 1 + x)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.02557 -0.62901 -0.06694  0.44616  2.58271 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  10.1621     2.2597   4.497  0.00060 ***
+x             1.0828     0.3404   3.181  0.00723 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.155 on 13 degrees of freedom
+Multiple R-squared:  0.4376,	Adjusted R-squared:  0.3944 
+F-statistic: 10.12 on 1 and 13 DF,  p-value: 0.007232
+
+>
+```
+
+* Here is the code to generate the 2 scatterplots:
+
+```Rout
+par(mfrow=c(1,2))
+plot(x=x,y=y,pch=19)
+abline(m1,lty=1,lwd=3,col="blue")
+plot(x=x,y=ys,pch=19)
+abline(m2,lty=1,lwd=3,col="blue")
+```
+
+<p align="center">
+<img src="/gfiles/ysplots.png" width="600px">
+</p>
+
+* Despite some differences in the appearances of the two plots (in terms of *ys* versus *y*, not *x*), the substantive conclusions from the two scatterplots are virtually identical.
+* This serves as an example of how *y* measured with random error reduces efficiency but does not induce bias (compared to estimation with the actual true *y*).
