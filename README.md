@@ -5017,3 +5017,235 @@ abline(v=seq(from=0,to=8,by=0.5),lty=3,lwd=0.8)
 <p align="center">
 <img src="/gfiles/ih-scat.png" width="600px">
 </p>
+
+* Ideally, the points in the residual plot should be randomly scattered throughout the plotspace.
+* We see that is not the case here as it appears the dispersion of the residuals is greater for small values of *i*.
+* Next, we calculate the (root) mean square error and the standard errors of the parameter estimates:
+
+```R
+# calculate (root) mean square error of the regression (Sheather, p. 20)
+
+N <- 50
+sigsq.pt1 <- 1/(N-2)
+sigsq.pt2 <- sum(r^2)
+sigsq <- sigsq.pt1*sigsq.pt2
+sigsq
+sig <- sqrt(sigsq)
+sig
+
+# calculate standard error of the intercept (Sheather, sec. 2.2.3)
+
+seb0.pt1 <- 1/N
+seb0.pt2 <- mean(i)^2
+seb0.pt3 <- sum((i-mean(i))^2)
+seb0 <- sig*sqrt(seb0.pt1+seb0.pt2/seb0.pt3)
+seb0
+
+# calculate standard error of the slope (Sheather, sec. 2.2.2)
+
+seb1.pt1 <- sum((i-mean(i))^2)
+seb1.pt2 <- sqrt(seb1.pt1)
+seb1 <- sig/seb1.pt2
+seb1
+```
+
+* And the results are:
+
+```Rout
+> N <- 50
+> sigsq.pt1 <- 1/(N-2)
+> sigsq.pt2 <- sum(r^2)
+> sigsq <- sigsq.pt1*sigsq.pt2
+> sigsq
+[1] 9.31581
+> sig <- sqrt(sigsq)
+> sig
+[1] 3.052181
+> 
+> # calculate standard error of the intercept (Sheather, sec. 2.2.3)
+> 
+> seb0.pt1 <- 1/N
+> seb0.pt2 <- mean(i)^2
+> seb0.pt3 <- sum((i-mean(i))^2)
+> seb0 <- sig*sqrt(seb0.pt1+seb0.pt2/seb0.pt3)
+> seb0
+[1] 0.8407883
+> 
+> # calculate standard error of the slope (Sheather, sec. 2.2.2)
+> 
+> seb1.pt1 <- sum((i-mean(i))^2)
+> seb1.pt2 <- sqrt(seb1.pt1)
+> seb1 <- sig/seb1.pt2
+> seb1
+[1] 0.2954161
+>
+```
+
+* Once we have the standard errors, we can calculate our *t*-statistics:
+
+```R
+# calculate t-ratios and significance tests
+
+t.b0 <- b0/seb0
+t.b0
+
+t.b1 <- b1/seb1
+t.b1
+```
+
+* The results are:
+
+```Rout
+> t.b0 <- b0/seb0
+> t.b0
+[1] 6.853308
+> 
+> t.b1 <- b1/seb1
+> t.b1
+[1] -0.4973022
+>
+```
+
+* To interpret these *t*-statistics, we draw a large number of random *t*-values from a *t*-distribution with 50-2=48 degrees of freedom.
+* We will focus on the *t*-statistic for the slope in this example.
+* This *t*-distribution gives us the expected sampling distribution of test statistics when the true population *t*-value (or slope) is equal to zero.
+
+```R
+# simulate tdistribution assuming a zero slope
+
+tdist <- rt(n=1e7,df=N-2)
+pvalue <- mean(ifelse(tdist<t.b1 | tdist>(-1*t.b1),1,0))
+pvalue
+```
+
+* Now, with this simulated *t*-distribution, we can estimate the probability that we would get a *t*-statistic at least as large (two-tailed) as the one we got in our sample if the true population *t*-statistic (or slope) is equal to zero. This probability is called a *p*-value.
+* Another way to say this is that we want to estimate p(t-stat in our sample is less than -0.497 or greater than 0.497|population t-stat=0).
+
+```Rout
+> pvalue <- mean(ifelse(tdist<t.b1 | tdist>(-1*t.b1),1,0))
+> pvalue
+[1] 0.6212581
+```
+
+* This tells us that it would not be unusual to get a sample *t*-statistic (or slope) at least as large as this one (two-tailed) is if the true population *t*-statistic (or slope) is equal to zero. We, therefore, fail to reject the hypothesis that the true population *t*-statistic (or slope) is equal to zero.
+* Now, let's estimate the linear regression using the lm() function and save the key quantities from the analysis:
+
+```R
+# estimate linear regression with lm() function
+
+m  <- lm(h~1+i)
+summary(m)
+
+# extract parameter estimates (using lm() output)
+
+int <- coef(m)[1]
+int
+slope <- coef(m)[2]
+slope
+sig <- sigma(m)
+sig
+
+# extract standard errors (using lm() output)
+
+vcov(m)
+se.b0 <- sqrt(vcov(m)[1,1])
+se.b0
+se.b1 <- sqrt(vcov(m)[2,2])
+se.b1
+```
+
+* Here are the results (please verify they are the same as what we calculated above; particularly the p-value for the slope coefficient):
+
+```Rout
+> # estimate linear regression with lm() function
+> 
+> m  <- lm(h~1+i)
+> summary(m)
+
+Call:
+lm(formula = h ~ 1 + i)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.2130 -2.6463 -0.1668  1.8877  7.3556 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   5.7622     0.8408   6.853 1.23e-08 ***
+i            -0.1469     0.2954  -0.497    0.621    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.052 on 48 degrees of freedom
+Multiple R-squared:  0.005126,	Adjusted R-squared:  -0.0156 
+F-statistic: 0.2473 on 1 and 48 DF,  p-value: 0.6212
+
+> 
+> # extract parameter estimates (using lm() output)
+> 
+> int <- coef(m)[1]
+> int
+(Intercept) 
+   5.762181 
+> slope <- coef(m)[2]
+> slope
+         i 
+-0.1469111 
+> sig <- sigma(m)
+> sig
+[1] 3.052181
+> 
+> # extract standard errors (using lm() output)
+> 
+> vcov(m)
+            (Intercept)           i
+(Intercept)   0.7069250 -0.21315223
+i            -0.2131522  0.08727066
+> se.b0 <- sqrt(vcov(m)[1,1])
+> se.b0
+[1] 0.8407883
+> se.b1 <- sqrt(vcov(m)[2,2])
+> se.b1
+[1] 0.2954161
+>
+```
+
+* With this information in hand, we can now calculate confidence intervals for the intercept and slope, respectively.
+
+```R
+# 93% confidence interval for the intercept (Sheather, sec. 2.2.3)
+
+int+qt(0.035,df=N-2)*se.b0
+int+qt(1-0.035,df=N-2)*se.b0
+
+# 88% confidence interval for the slope (Sheather, sec. 2.2.2)
+
+slope+qt(0.06,df=N-2)*se.b1
+slope+qt(1-0.06,df=N-2)*se.b1
+```
+
+* And we get the following results:
+
+```Rout
+> # 93% confidence interval for the intercept (Sheather, sec. 2.2.3)
+> 
+> int+qt(0.035,df=N-2)*se.b0
+(Intercept) 
+   4.203997 
+> int+qt(1-0.035,df=N-2)*se.b0
+(Intercept) 
+   7.320364 
+> 
+> # 88% confidence interval for the slope (Sheather, sec. 2.2.2)
+> 
+> slope+qt(0.06,df=N-2)*se.b1
+         i 
+-0.6145403 
+> slope+qt(1-0.06,df=N-2)*se.b1
+        i 
+0.3207182 
+>
+```
+
+* This tells us that the 93% confidence interval for the intercept *does not* include zero.
+* But the 88% confidence interval for the slope does include zero (which is consistent with our decision above when we failed to reject Ho).
