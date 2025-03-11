@@ -4409,3 +4409,144 @@ F-statistic: 0.4258 on 1 and 307 DF,  p-value: 0.5146
 </p>
 
 The association and the inference about the association are the same between the plots; the measurement scales differ, but the substantive conclusions of the 2 analyses are the same.
+
+3/3/25 Problem 1: Enter the following dataset (*x* and *y*) into R:
+
+```Rout
+> d
+   x    y
+1  0  8.1
+2  0 10.6
+3  0  9.4
+4  0  9.1
+5  0 11.6
+6  0  9.6
+7  0 11.3
+8  1 10.0
+9  1 10.8
+10 1 10.9
+11 1 12.0
+12 1 12.6
+13 1 12.1
+14 1 10.9
+>
+```
+
+* Here is the output:
+
+```Rout
+> x <- c(rep(0,7),rep(1,7))
+> y <- c(8.1,10.6,9.4,9.1,11.6,9.6,11.3,
++   10.0,10.8,10.9,12.0,12.6,12.1,10.9)
+>
+> d
+> d
+   x    y
+1  0  8.1
+2  0 10.6
+3  0  9.4
+4  0  9.1
+5  0 11.6
+6  0  9.6
+7  0 11.3
+8  1 10.0
+9  1 10.8
+10 1 10.9
+11 1 12.0
+12 1 12.6
+13 1 12.1
+14 1 10.9
+> 
+```
+
+* estimate a linear regression model where *x* is the independent variable and *y* is the outcome variable.
+
+```Rout
+> M <- lm(y~1+x)
+> summary(M)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.8571 -0.5500 -0.3929  0.7464  1.6429 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   9.9571     0.4171  23.874 1.75e-11 ***
+x             1.3714     0.5898   2.325   0.0384 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.103 on 12 degrees of freedom
+Multiple R-squared:  0.3106,	Adjusted R-squared:  0.2531 
+F-statistic: 5.406 on 1 and 12 DF,  p-value: 0.03841
+
+>
+```
+
+
+* use the *t*-test function (with equal variances) to test the hypothesis that the population treatment effect is equal to 0.
+
+```Rout
+> t.test(y~x,data=d,equal.variance=T)
+
+	Welch Two Sample t-test
+
+data:  y by x
+t = -2.3252, df = 10.976, p-value = 0.04026
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -2.66996615 -0.07289099
+sample estimates:
+mean in group 0 mean in group 1 
+       9.957143       11.328571 
+
+>
+```
+
+* calculate the E(y|x=1) and E(y|x=0) (the predicted values of *y* when *x* is equal to 0 and 1, respectively).
+
+```Rout
+> d0 <- subset(d,x==0)
+> d1 <- subset(d,x==1)
+> mean(d0$y)
+[1] 9.957143
+> mean(d1$y)
+[1] 11.32857
+>
+```
+
+or, equivalently,
+
+```Rout
+> eyx0 <- 9.9571
+> eyx0
+[1] 9.9571
+> eyx1 <- 9.9571+1.3714
+> eyx1
+[1] 11.3285
+>
+```
+
+* calculate the difference between the expected values and verify that the difference is equal to the regression coefficient.
+
+```Rout
+> eyx1-eyx0
+[1] 1.3714
+> coef(M)[2]
+       x 
+1.371429 
+>
+```
+
+* create a boxplot showing the distribution of *y* for each level of *x*.
+
+```Rout
+boxplot(y~x)
+```
+
+<p align="center">
+<img src="/gfiles/scboxplot.png" width="600px">
+</p>
