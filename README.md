@@ -4825,6 +4825,7 @@ lines(density(h),lty=1,lwd=2,col="red")
 48  west virginia   99   32  1805832    4999  3000   98   39  1792147
 49      wisconsin  197   61  5813568   80000 15000  209   52  5822434
 50        wyoming   19   NA   577737    5000  3000   21   NA   578759
+
        i19 moe19  h21  u21      p21     i21 moe21  h22  u22      p22
 1    60000 10000  750   89  5039877   60000 10000  702   70  5074296
 2    10000  5000   48   31   732673    5000  5000   74   31   733583
@@ -4876,6 +4877,7 @@ lines(density(h),lty=1,lwd=2,col="red")
 48    4999  3000  114   21  1782959    4999  3000  112   20  1775156
 49   75000 15000  345   51  5895908   80000 15000  328   81  5892539
 50    5000  3000   15   NA   578803    4999  3000   15   NA   581381
+
        i22 moe22
 1    65000 10000
 2    10000  5000
@@ -4944,7 +4946,74 @@ lines(density(h),lty=1,lwd=2,col="red")
 >
 ```
 
-
 <p align="center">
 <img src="/gfiles/ih-hist.png" width="600px">
+</p>
+
+* Now, we will use our formulas to calculate the intercept and slope estimates (Sheather, pp. 18-19):
+
+```
+b1pt1 <- i-mean(i)
+b1pt2 <- h-mean(h)
+b1.num <- sum(b1pt1*b1pt2)
+b1.pt3 <- (i-mean(i))^2
+b1.den <- sum(b1.pt3)
+b1 <- b1.num/b1.den
+b1
+b0 <- mean(h)-b1*mean(i)
+b0
+```
+
+* Here are the estimates:
+
+```Rout
+> b1pt1 <- i-mean(i)
+> b1pt2 <- h-mean(h)
+> b1.num <- sum(b1pt1*b1pt2)
+> b1.pt3 <- (i-mean(i))^2
+> b1.den <- sum(b1.pt3)
+> b1 <- b1.num/b1.den
+> b1
+[1] -0.1469111
+> b0 <- mean(h)-b1*mean(i)
+> b0
+[1] 5.762181
+>
+```
+
+* Now, we calculate predicted values and residuals (Sheather, sec. 2.1):
+
+```R
+yp <- b0+b1*i
+r <- h-yp
+```
+
+* With these in hand, we can create a scatterplot and a residual plot (see below):
+
+```R
+par(mfrow=c(1,2))
+
+# create a scatterplot with a regression line
+
+plot(x=i,y=h,pch=19,xlim=c(0,8),ylim=c(0,14),
+  xlab="% of Population Classified as Undocumented Immigrants",
+  ylab="# of Homicides per 100,000 Population")
+abline(a=b0,b=b1,lty=1,lwd=3,col="darkgreen")
+abline(h=seq(from=0,to=14,by=0.5),lty=3,lwd=0.8)
+abline(v=seq(from=0,to=8,by=0.5),lty=3,lwd=0.8)
+
+# create a residual plot with a horizontal zero line
+
+plot(x=i,y=r,pch=19,xlim=c(0,8),
+  xlab="% of Population Classified as Undocumented Immigrants",
+  ylab="homicide rate - predicted(homicide rate)")
+abline(h=0,lty=1,lwd=3,col="darkgreen")
+abline(h=seq(from=-4,to=7,by=0.5),lty=3,lwd=0.8)
+abline(v=seq(from=0,to=8,by=0.5),lty=3,lwd=0.8)
+```
+
+* Here are the results:
+
+<p align="center">
+<img src="/gfiles/ih-scat.png" width="600px">
 </p>
