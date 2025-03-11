@@ -4232,3 +4232,180 @@ sample estimates:
 
 - The association and the inference about the association are the same between the plots.
 - The measurement scales differ, but the substantive conclusions of the 2 analyses are the same.
+
+2/24/25: Problem 2 - Read in the following dataset:
+
+```R
+set.seed(397)
+x <- rnorm(n=309,mean=7,sd=2)
+y <- 3+0*x+rnorm(n=309,mean=0,sd=1.5)
+d <- data.frame(x,y)
+head(d,n=12)
+```
+
+* Here is the output:
+
+```Rout
+> set.seed(397)
+> x <- rnorm(n=309,mean=7,sd=2)
+> y <- 3+0*x+rnorm(n=309,mean=0,sd=1.5)
+> d <- data.frame(x,y)
+> head(d,n=12)
+          x        y
+1  4.468167 4.222566
+2  6.579566 1.073933
+3  6.559347 2.933832
+4  6.577238 3.701537
+5  4.679728 3.658967
+6  7.744755 2.987424
+7  5.752921 3.117328
+8  5.878631 1.994634
+9  6.255906 2.891284
+10 6.820775 2.620848
+11 8.088127 4.287889
+12 5.140359 1.413774
+>
+```
+
+* Convert x and y into z-score form.
+
+```Rout
+> zx <- (x-mean(x))/sd(x)
+> zy <- (y-mean(y))/sd(y)
+> mean(zx)
+[1] -1.552606e-16
+> sd(zx)
+[1] 1
+> mean(zy)
+[1] -3.485166e-17
+> sd(zy)
+[1] 1
+>
+```
+
+* Calculate the Pearson correlation coefficient summarizing the linear relationship between *x* and *y*.
+
+```Rout
+> cor(x,y)
+[1] 0.03721465
+>
+```
+
+* Calculate the Pearson correlation coefficient summarizing the linear relationship between the standardized versions of x and y.
+
+```Rout
+> cor(zx,zy)
+[1] 0.03721465
+>
+```
+
+* Estimate a linear regression where the outcome is the standardized version of y and the independent variable is the standardized version of x.
+
+```Rout
+> m <- lm(zy~1+zx)
+> summary(m)
+
+Call:
+lm(formula = zy ~ 1 + zx)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.48932 -0.72501 -0.02424  0.70785  2.90834 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)
+(Intercept) -6.014e-17  5.694e-02   0.000    1.000
+zx           3.721e-02  5.703e-02   0.653    0.515
+
+Residual standard error: 1.001 on 307 degrees of freedom
+Multiple R-squared:  0.001385,	Adjusted R-squared:  -0.001868 
+F-statistic: 0.4258 on 1 and 307 DF,  p-value: 0.5146
+
+>
+```
+
+* Compare the slope coefficient from the linear regression to the correlation coefficient; what do you conclude?
+
+The slope and correlation coefficient are the same.
+
+* Create a table where you show how the expected value of the standardized y varies with the standardized x.
+
+```Rout
+> min(zx)
+[1] -3.074007
+> max(zx)
+[1] 2.707538
+>
+> xseq <- -3:3
+> yfit <- 0+0.03721465*xseq
+> data.frame(xseq,yfit)
+  xseq        yfit
+1   -3 -0.11164395
+2   -2 -0.07442930
+3   -1 -0.03721465
+4    0  0.00000000
+5    1  0.03721465
+6    2  0.07442930
+7    3  0.11164395
+>
+```
+
+* Test the hypothesis that the population correlation coefficient/slope is equal to zero at the p < .05 significance level. What evidence do you cite to support your conclusion?
+
+```Rout
+> cor.test(zx,zy)
+
+	Pearson's product-moment correlation
+
+data:  zx and zy
+t = 0.65251, df = 307, p-value = 0.5146
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.07467258  0.14817655
+sample estimates:
+       cor 
+0.03721465 
+
+> qt(p=0.025,df=307-2)
+[1] -1.967772
+> qt(p=0.975,df=307-2)
+[1] 1.967772
+>
+```
+
+Our obtained t-value of 0.653 is not in the critical region (i.e., it is between the 2 critical region boundaries above (-1.968,1.968), we fail to reject the hypothesis that the population correlation coefficient/slope is equal to zero. Also, the correlation coefficient confidence interval, [-0.075,0.148] includes zero so from that vantage point the evidence is also not strong enough to reject the null hypothesis.
+
+* Estimate a linear regression and correlation using the unstandardized versions of x and y.
+
+```Rout
+> mu <- lm(y~1+x)
+> summary(mu)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.7281 -1.0858 -0.0363  1.0601  4.3556 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.83808    0.30971   9.164   <2e-16 ***
+x            0.02794    0.04281   0.653    0.515    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.499 on 307 degrees of freedom
+Multiple R-squared:  0.001385,	Adjusted R-squared:  -0.001868 
+F-statistic: 0.4258 on 1 and 307 DF,  p-value: 0.5146
+
+>
+```
+
+* Create scatterplots (with regression lines) that show the joint distribution of x and y and the standardized version of x and y. Summarize the relationship that you see between x and y based on the information in the scatterplots.
+
+<p align="center">
+<img src="/gfiles/scplots.png" width="600px">
+</p>
+
+The association and the inference about the association are the same between the plots; the measurement scales differ, but the substantive conclusions of the 2 analyses are the same.
