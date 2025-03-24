@@ -6013,6 +6013,8 @@ i <- d$i18/d$p18*100
 
 M <- lm(h~1+i)
 summary(M)
+library(lmtest)
+bptest(M)
 library(sandwich)
 H <- vcovHC(M)
 a <- coef(M)[1]
@@ -6061,6 +6063,22 @@ Residual standard error: 3.052 on 48 degrees of freedom
 Multiple R-squared:  0.005126,	Adjusted R-squared:  -0.0156 
 F-statistic: 0.2473 on 1 and 48 DF,  p-value: 0.6212
 
+> library(lmtest)
+Loading required package: zoo
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+> bptest(M)
+
+	studentized Breusch-Pagan test
+
+data:  M
+BP = 3.8473, df = 1, p-value = 0.04983
+
 > library(sandwich)
 > H <- vcovHC(M)
 > a <- coef(M)[1]
@@ -6077,5 +6095,7 @@ F-statistic: 0.2473 on 1 and 48 DF,  p-value: 0.6212
 > b/b.se
          i 
 -0.5009522 
->
+> 
 ```
+
+* Based on these results, it looks like heteroscedasticity is a legitimate concern (significant bptest result and visual evidence of unequal error variance) yet adjustments for it did not have a large effect on our substantive conclusions.
