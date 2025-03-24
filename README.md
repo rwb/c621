@@ -5289,3 +5289,195 @@ Part II: For this assignment, you will be using the homicide dataset I sent at t
 12. Using your results in #11, what is E(h|i=5)-E(h|i=4)? How does this number compare to the slope coefficient you estimated in #8 and #11?
 13. What is the *p*-value for the slope *t*-statistic you estimated in #9? How does it compare to the *p*-value for the slope coefficient on the lm() printout in #10 above?
 14. Create a residual plot for your 2019 regression. Do you see anything that concerns you?
+
+### Lesson 8 - Monday 3/24/25
+
+* Reminder: Assignment #2 is due tomorrow at 11:59pm on ELMS.
+* Tonight, we finish topic 15 and also cover topics 16 and 17.
+
+#### Topic 15: Residuals/Prediction Errors (Continued)
+
+* We begin by reading in the ih.csv dataset I sent 2 weeks ago.
+* Here is the R code to read the dataset:
+
+```R
+d <- read.csv(file="ih.csv",header=T,sep=",")
+
+sum(d$p18)
+sum(d$h18)
+
+state <- d$state
+
+h <- (d$h18/d$p18)*100000
+i <- d$i18/d$p18*100
+h
+i
+```
+
+* Here is the output:
+
+```Rout
+> d <- read.csv(file="ih.csv",header=T,sep=",")
+> 
+> sum(d$p18)
+[1] 326464979
+> sum(d$h18)
+[1] 18448
+> 
+> state <- d$state
+> 
+> h <- (d$h18/d$p18)*100000
+> i <- d$i18/d$p18*100
+> h
+ [1] 11.456931  7.593859  5.730902  8.527370  4.671734  4.722974
+ [7]  2.435157  5.479900  6.192685  7.509880  2.815928  2.052208
+[13]  7.613169  6.978609  2.503054  5.289361  5.818635 12.897057
+[19]  1.494317  8.737790  2.144260  6.072481  2.174231 12.455927
+[25] 11.213668  4.047802  2.073325  7.480906  1.843035  3.277761
+[31]  9.926373  3.003755  6.019095  3.026009  6.398937  6.644554
+[37]  2.553265  6.191897  1.702425  9.283796  2.947061  9.217121
+[43]  5.285375  2.087877  2.075686  4.836995  3.503375  5.482238
+[49]  3.388625  3.288694
+> i
+ [1] 1.2275283 1.3560462 3.8345451 2.3226299 4.9295897 2.9847790
+ [7] 3.9186434 3.1018300 3.7559876 3.5648167 3.1679187 2.2802313
+[13] 3.1394513 1.6437837 1.7426322 2.5759873 1.0070714 1.5021530
+[19] 0.3735046 4.5509322 3.9842663 1.2004904 1.5148332 0.8370919
+[25] 0.9793597 0.4705805 2.8508222 6.9206615 1.1058212 4.7707139
+[31] 2.6247621 3.0702773 3.1299296 0.6578281 0.9410201 2.2824803
+[37] 2.6248517 1.4835567 3.3102718 1.7702154 1.1334848 1.9202335
+[43] 5.5745545 3.1634508 0.7981811 3.5220838 3.9811078 0.2768253
+[49] 1.3760912 0.8654457
+>
+```
+
+* Now, let's estimate a linear regression model (regressing h on i):
+
+```R
+M <- lm(h~1+i)
+summary(M)
+a <- coef(M)[1]
+a
+b <- coef(M)[2]
+b
+s <- sigma(M)
+s
+```
+
+* Here is our output:
+
+```Rout
+> M <- lm(h~1+i)
+> summary(M)
+
+Call:
+lm(formula = h ~ 1 + i)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.2130 -2.6463 -0.1668  1.8877  7.3556 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   5.7622     0.8408   6.853 1.23e-08 ***
+i            -0.1469     0.2954  -0.497    0.621    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.052 on 48 degrees of freedom
+Multiple R-squared:  0.005126,	Adjusted R-squared:  -0.0156 
+F-statistic: 0.2473 on 1 and 48 DF,  p-value: 0.6212
+
+> a <- coef(M)[1]
+> a
+(Intercept) 
+   5.762181 
+> b <- coef(M)[2]
+> b
+         i 
+-0.1469111 
+> s <- sigma(M)
+> s
+[1] 3.052181
+>
+```
+
+* Estimate residuals:
+
+```R
+yp <- a+b*i
+r <- h-yp
+r
+residuals(M)
+```
+
+* Here are the residual calculations:
+
+```Rout
+> yp <- a+b*i
+> r <- h-yp
+> r
+ [1]  5.87508746  2.03089606  0.53205819  3.10640887 -0.36623539
+ [6] -0.60070992 -2.75133184  0.17341190  0.98229978  2.27141064
+[11] -2.48085082 -3.37498148  2.31220864  1.45791814 -3.00311535
+[16] -0.09437917  0.20440400  7.35555862 -4.21299181  3.64419129
+[21] -3.03258834  0.48666506 -3.36540400  6.81672430  5.59536610
+[26] -1.64524568 -3.27003832  2.73544647 -3.75668819 -1.78354914
+[31]  4.54979877 -2.30736857  0.71673589 -2.63952944  0.77500214
+[36]  1.21769440 -2.82329631  0.64766731 -3.57343983  3.78167977
+[41] -2.64859882  3.73704348  0.34215740 -3.20955745 -3.56923335
+[46] -0.40775276 -1.67393723 -0.23927462 -2.17139316 -2.34634368
+> residuals(M)
+          1           2           3           4           5 
+ 5.87508746  2.03089606  0.53205819  3.10640887 -0.36623539 
+          6           7           8           9          10 
+-0.60070992 -2.75133184  0.17341190  0.98229978  2.27141064 
+         11          12          13          14          15 
+-2.48085082 -3.37498148  2.31220864  1.45791814 -3.00311535 
+         16          17          18          19          20 
+-0.09437917  0.20440400  7.35555862 -4.21299181  3.64419129 
+         21          22          23          24          25 
+-3.03258834  0.48666506 -3.36540400  6.81672430  5.59536610 
+         26          27          28          29          30 
+-1.64524568 -3.27003832  2.73544647 -3.75668819 -1.78354914 
+         31          32          33          34          35 
+ 4.54979877 -2.30736857  0.71673589 -2.63952944  0.77500214 
+         36          37          38          39          40 
+ 1.21769440 -2.82329631  0.64766731 -3.57343983  3.78167977 
+         41          42          43          44          45 
+-2.64859882  3.73704348  0.34215740 -3.20955745 -3.56923335 
+         46          47          48          49          50 
+-0.40775276 -1.67393723 -0.23927462 -2.17139316 -2.34634368 
+>
+```
+
+* Now, we create 2 scatterplots:
+
+```R
+# plot 1: joint distribution of i and h
+# plot 2: joint distribution of i and r(h)
+# create a scatterplot with a regression line
+
+par(mfrow=c(1,2))
+plot(x=i,y=h,pch=19,xlim=c(0,8),ylim=c(0,14),
+  xlab="% of Population Classified as Undocumented Immigrants",
+  ylab="# of Homicides per 100,000 Population")
+abline(a=a,b=b,lty=1,lwd=3,col="darkgreen")
+abline(h=seq(from=0,to=14,by=0.5),lty=3,lwd=0.8)
+abline(v=seq(from=0,to=8,by=0.5),lty=3,lwd=0.8)
+
+# create a residual plot with a horizontal zero line
+
+plot(x=i,y=r,pch=19,xlim=c(0,8),
+  xlab="% of Population Classified as Undocumented Immigrants",
+  ylab="homicide rate - predicted(homicide rate)")
+abline(h=0,lty=1,lwd=3,col="darkgreen")
+abline(h=seq(from=-4,to=7,by=0.5),lty=3,lwd=0.8)
+abline(v=seq(from=0,to=8,by=0.5),lty=3,lwd=0.8)
+```
+
+* Here are the plots:
+
+<p align="center">
+<img src="/gfiles/hp1.png" width="600px">
+</p>
