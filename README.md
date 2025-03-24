@@ -5555,7 +5555,7 @@ boxplot(sqrt(abs(sr))~g,names=c("g=0","g=1"))
 which gives us these 2 charts:
 
 <p align="center">
-<img src="/gfiles/hp1.png" width="800px">
+<img src="/gfiles/hp2.png" width="800px">
 </p>
 
 * Now, we can diagnose heteroscedasticity (quantitatively) by:
