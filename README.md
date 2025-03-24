@@ -5557,3 +5557,483 @@ which gives us these 2 charts:
 <p align="center">
 <img src="/gfiles/hp1.png" width="600px">
 </p>
+
+* Now, we can diagnose heteroscedasticity (quantitatively) by:
+
+```R
+hdv <- sqrt(abs(sr))
+hm <- lm(hdv~1+g)
+summary(hm)
+library(lmtest)
+bptest(M)
+```
+
+which gives us the following output:
+
+```Rout
+> hdv <- sqrt(abs(sr))
+> hm <- lm(hdv~1+g)
+> summary(hm)
+
+Call:
+lm(formula = hdv ~ 1 + g)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.12157 -0.23312 -0.00436  0.21736  1.35685 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  0.66719    0.00654  102.01   <2e-16 ***
+g            0.48610    0.01602   30.34   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.327 on 2998 degrees of freedom
+Multiple R-squared:  0.2349,	Adjusted R-squared:  0.2347 
+F-statistic: 920.6 on 1 and 2998 DF,  p-value: < 2.2e-16
+
+> library(lmtest)
+> bptest(M)
+
+	studentized Breusch-Pagan test
+
+data:  M
+BP = 693.15, df = 1, p-value < 2.2e-16
+
+>
+```
+
+* Once we have evidence of heteroscedasticity, one step that is often taken is to estimate White's heteroscedasticity consistent covariance matrix:
+
+```R
+library(sandwich)
+H <- vcovHC(M)
+summary(M)
+a.se <- sqrt(H[1,1])
+a.se
+b.se <- sqrt(H[2,2])
+b.se
+a/a.se
+b/b.se
+```
+
+* which gives us the following output:
+
+```Rout
+> library(sandwich)
+> H <- vcovHC(M)
+> summary(M)
+
+Call:
+lm(formula = y ~ 1 + g)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7899 -0.7083  0.0286  0.7290  8.9911 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 10.02602    0.02854  351.31   <2e-16 ***
+g            1.02545    0.06991   14.67   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.427 on 2998 degrees of freedom
+Multiple R-squared:  0.06697,	Adjusted R-squared:  0.06665 
+F-statistic: 215.2 on 1 and 2998 DF,  p-value: < 2.2e-16
+
+> a.se <- sqrt(H[1,1])
+> a.se
+[1] 0.0190963
+> b.se <- sqrt(H[2,2])
+> b.se
+[1] 0.1254403
+>
+> a/a.se
+(Intercept) 
+   525.0242 
+> b/b.se
+       g 
+8.174799 
+>
+```
+
+* Note that the standard error of the slope is nearly 2x larger after adjusting for heteroscedasticity.
+* How do we know this works or is accurate?
+
+```
+# calculate t-values for a 92% confidence interval
+# so we can check on confidence interval performance
+# for the slope coefficient under repeated sampling
+
+tmult.lcl <- qt(p=0.04,df=3000-2)
+tmult.lcl
+tmult.ucl <- qt(p=0.96,df=3000-2)
+tmult.ucl
+
+bvec <- vector()
+se.bvec <- vector()
+b.lcl <- vector()
+b.ucl <- vector()
+
+for(i in 1:1e4){
+  ys <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
+  Mwh <- lm(ys~1+g)
+  H <- vcovHC(Mwh)
+  bvec[i] <- coef(Mwh)[2]
+  se.bvec[i] <- sqrt(H[2,2])
+  b.lcl[i] <- bvec[i]+tmult.lcl*se.bvec[i]
+  b.ucl[i] <- bvec[i]+tmult.ucl*se.bvec[i]
+  }
+
+mean(bvec)
+sd(bvec)
+mean(se.bvec)
+mean(ifelse(b.lcl<1 & b.ucl>1,1,0))
+```
+
+* Here is our output:
+
+```Rout
+> # calculate t-values for a 92% confidence interval
+> # so we can check on confidence interval performance
+> # for the slope coefficient under repeated sampling
+> 
+> tmult.lcl <- qt(p=0.04,df=3000-2)
+> tmult.lcl
+[1] -1.75128
+> tmult.ucl <- qt(p=0.96,df=3000-2)
+> tmult.ucl
+[1] 1.75128
+> 
+> bvec <- vector()
+> se.bvec <- vector()
+> b.lcl <- vector()
+> b.ucl <- vector()
+> 
+> for(i in 1:1e4){
++   ys <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
++   Mwh <- lm(ys~1+g)
++   H <- vcovHC(Mwh)
++   bvec[i] <- coef(Mwh)[2]
++   se.bvec[i] <- sqrt(H[2,2])
++   b.lcl[i] <- bvec[i]+tmult.lcl*se.bvec[i]
++   b.ucl[i] <- bvec[i]+tmult.ucl*se.bvec[i]
++   }
+> 
+> mean(bvec)
+[1] 1.000479
+> sd(bvec)
+[1] 0.1353162
+> mean(se.bvec)
+[1] 0.1357184
+> mean(ifelse(b.lcl<1 & b.ucl>1,1,0))
+[1] 0.9219
+>
+```
+
+* What would happen if we just used the standard linear model with no adjustment?
+
+```R
+bvec     <- vector()
+se.bvec  <- vector()
+b.lcl    <- vector()
+b.ucl    <- vector()
+
+for(i in 1:1e4){
+  ys <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
+  Ms <- lm(ys~1+g)
+  bvec[i] <- coef(Ms)[2]
+  se.bvec[i] <- sqrt(vcov(Ms)[2,2])
+  b.lcl[i] <- bvec[i]+tmult.lcl*se.bvec[i]
+  b.ucl[i] <- bvec[i]+tmult.ucl*se.bvec[i]
+  }
+
+mean(bvec)
+sd(bvec)
+mean(se.bvec)
+mean(ifelse(b.lcl<1 & b.ucl>1,1,0))
+```
+
+* Here is the (misspecified) output:
+
+```Rout
+> bvec     <- vector()
+> se.bvec  <- vector()
+> b.lcl    <- vector()
+> b.ucl    <- vector()
+> 
+> for(i in 1:1e4){
++   ys <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
++   Ms <- lm(ys~1+g)
++   bvec[i] <- coef(Ms)[2]
++   se.bvec[i] <- sqrt(vcov(Ms)[2,2])
++   b.lcl[i] <- bvec[i]+tmult.lcl*se.bvec[i]
++   b.ucl[i] <- bvec[i]+tmult.ucl*se.bvec[i]
++   }
+> 
+> mean(bvec)
+[1] 0.9993553
+> sd(bvec)
+[1] 0.1351043
+> mean(se.bvec)
+[1] 0.07477787
+> mean(ifelse(b.lcl<1 & b.ucl>1,1,0))
+[1] 0.6662
+>
+```
+
+* We could also use weighted least squares (Sheather Chapter 4).
+* 2 different approaches could be used.
+* Approach 1:
+
+```R
+# calculate weighted least squares estimates
+# of the slope and intercept
+
+wt <- 1/((g*sd(y[g==1])+(1-g)*sd(y[g==0]))^2)
+table(wt)
+
+xbar.wt <- sum(wt*g)/sum(wt)
+ybar.wt <- sum(wt*y)/sum(wt)
+bpt1 <- sum(wt*(g-xbar.wt)*(y-ybar.wt))
+bpt2 <- sum(wt*(g-xbar.wt)^2)
+bw <- bpt1/bpt2
+bw
+aw <- ybar.wt-bw*xbar.wt
+aw
+summary(lm(y~1+g,weights=wt))
+
+bvec <- vector()
+se.bvec <- vector()
+b.lcl <- vector()
+b.ucl <- vector()
+
+for(i in 1:1e4){
+  ys <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
+  wt <- 1/((g*sd(y[g==1])+(1-g)*sd(y[g==0]))^2)  
+  Ms <- lm(ys~1+g,weights=wt)
+  bvec[i] <- coef(Ms)[2]
+  se.bvec[i] <- sqrt(vcov(Ms)[2,2])
+  b.lcl[i] <- bvec[i]+tmult.lcl*se.bvec[i]
+  b.ucl[i] <- bvec[i]+tmult.ucl*se.bvec[i]
+  }
+
+mean(bvec)
+sd(bvec)
+mean(se.bvec)
+mean(ifelse(b.lcl<1 & b.ucl>1,1,0))
+```
+
+* Here is the output for Approach #1:
+
+```Rout
+> # calculate weighted least squares estimates
+> # of the slope and intercept
+> 
+> wt <- 1/((g*sd(y[g==1])+(1-g)*sd(y[g==0]))^2)
+> table(wt)
+wt
+0.130379389246642  1.09732500219079 
+              500              2500 
+> 
+> xbar.wt <- sum(wt*g)/sum(wt)
+> ybar.wt <- sum(wt*y)/sum(wt)
+> bpt1 <- sum(wt*(g-xbar.wt)*(y-ybar.wt))
+> bpt2 <- sum(wt*(g-xbar.wt)^2)
+> bw <- bpt1/bpt2
+> bw
+[1] 1.025449
+> aw <- ybar.wt-bw*xbar.wt
+> aw
+[1] 10.02602
+> summary(lm(y~1+g,weights=wt))
+
+Call:
+lm(formula = y ~ 1 + g, weights = wt)
+
+Weighted Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.2596 -0.6541  0.0234  0.6734  3.5521 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 10.02602    0.01909 525.129  < 2e-16 ***
+g            1.02545    0.12532   8.183 4.05e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1 on 2998 degrees of freedom
+Multiple R-squared:  0.02185,	Adjusted R-squared:  0.02152 
+F-statistic: 66.96 on 1 and 2998 DF,  p-value: 4.052e-16
+
+> 
+> bvec <- vector()
+> se.bvec <- vector()
+> b.lcl <- vector()
+> b.ucl <- vector()
+> 
+> for(i in 1:1e4){
++   ys <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
++   wt <- 1/((g*sd(y[g==1])+(1-g)*sd(y[g==0]))^2)  
++   Ms <- lm(ys~1+g,weights=wt)
++   bvec[i] <- coef(Ms)[2]
++   se.bvec[i] <- sqrt(vcov(Ms)[2,2])
++   b.lcl[i] <- bvec[i]+tmult.lcl*se.bvec[i]
++   b.ucl[i] <- bvec[i]+tmult.ucl*se.bvec[i]
++   }
+> 
+> mean(bvec)
+[1] 1.000876
+> sd(bvec)
+[1] 0.1350008
+> mean(se.bvec)
+[1] 0.1320025
+> mean(ifelse(b.lcl<1 & b.ucl>1,1,0))
+[1] 0.9147
+>
+```
+
+* And here is approach #2:
+
+```R
+bvec <- vector()
+se.bvec <- vector()
+b.lcl <- vector()
+b.ucl <- vector()
+
+for(i in 1:1e4){
+  ys <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
+  Ms <- lm(ys~1+g)
+  rsq <- residuals(Ms)^2
+  vf <- lm(rsq~1+g)
+  vhat <- vf$fitted.values
+  wt <- 1/vhat
+  Mw <- lm(ys~1+g,weights=wt)
+  bvec[i] <- coef(Mw)[2]
+  se.bvec[i] <- sqrt(vcov(Mw)[2,2])
+  b.lcl[i] <- bvec[i]+tmult.lcl*se.bvec[i]
+  b.ucl[i] <- bvec[i]+tmult.ucl*se.bvec[i]
+  }
+
+mean(bvec)
+sd(bvec)
+mean(se.bvec)
+mean(ifelse(b.lcl<1 & b.ucl>1,1,0))
+```
+
+* And the output is:
+
+```Rout
+> bvec <- vector()
+> se.bvec <- vector()
+> b.lcl <- vector()
+> b.ucl <- vector()
+> 
+> for(i in 1:1e4){
++   ys <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
++   Ms <- lm(ys~1+g)
++   rsq <- residuals(Ms)^2
++   vf <- lm(rsq~1+g)
++   vhat <- vf$fitted.values
++   wt <- 1/vhat
++   Mw <- lm(ys~1+g,weights=wt)
++   bvec[i] <- coef(Mw)[2]
++   se.bvec[i] <- sqrt(vcov(Mw)[2,2])
++   b.lcl[i] <- bvec[i]+tmult.lcl*se.bvec[i]
++   b.ucl[i] <- bvec[i]+tmult.ucl*se.bvec[i]
++   }
+> 
+> mean(bvec)
+[1] 0.9991085
+> sd(bvec)
+[1] 0.1350936
+> mean(se.bvec)
+[1] 0.1354713
+> mean(ifelse(b.lcl<1 & b.ucl>1,1,0))
+[1] 0.9223
+>
+```
+
+* Let's go back to our immigration/homicide dataset:
+
+```R
+d <- read.csv(file="ih.csv",header=T,sep=",")
+
+sum(d$p18)
+sum(d$h18)
+
+state <- d$state
+
+h <- (d$h18/d$p18)*100000
+i <- d$i18/d$p18*100
+
+M <- lm(h~1+i)
+summary(M)
+library(sandwich)
+H <- vcovHC(M)
+a <- coef(M)[1]
+b <- coef(M)[2]
+a.se <- sqrt(H[1,1])
+a.se
+b.se <- sqrt(H[2,2])
+b.se
+a/a.se
+b/b.se
+```
+
+* Here is our output:
+
+```Rout
+> d <- read.csv(file="ih.csv",header=T,sep=",")
+> 
+> sum(d$p18)
+[1] 326464979
+> sum(d$h18)
+[1] 18448
+> 
+> state <- d$state
+> 
+> h <- (d$h18/d$p18)*100000
+> i <- d$i18/d$p18*100
+> 
+> M <- lm(h~1+i)
+> summary(M)
+
+Call:
+lm(formula = h ~ 1 + i)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.2130 -2.6463 -0.1668  1.8877  7.3556 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   5.7622     0.8408   6.853 1.23e-08 ***
+i            -0.1469     0.2954  -0.497    0.621    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.052 on 48 degrees of freedom
+Multiple R-squared:  0.005126,	Adjusted R-squared:  -0.0156 
+F-statistic: 0.2473 on 1 and 48 DF,  p-value: 0.6212
+
+> library(sandwich)
+> H <- vcovHC(M)
+> a <- coef(M)[1]
+> b <- coef(M)[2]
+> a.se <- sqrt(H[1,1])
+> a.se
+[1] 0.9573978
+> b.se <- sqrt(H[2,2])
+> b.se
+[1] 0.2932637
+> a/a.se
+(Intercept) 
+   6.018586 
+> b/b.se
+         i 
+-0.5009522 
+>
+```
