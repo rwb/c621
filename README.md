@@ -5558,6 +5558,48 @@ which gives us these 2 charts:
 <img src="/gfiles/hp2.png" width="800px">
 </p>
 
+* Calculate a 92% confidence interval for the slope coefficient:
+
+```R
+# calculate t-values for a 92% confidence interval
+# so we can check on confidence interval performance
+# for the slope coefficient under repeated sampling
+
+tmult.lcl <- qt(p=0.04,df=3000-2)
+tmult.lcl
+tmult.ucl <- qt(p=0.96,df=3000-2)
+tmult.ucl
+
+vcov(M)
+se.slope <- sqrt(vcov(M)[2,2])
+b+tmult.lcl*se.slope
+b+tmult.ucl*se.slope
+```
+
+* Here is our output:
+
+```Rout
+> tmult.lcl <- qt(p=0.04,df=3000-2)
+> tmult.lcl
+[1] -1.75128
+> tmult.ucl <- qt(p=0.96,df=3000-2)
+> tmult.ucl
+[1] 1.75128
+> 
+> vcov(M)
+              (Intercept)             g
+(Intercept)  0.0008144961 -0.0008144961
+g           -0.0008144961  0.0048869767
+> se.slope <- sqrt(vcov(M)[2,2])
+> b+tmult.lcl*se.slope
+        g 
+0.9030223 
+> b+tmult.ucl*se.slope
+       g 
+1.147875 
+>
+```
+
 * Now, we can diagnose heteroscedasticity (quantitatively) by:
 
 ```R
