@@ -5479,7 +5479,7 @@ abline(v=seq(from=0,to=8,by=0.5),lty=3,lwd=0.8)
 * Here are the plots:
 
 <p align="center">
-<img src="/gfiles/hp1.png" width="600px">
+<img src="/gfiles/hp1.png" width="800px">
 </p>
 
 * For a properly specified model, we want the residuals to appear randomly scattered about the plotspace.
@@ -5555,7 +5555,7 @@ boxplot(sqrt(abs(sr))~g,names=c("g=0","g=1"))
 which gives us these 2 charts:
 
 <p align="center">
-<img src="/gfiles/hp1.png" width="600px">
+<img src="/gfiles/hp1.png" width="800px">
 </p>
 
 * Now, we can diagnose heteroscedasticity (quantitatively) by:
