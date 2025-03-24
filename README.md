@@ -5481,3 +5481,79 @@ abline(v=seq(from=0,to=8,by=0.5),lty=3,lwd=0.8)
 <p align="center">
 <img src="/gfiles/hp1.png" width="600px">
 </p>
+
+* For a properly specified model, we want the residuals to appear randomly scattered about the plotspace.
+* We definitely don't have that here.
+
+#### Topic 16: Heteroscedasticity
+
+* For the first part of our treatment of heteroscedasticity, we will work with simulated data:
+
+```R
+set.seed(984)
+
+g <- c(rep(0,2500),rep(1,500))
+y <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
+M <- lm(y~1+g)
+summary(M)
+```
+
+* Here is the regression model for a sample of 3000 observations:
+
+```Rout
+> set.seed(984)
+> 
+> g <- c(rep(0,2500),rep(1,500))
+> y <- 10+g+rnorm(n=3000,mean=0,sd=1+2*g)
+> M <- lm(y~1+g)
+> summary(M)
+
+Call:
+lm(formula = y ~ 1 + g)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7899 -0.7083  0.0286  0.7290  8.9911 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 10.02602    0.02854  351.31   <2e-16 ***
+g            1.02545    0.06991   14.67   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.427 on 2998 degrees of freedom
+Multiple R-squared:  0.06697,	Adjusted R-squared:  0.06665 
+F-statistic: 215.2 on 1 and 2998 DF,  p-value: < 2.2e-16
+
+>
+```
+
+* Based on this model, we will do some additional residual calculations (based on Sheather, pp. 56 and 59):
+
+```R
+a <- coef(M)[1]
+b <- coef(M)[2]
+s <- sigma(M)
+yp <- a+b*g
+r <- y-yp
+h1 <- 1/3000
+h2 <- (g-mean(g))^2
+h3 <- sum((g-mean(g))^2)
+h <- h1*(h2/h3)
+sr <- r/(s*sqrt(1-h))
+```
+
+* Let's create 2 boxplots:
+
+```R
+par(mfrow=c(1,2))
+boxplot(y~g,names=c("g=0","g=1"))
+boxplot(sqrt(abs(sr))~g,names=c("g=0","g=1"))
+```
+
+which gives us these 2 charts:
+
+<p align="center">
+<img src="/gfiles/hp1.png" width="600px">
+</p>
