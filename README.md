@@ -5293,7 +5293,7 @@ Part II: For this assignment, you will be using the homicide dataset I sent at t
 ### Lesson 8 - Monday 3/24/25
 
 * Reminder: Assignment #2 is due tomorrow at 11:59pm on ELMS.
-* Tonight, we finish topic 15 and also cover topics 16 and 17.
+* Tonight, we finish topic 15 and also cover topics 16.
 
 #### Topic 15: Residuals/Prediction Errors (Continued)
 
@@ -6099,3 +6099,182 @@ BP = 3.8473, df = 1, p-value = 0.04983
 ```
 
 * Based on these results, it looks like heteroscedasticity is a legitimate concern (significant bptest result and visual evidence of unequal error variance) yet adjustments for it did not have a large effect on our substantive conclusions.
+
+### Lesson 9 - Monday 3/31/25
+
+* Last week, I asked you to look at the 2019 data to investigate heteroscedasticity.
+* Let'w work through that now.
+
+```R
+d <- read.csv(file="ih.csv",header=T,sep=",")
+
+sum(d$p19)
+sum(d$h19)
+
+state <- d$state
+
+h <- (d$h19/d$p19)*100000
+i <- d$i19/d$p19*100
+
+M <- lm(h~1+i)
+summary(M)
+par(mfrow=c(1,2))
+
+# fitted regression line plot
+
+plot(x=i,y=h,pch=19,ylim=c(0,15),xlim=c(0,7))
+abline(M,lty=1,lwd=3,col="darkgreen")
+abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+abline(h=seq(from=0,to=14,by=1),lty=3,lwd=0.8)
+
+# residual plot
+
+plot(x=i,y=residuals(M),pch=19,xlim=c(0,7))
+abline(h=0,lty=1,lwd=3,col="darkgreen")
+abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+abline(h=seq(from=-4,to=8,by=1),lty=3,lwd=0.8)
+
+# heteroscedasticity diagnostics
+
+library(lmtest)
+bptest(M)
+library(sandwich)
+H <- vcovHC(M)
+a <- coef(M)[1]
+b <- coef(M)[2]
+a.se <- sqrt(H[1,1])
+a.se
+b.se <- sqrt(H[2,2])
+b.se
+
+# let's review the original model summary and combine with
+# White's corrected standard errors
+
+summary(M)
+a/a.se
+b/b.se
+```
+
+* Here is our output:
+
+```Rout
+> d <- read.csv(file="ih.csv",header=T,sep=",")
+> 
+> sum(d$p19)
+[1] 327533774
+> sum(d$h19)
+[1] 18760
+> 
+> state <- d$state
+> 
+> h <- (d$h19/d$p19)*100000
+> i <- d$i19/d$p19*100
+> 
+> M <- lm(h~1+i)
+> summary(M)
+
+Call:
+lm(formula = h ~ 1 + i)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.3616 -2.6326 -0.3897  1.8317  8.1135 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   6.1643     0.8957   6.882 1.11e-08 ***
+i            -0.2465     0.3265  -0.755    0.454    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.264 on 48 degrees of freedom
+Multiple R-squared:  0.01174,	Adjusted R-squared:  -0.008847 
+F-statistic: 0.5703 on 1 and 48 DF,  p-value: 0.4538
+
+> par(mfrow=c(1,2))
+> 
+> # fitted regression line plot
+> 
+> plot(x=i,y=h,pch=19,ylim=c(0,15),xlim=c(0,7))
+> abline(M,lty=1,lwd=3,col="darkgreen")
+> abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+> abline(h=seq(from=0,to=14,by=1),lty=3,lwd=0.8)
+> 
+> # residual plot
+> 
+> plot(x=i,y=residuals(M),pch=19,xlim=c(0,7))
+> abline(h=0,lty=1,lwd=3,col="darkgreen")
+> abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+> abline(h=seq(from=-4,to=8,by=1),lty=3,lwd=0.8)
+>
+```
+
+<p align="center">
+<img src="/gfiles/hp2.png" width="800px">
+</p>
+
+* And then, the rest of the output is:
+
+```Rout
+> # heteroscedasticity diagnostics
+> 
+> library(lmtest)
+Loading required package: zoo
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+> bptest(M)
+
+	studentized Breusch-Pagan test
+
+data:  M
+BP = 4.7845, df = 1, p-value = 0.02872
+
+> library(sandwich)
+> H <- vcovHC(M)
+> a <- coef(M)[1]
+> b <- coef(M)[2]
+> a.se <- sqrt(H[1,1])
+> a.se
+[1] 1.010112
+> b.se <- sqrt(H[2,2])
+> b.se
+[1] 0.3008508
+> 
+> # let's review the original model summary and combine with
+> # White's corrected standard errors
+> 
+> summary(M)
+
+Call:
+lm(formula = h ~ 1 + i)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.3616 -2.6326 -0.3897  1.8317  8.1135 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   6.1643     0.8957   6.882 1.11e-08 ***
+i            -0.2465     0.3265  -0.755    0.454    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.264 on 48 degrees of freedom
+Multiple R-squared:  0.01174,	Adjusted R-squared:  -0.008847 
+F-statistic: 0.5703 on 1 and 48 DF,  p-value: 0.4538
+
+> a/a.se
+(Intercept) 
+    6.10262 
+> b/b.se
+         i 
+-0.8194828 
+>
+```
+
+* So, we do have evidence of heteroscedasticity; after correcting for it, the standard error of the slope coefficient decreases slightly.
