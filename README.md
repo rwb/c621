@@ -6352,3 +6352,106 @@ b+tmult.ucl*sqrt(H[2,2])
 
 * In both cases, the confidence interval for the slope includes zero.
 * However, the width of the corrected confidence interval is 0.1627909-(-0.6558751) = 0.818666 while the width of the uncorrected confidence interval is 0.1976507-(-0.6907349) = 0.8883856; so the corrected confidence interval is about 7.8% narrower, ((0.818666-0.8883856)/0.8883856)*100 = -7.847898.
+
+#### Topic 17: Influential Observations
+
+* Let's begin by estimating the one-variable linear regression model, using the 2018 data:
+
+```R
+d <- read.csv(file="ih.csv",header=T,sep=",")
+
+sum(d$p18)
+sum(d$h18)
+
+state <- d$state
+
+h <- (d$h18/d$p18)*100000
+i <- d$i18/d$p18*100
+
+M <- lm(h~1+i)
+summary(M)
+```
+
+* Here is our output:
+
+```Rout
+> d <- read.csv(file="ih.csv",header=T,sep=",")
+> 
+> sum(d$p18)
+[1] 326464979
+> sum(d$h18)
+[1] 18448
+> 
+> state <- d$state
+> 
+> h <- (d$h18/d$p18)*100000
+> i <- d$i18/d$p18*100
+> 
+> M <- lm(h~1+i)
+> summary(M)
+
+Call:
+lm(formula = h ~ 1 + i)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.2130 -2.6463 -0.1668  1.8877  7.3556 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   5.7622     0.8408   6.853 1.23e-08 ***
+i            -0.1469     0.2954  -0.497    0.621    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.052 on 48 degrees of freedom
+Multiple R-squared:  0.005126,	Adjusted R-squared:  -0.0156 
+F-statistic: 0.2473 on 1 and 48 DF,  p-value: 0.6212
+
+>
+
+> sr <- rstandard(M)
+> ysr <- sqrt(abs(sr))
+> RM <- lm(ysr~1+i)
+> RM
+
+Call:
+lm(formula = ysr ~ 1 + i)
+
+Coefficients:
+(Intercept)            i  
+    0.95505     -0.04752  
+
+> 
+```
+
+* Next, create our scatterplots:
+
+```R
+par(mfrow=c(1,3))
+
+# fitted regression line plot
+
+plot(x=i,y=h,pch=19,ylim=c(0,15),xlim=c(0,7))
+abline(M,lty=1,lwd=3,col="darkgreen")
+abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+abline(h=seq(from=0,to=14,by=1),lty=3,lwd=0.8)
+
+# residual plot
+
+plot(x=i,y=residuals(M),pch=19,xlim=c(0,7))
+abline(h=0,lty=1,lwd=3,col="darkgreen")
+abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+abline(h=seq(from=-4,to=8,by=1),lty=3,lwd=0.8)
+
+# standardized residual plot
+
+plot(x=i,y=ysr,pch=19,xlim=c(0,7))
+abline(RM,lty=1,lwd=3,col="darkgreen")
+abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+abline(h=seq(from=0,to=1.6,by=0.1),lty=3,lwd=0.8)
+```
+
+<p align="center">
+<img src="/gfiles/h2018a.png" width="900px">
+</p>
