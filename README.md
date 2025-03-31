@@ -6200,7 +6200,7 @@ abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
 abline(h=seq(from=0,to=1.6,by=0.1),lty=3,lwd=0.8)
 ```
 
-* Which gives us these plots:
+* Which gives us these plots (the 3rd plot is similar to the one on page 74 in Sheather's book):
   
 <p align="center">
 <img src="/gfiles/h2019a.png" width="900px">
