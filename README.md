@@ -6203,7 +6203,7 @@ abline(h=seq(from=0,to=1.6,by=0.1),lty=3,lwd=0.8)
 * Which gives us these plots:
   
 <p align="center">
-<img src="/gfiles/h2019a.png" width="600px">
+<img src="/gfiles/h2019a.png" width="800px">
 </p>
 
 * Next, we calculate the Breusch-Pagan test.
