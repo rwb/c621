@@ -6455,3 +6455,236 @@ abline(h=seq(from=0,to=1.6,by=0.1),lty=3,lwd=0.8)
 <p align="center">
 <img src="/gfiles/h2018a.png" width="900px">
 </p>
+
+* Each data point has a certain amount of *influence* on the parameter estimates associated with the regression.
+* Sheather's book defines "leverage points" as "data points which exercise considerable influence on the fitted model" (p. 51).
+* We can calculate the leverage statistic, *h*, (see Sheather, p. 56) for each data point by:
+
+```R
+h1 <- 1/50
+h2 <- (i-mean(i))^2
+h3 <- sum((i-mean(i))^2)
+h <- h1+h2/h3
+mean(h)
+data.frame(d$state,h,hatvalues(M))
+```
+
+* Here is our output:
+
+```Rout
+> h1 <- 1/50
+> h2 <- (i-mean(i))^2
+> h3 <- sum((i-mean(i))^2)
+> h <- h1+h2/h3
+> mean(h)
+[1] 0.04
+> data.frame(d$state,h,hatvalues(M))
+          d.state          h hatvalues.M.
+1         alabama 0.03382700   0.03382700
+2          alaska 0.03105635   0.03105635
+3         arizona 0.03815515   0.03815515
+4        arkansas 0.02013444   0.02013444
+5      california 0.07795034   0.07795034
+6        colorado 0.02275556   0.02275556
+7     connecticut 0.04041492   0.04041492
+8        delaware 0.02407333   0.02407333
+9         florida 0.03616396   0.03616396
+10        georgia 0.03180144   0.03180144
+11         hawaii 0.02493074   0.02493074
+12          idaho 0.02024645   0.02024645
+13       illinois 0.02455138   0.02455138
+14        indiana 0.02597521   0.02597521
+15           iowa 0.02458764   0.02458764
+16         kansas 0.02016711   0.02016711
+17       kentucky 0.03930042   0.03930042
+18      louisiana 0.02828241   0.02828241
+19          maine 0.06009924   0.06009924
+20       maryland 0.06164827   0.06164827
+21  massachusetts 0.04227029   0.04227029
+22       michigan 0.03444929   0.03444929
+23      minnesota 0.02806053   0.02806053
+24    mississippi 0.04414233   0.04414233
+25       missouri 0.04005286   0.04005286
+26        montana 0.05642452   0.05642452
+27       nebraska 0.02156246   0.02156246
+28         nevada 0.20787167   0.20787167
+29  new hampshire 0.03673610   0.03673610
+30     new jersey 0.07078326   0.07078326
+31     new mexico 0.02031145   0.02031145
+32       new york 0.02369283   0.02369283
+33 north carolina 0.02442788   0.02442788
+34   north dakota 0.04983520   0.04983520
+35           ohio 0.04111760   0.04111760
+36       oklahoma 0.02023966   0.02023966
+37         oregon 0.02031176   0.02031176
+38   pennsylvania 0.02861326   0.02861326
+39   rhode island 0.02705556   0.02705556
+40 south carolina 0.02423311   0.02423311
+41   south dakota 0.03605050   0.03605050
+42      tennessee 0.02255453   0.02255453
+43          texas 0.11190232   0.11190232
+44           utah 0.02487020   0.02487020
+45        vermont 0.04532685   0.04532685
+46       virginia 0.03091991   0.03091991
+47     washington 0.04217914   0.04217914
+48  west virginia 0.06393441   0.06393441
+49      wisconsin 0.03065211   0.03065211
+50        wyoming 0.04329704   0.04329704
+>
+```
+
+* Sheather recommends that we "classify [an individual data point] as a point of high leverage (i.e., a leverage point) in a simple linear regression model if h > 2*mean(h)
+* Here is the R code:
+
+```R
+h <- hatvalues(M)
+mean(h)
+flag <- ifelse(h>2*mean(h),1,0)
+data.frame(d$state,h,flag)
+```
+
+* Here is our output:
+
+```Rout
+> h <- hatvalues(M)
+> mean(h)
+[1] 0.04
+> flag <- ifelse(h>2*mean(h),1,0)
+> data.frame(d$state,h,flag)
+          d.state          h flag
+1         alabama 0.03382700    0
+2          alaska 0.03105635    0
+3         arizona 0.03815515    0
+4        arkansas 0.02013444    0
+5      california 0.07795034    0
+6        colorado 0.02275556    0
+7     connecticut 0.04041492    0
+8        delaware 0.02407333    0
+9         florida 0.03616396    0
+10        georgia 0.03180144    0
+11         hawaii 0.02493074    0
+12          idaho 0.02024645    0
+13       illinois 0.02455138    0
+14        indiana 0.02597521    0
+15           iowa 0.02458764    0
+16         kansas 0.02016711    0
+17       kentucky 0.03930042    0
+18      louisiana 0.02828241    0
+19          maine 0.06009924    0
+20       maryland 0.06164827    0
+21  massachusetts 0.04227029    0
+22       michigan 0.03444929    0
+23      minnesota 0.02806053    0
+24    mississippi 0.04414233    0
+25       missouri 0.04005286    0
+26        montana 0.05642452    0
+27       nebraska 0.02156246    0
+28         nevada 0.20787167    1
+29  new hampshire 0.03673610    0
+30     new jersey 0.07078326    0
+31     new mexico 0.02031145    0
+32       new york 0.02369283    0
+33 north carolina 0.02442788    0
+34   north dakota 0.04983520    0
+35           ohio 0.04111760    0
+36       oklahoma 0.02023966    0
+37         oregon 0.02031176    0
+38   pennsylvania 0.02861326    0
+39   rhode island 0.02705556    0
+40 south carolina 0.02423311    0
+41   south dakota 0.03605050    0
+42      tennessee 0.02255453    0
+43          texas 0.11190232    1
+44           utah 0.02487020    0
+45        vermont 0.04532685    0
+46       virginia 0.03091991    0
+47     washington 0.04217914    0
+48  west virginia 0.06393441    0
+49      wisconsin 0.03065211    0
+50        wyoming 0.04329704    0
+>
+```
+
+* This shows that Nevada and Texas meet the definition of "high leverage points".
+* We need to determine whether they are "good" or "bad".
+* To do this, we have to calculate the standardized residuals (Sheather, p. 59):
+
+```R
+r <- residuals(M)
+sr <- r/(sigma(M)*sqrt(1-h))
+data.frame(d$state,h,sr,rstandard(M))
+sr <- rstandard(M))
+```
+
+* Note that *outliers* are defined to be observations with *standardized residuals* > +2 or < -2 (Sheather, p. 60).
+* Here is our output:
+
+```Rout
+> data.frame(d$state,h,sr,rstandard(M))
+          d.state          h          sr rstandard.M.
+1         alabama 0.03382700  1.95828803   1.95828803
+2          alaska 0.03105635  0.67597109   0.67597109
+3         arizona 0.03815515  0.17774455   0.17774455
+4        arkansas 0.02013444  1.02817030   1.02817030
+5      california 0.07795034 -0.12496052  -0.12496052
+6        colorado 0.02275556 -0.19909158  -0.19909158
+7     connecticut 0.04041492 -0.92021840  -0.92021840
+8        delaware 0.02407333  0.05751220   0.05751220
+9         florida 0.03616396  0.32781751   0.32781751
+10        georgia 0.03180144  0.75631571   0.75631571
+11         hawaii 0.02493074 -0.82313791  -0.82313791
+12          idaho 0.02024645 -1.11712727  -1.11712727
+13       illinois 0.02455138  0.76703380   0.76703380
+14        indiana 0.02597521  0.48399159   0.48399159
+15           iowa 0.02458764 -0.99624824  -0.99624824
+16         kansas 0.02016711 -0.03123847  -0.03123847
+17       kentucky 0.03930042  0.06832589   0.06832589
+18      louisiana 0.02828241  2.44475482   2.44475482
+19          maine 0.06009924 -1.42376823  -1.42376823
+20       maryland 0.06164827  1.23255986   1.23255986
+21  massachusetts 0.04227029 -1.01527026  -1.01527026
+22       michigan 0.03444929  0.16226778   0.16226778
+23      minnesota 0.02806053 -1.11842606  -1.11842606
+24    mississippi 0.04414233  2.28438235   2.28438235
+25       missouri 0.04005286  1.87108937   1.87108937
+26        montana 0.05642452 -0.55492223  -0.55492223
+27       nebraska 0.02156246 -1.08311850  -1.08311850
+28         nevada 0.20787167  1.00697835   1.00697835
+29  new hampshire 0.03673610 -1.25407119  -1.25407119
+30     new jersey 0.07078326 -0.60620044  -0.60620044
+31     new mexico 0.02031145  1.50604468   1.50604468
+32       new york 0.02369283 -0.76509157  -0.76509157
+33 north carolina 0.02442788  0.23774925   0.23774925
+34   north dakota 0.04983520 -0.88719018  -0.88719018
+35           ohio 0.04111760  0.25930442   0.25930442
+36       oklahoma 0.02023966  0.40305848   0.40305848
+37         oregon 0.02031176 -0.93454925  -0.93454925
+38   pennsylvania 0.02861326  0.21530077   0.21530077
+39   rhode island 0.02705556 -1.18694921  -1.18694921
+40 south carolina 0.02423311  1.25429992   1.25429992
+41   south dakota 0.03605050 -0.88385032  -0.88385032
+42      tennessee 0.02255453  1.23843029   1.23843029
+43          texas 0.11190232  0.11895570   0.11895570
+44           utah 0.02487020 -1.06488724  -1.06488724
+45        vermont 0.04532685 -1.19684324  -1.19684324
+46       virginia 0.03091991 -0.13570841  -0.13570841
+47     washington 0.04217914 -0.56038526  -0.56038526
+48  west virginia 0.06393441 -0.08102764  -0.08102764
+49      wisconsin 0.03065211 -0.72258396  -0.72258396
+50        wyoming 0.04329704 -0.78594608  -0.78594608
+>
+```
+
+* So, Louisiana and Mississippi qualify as outliers based on the 2 standard deviation rule.
+* A leverage point that is also an outlier is a *bad* leverage point
+* A plot of the leverage points by the standardized residuals is useful here.
+
+```R
+plot(x=sr,y=h,pch=19)
+abline(h=2*mean(h),lty=2,lwd=2,col="darkred")
+abline(v=2,lty=2,lwd=2,col="darkred")
+```
+
+<p align="center">
+<img src="/gfiles/hsr.png" width="600px">
+</p>
