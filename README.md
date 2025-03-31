@@ -6698,3 +6698,70 @@ abline(v=2,lty=2,lwd=2,col="darkred")
 * Based on the plot, we do not have any observations that have are outliers *and* have high leverage (so-called "bad" leverage points).
 * If we did have values that were bad leverage points, we would have to exercise judgment (should we fit another model with those data points removed? or should we try a different kind of regression model?).
 
+#### Topic 18: Functional Form
+
+* Sometimes it is useful to fit a regression curve rather than a straight line.
+* We can still use linear models to do this (sometimes).
+* Here is an example from Sheather (p. 46)
+
+```R
+xvals <- c(10,8,13,9,11,14,6,4,12,7,5)
+yvals <- c(9.14,8.14,8.74,8.77,9.26,8.1,6.13,3.1,9.13,7.26,4.74)
+M <- lm(yvals~1+xvals)
+summary(M)
+```
+
+* Here is our output:
+
+```Rout
+> xvals <- c(10,8,13,9,11,14,6,4,12,7,5)
+> yvals <- c(9.14,8.14,8.74,8.77,9.26,8.1,6.13,3.1,9.13,7.26,4.74)
+> M <- lm(yvals~1+xvals)
+> summary(M)
+
+Call:
+lm(formula = yvals ~ 1 + xvals)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.9009 -0.7609  0.1291  0.9491  1.2691 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)   
+(Intercept)    3.001      1.125   2.667  0.02576 * 
+xvals          0.500      0.118   4.239  0.00218 **
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.237 on 9 degrees of freedom
+Multiple R-squared:  0.6662,	Adjusted R-squared:  0.6292 
+F-statistic: 17.97 on 1 and 9 DF,  p-value: 0.002179
+
+> 
+```
+
+* Now, let's generate a scatterplot and residual plot:
+
+```R
+par(mfrow=c(1,2))
+
+plot(x=xvals,y=yvals,pch=19,ylim=c(0,10))
+abline(M,lty=1,lwd=3,col="red")
+abline(h=0:10,lty=3,lwd=0.8)
+abline(v=4:14,lty=3,lwd=0.8)
+
+plot(x=xvals,y=residuals(M),pch=19)
+abline(h=0,lty=1,lwd=3,col="red")
+abline(h=seq(from=-2,to=1.5,by=0.5),lty=3,lwd=0.8)
+abline(v=4:14,lty=3,lwd=0.8)
+```
+
+<p align="center">
+<img src="/gfiles/curve.png" width="800px">
+</p>
+
+* It is clear that the functional form of this regression model is incorrect.
+* Instead of fitting a line we need to fit a curve.
+
+```R
