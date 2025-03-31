@@ -6702,7 +6702,7 @@ abline(v=2,lty=2,lwd=2,col="darkred")
 
 * Sometimes it is useful to fit a regression curve rather than a straight line.
 * We can still use linear models to do this (sometimes).
-* Here is an example from Sheather (p. 46)
+* Here is an example from Sheather (p. 46; dataset #2)
 
 ```R
 xvals <- c(10,8,13,9,11,14,6,4,12,7,5)
