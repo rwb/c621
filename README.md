@@ -6203,7 +6203,7 @@ abline(h=seq(from=0,to=1.6,by=0.1),lty=3,lwd=0.8)
 * Which gives us these plots:
   
 <p align="center">
-<img src="/gfiles/h2019a.png" width="800px">
+<img src="/gfiles/h2019a.png" width="900px">
 </p>
 
 * Next, we calculate the Breusch-Pagan test.
@@ -6350,4 +6350,4 @@ b+tmult.ucl*sqrt(H[2,2])
 ```
 
 * In both cases, the confidence interval for the slope includes zero.
-* However, the width of the corrected confidence interval is 0.1627909-(-0.6558751) = 0.818666 while the width of the uncorrected confidenc interval is 0.1976507-(-0.6907349) = 0.8883856 which is about a 7.8% decrease, ((0.818666-0.8883856)/0.8883856)*100 = -7.847898.
+* However, the width of the corrected confidence interval is 0.1627909-(-0.6558751) = 0.818666 while the width of the uncorrected confidence interval is 0.1976507-(-0.6907349) = 0.8883856; so the corrected confidence interval is about 7.8% narrower, ((0.818666-0.8883856)/0.8883856)*100 = -7.847898.
