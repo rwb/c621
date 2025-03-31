@@ -6459,7 +6459,7 @@ abline(h=seq(from=0,to=1.6,by=0.1),lty=3,lwd=0.8)
 ```
 
 <p align="center">
-<img src="/gfiles/hhm18.png" width="900px">
+<img src="/gfiles/hm18.png" width="900px">
 </p>
 
 * Each data point has a certain amount of *influence* on the parameter estimates associated with the regression.
