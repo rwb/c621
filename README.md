@@ -6828,11 +6828,12 @@ lines(x=x,y=yfit,lty=1,lwd=3,col="darkred")
 * Start a new R session.
 
 ```R
-x <- seq(from=4,to=14,by=0.01)
+x <- seq(from=4,to=14,by=0.1)
 y <- -5.9957343+2.7808392*x-0.1267133*x*x
 plot(x,y,type="l",lty=1,lwd=3,col="darkred")
 abline(h=3:9,lty=3,lwd=0.8)
 abline(v=4:14,lty=3,lwd=0.8)
+data.frame(x,y)
 ```
 
 * Here is the resulting plot:
@@ -6840,3 +6841,306 @@ abline(v=4:14,lty=3,lwd=0.8)
 <p align="center">
 <img src="/gfiles/curve3.png" width="600px">
 </p>
+
+* And the x and y coordinates that underlie this plot:
+
+```Rout
+> data.frame(x,y)
+       x        y
+1    4.0 3.100210
+2    4.1 3.275656
+3    4.2 3.448568
+4    4.3 3.618945
+5    4.4 3.786789
+6    4.5 3.952098
+7    4.6 4.114873
+8    4.7 4.275113
+9    4.8 4.432819
+10   4.9 4.587991
+11   5.0 4.740629
+12   5.1 4.890733
+13   5.2 5.038302
+14   5.3 5.183337
+15   5.4 5.325838
+16   5.5 5.465804
+17   5.6 5.603236
+18   5.7 5.738134
+19   5.8 5.870498
+20   5.9 6.000327
+21   6.0 6.127622
+22   6.1 6.252383
+23   6.2 6.374609
+24   6.3 6.494302
+25   6.4 6.611460
+26   6.5 6.726084
+27   6.6 6.838173
+28   6.7 6.947728
+29   6.8 7.054749
+30   6.9 7.159236
+31   7.0 7.261188
+32   7.1 7.360607
+33   7.2 7.457490
+34   7.3 7.551840
+35   7.4 7.643655
+36   7.5 7.732937
+37   7.6 7.819683
+38   7.7 7.903896
+39   7.8 7.985574
+40   7.9 8.064718
+41   8.0 8.141328
+42   8.1 8.215404
+43   8.2 8.286945
+44   8.3 8.355952
+45   8.4 8.422425
+46   8.5 8.486363
+47   8.6 8.547767
+48   8.7 8.606637
+49   8.8 8.662973
+50   8.9 8.716774
+51   9.0 8.768041
+52   9.1 8.816774
+53   9.2 8.862973
+54   9.3 8.906637
+55   9.4 8.947767
+56   9.5 8.986363
+57   9.6 9.022424
+58   9.7 9.055952
+59   9.8 9.086945
+60   9.9 9.115403
+61  10.0 9.141328
+62  10.1 9.164718
+63  10.2 9.185574
+64  10.3 9.203895
+65  10.4 9.219683
+66  10.5 9.232936
+67  10.6 9.243655
+68  10.7 9.251839
+69  10.8 9.257490
+70  10.9 9.260606
+71  11.0 9.261188
+72  11.1 9.259235
+73  11.2 9.254748
+74  11.3 9.247727
+75  11.4 9.238172
+76  11.5 9.226083
+77  11.6 9.211459
+78  11.7 9.194301
+79  11.8 9.174608
+80  11.9 9.152382
+81  12.0 9.127621
+82  12.1 9.100326
+83  12.2 9.070496
+84  12.3 9.038133
+85  12.4 9.003235
+86  12.5 8.965803
+87  12.6 8.925836
+88  12.7 8.883335
+89  12.8 8.838300
+90  12.9 8.790731
+91  13.0 8.740628
+92  13.1 8.687990
+93  13.2 8.632818
+94  13.3 8.575111
+95  13.4 8.514871
+96  13.5 8.452096
+97  13.6 8.386787
+98  13.7 8.318943
+99  13.8 8.248566
+100 13.9 8.175654
+101 14.0 8.100208
+>
+```
+
+* We can think of this as the graph of a function.
+* What is the slope of the line that connects the points (x=5,y=4.740629) and (x=11,y=9.261188)?
+
+```R
+x1 <- 5
+y1 <- 4.740629
+x2 <- 11
+y2 <- 9.261188
+
+# point-slope formula
+
+slope <- (y2-y1)/(x2-x1)
+slope
+int <- y1-slope*x1
+int
+
+# add information to the chart
+
+points(x=x1,y=y1,pch=19,cex=1.2)
+points(x=x2,y=y2,pch=19,cex=1.2)
+abline(a=int,b=slope,col="darkgreen",lty=1,lwd=3)
+```
+
+* Here is what we get:
+
+```Rout
+> x1 <- 5
+> y1 <- 4.740629
+> x2 <- 11
+> y2 <- 9.261188
+> 
+> # point-slope formula
+> 
+> slope <- (y2-y1)/(x2-x1)
+> slope
+[1] 0.7534265
+> int <- y1-slope*x1
+> int
+[1] 0.9734965
+>
+```
+
+<p align="center">
+<img src="/gfiles/curve4.png" width="600px">
+</p>
+
+* Now let's consider the slope of a line connecting the points (x=7.5,y=7.732937) and (x=8.5,y=8.486363).
+
+```R
+x1 <- 7.5
+y1 <- 7.732937
+x2 <- 8.5
+y2 <- 8.486363
+
+# point-slope formula
+
+slope <- (y2-y1)/(x2-x1)
+slope
+int <- y1-slope*x1
+int
+
+# add information to the chart
+
+points(x=x1,y=y1,pch=19,cex=1.2)
+points(x=x2,y=y2,pch=19,cex=1.2)
+abline(a=int,b=slope,col="blue",lty=1,lwd=3)
+```
+
+* Here is what we get:
+
+```Rout
+> x1 <- 7.5
+> y1 <- 7.732937
+> x2 <- 8.5
+> y2 <- 8.486363
+> 
+> # point-slope formula
+> 
+> slope <- (y2-y1)/(x2-x1)
+> slope
+[1] 0.753426
+> int <- y1-slope*x1
+> int
+[1] 2.082242
+> 
+```
+
+<p align="center">
+<img src="/gfiles/curve5.png" width="600px">
+</p>
+
+* Notice how the slope of this line is very close to the average for the region x={5,11}
+* Let's try a different set of points; this time we will look at x={6,7}
+
+```R
+x1 <- 6
+y1 <- 6.127622
+x2 <- 7
+y2 <- 7.261188
+
+# point-slope formula
+
+slope <- (y2-y1)/(x2-x1)
+slope
+int <- y1-slope*x1
+int
+
+# add information to the chart
+
+points(x=x1,y=y1,pch=19,cex=1.2)
+points(x=x2,y=y2,pch=19,cex=1.2)
+abline(a=int,b=slope,col="purple",lty=1,lwd=3)
+```
+
+* Here is our output:
+
+```Rout
+> x1 <- 6
+> y1 <- 6.127622
+> x2 <- 7
+> y2 <- 7.261188
+> 
+> # point-slope formula
+> 
+> slope <- (y2-y1)/(x2-x1)
+> slope
+[1] 1.133566
+> int <- y1-slope*x1
+> int
+[1] -0.673774
+> 
+> # add information to the chart
+> 
+> points(x=x1,y=y1,pch=19,cex=1.2)
+> points(x=x2,y=y2,pch=19,cex=1.2)
+> abline(a=int,b=slope,col="purple",lty=1,lwd=3)
+>
+```
+
+<p align="center">
+<img src="/gfiles/curve6.png" width="600px">
+</p>
+
+* Each of the straight lines is called a *secant*.
+* The slope of the secant represents the average amount of change in *y* for a unit change in *x* in the neighborhood of x={5,7}.
+* Notice that the secant slope is always positive in the regions we've been looking at.
+* But let's calculate the slope of the secant in the domain of x={12,13}
+
+```R
+x1 <- 12
+y1 <- 9.127621
+x2 <- 13
+y2 <- 8.740628
+
+# point-slope formula
+
+slope <- (y2-y1)/(x2-x1)
+slope
+int <- y1-slope*x1
+int
+
+# add information to the chart
+
+points(x=x1,y=y1,pch=19,cex=1.2)
+points(x=x2,y=y2,pch=19,cex=1.2)
+abline(a=int,b=slope,col="red",lty=1,lwd=3)
+```
+
+* Here is our output:
+
+```Rout
+> x1 <- 12
+> y1 <- 9.127621
+> x2 <- 13
+> y2 <- 8.740628
+> 
+> # point-slope formula
+> 
+> slope <- (y2-y1)/(x2-x1)
+> slope
+[1] -0.386993
+> int <- y1-slope*x1
+> int
+[1] 13.77154
+>
+```
+
+<p align="center">
+<img src="/gfiles/curve7.png" width="600px">
+</p>
+
+* Notice that if we keep making the distance between x1 and x2 smaller, we will still be able to calculate the slope of the line.
+* When the distance between x1 and x2 approaches zero, the secant becomes a tangent and we have the derivative of the function at that x point.
