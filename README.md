@@ -6103,7 +6103,7 @@ BP = 3.8473, df = 1, p-value = 0.04983
 ### Lesson 9 - Monday 3/31/25
 
 * Last week, I asked you to look at the 2019 data to investigate heteroscedasticity.
-* Let'w work through that now.
+* Let's work through that now.
 
 ```R
 d <- read.csv(file="ih.csv",header=T,sep=",")
