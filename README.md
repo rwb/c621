@@ -6763,5 +6763,61 @@ abline(v=4:14,lty=3,lwd=0.8)
 
 * It is clear that the functional form of this regression model is incorrect.
 * Instead of fitting a line we need to fit a curve.
+* Here is how we can use linear regression to fit a curve:
+  
+```R
+xvals.sq <- xvals*xvals
+Q <- lm(yvals~1+xvals+xvals.sq)
+summary(Q)
+```
+
+* Here is the output:
+
+```Rout
+> xvals.sq <- xvals*xvals
+> Q <- lm(yvals~1+xvals+xvals.sq)
+> summary(Q)
+
+Call:
+lm(formula = yvals ~ 1 + xvals + xvals.sq)
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-0.0013287 -0.0011888 -0.0006294  0.0008741  0.0023776 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -5.9957343  0.0043299   -1385   <2e-16 ***
+xvals        2.7808392  0.0010401    2674   <2e-16 ***
+xvals.sq    -0.1267133  0.0000571   -2219   <2e-16 ***
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.001672 on 8 degrees of freedom
+Multiple R-squared:      1,	Adjusted R-squared:      1 
+F-statistic: 7.378e+06 on 2 and 8 DF,  p-value: < 2.2e-16
+
+>
+```
+
+* Let's see how this fits:
 
 ```R
+int.qrm <- coef(Q)[1]
+b.qrm <- coef(Q)[2]
+bsq.qrm <- coef(Q)[3]
+x <- 4:14
+xsq <- x*x
+yfit <- int.qrm+b.qrm*x+bsq.qrm*xsq
+
+plot(x=xvals,y=yvals,pch=19,ylim=c(0,10))
+abline(M,lty=1,lwd=3,col="red")
+abline(h=0:10,lty=3,lwd=0.8)
+abline(v=4:14,lty=3,lwd=0.8)
+lines(x=x,y=yfit,lty=1,lwd=3,col="darkred")
+```
+
+<p align="center">
+<img src="/gfiles/curve2.png" width="600px">
+</p>
