@@ -6118,41 +6118,10 @@ i <- d$i19/d$p19*100
 
 M <- lm(h~1+i)
 summary(M)
-par(mfrow=c(1,2))
-
-# fitted regression line plot
-
-plot(x=i,y=h,pch=19,ylim=c(0,15),xlim=c(0,7))
-abline(M,lty=1,lwd=3,col="darkgreen")
-abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
-abline(h=seq(from=0,to=14,by=1),lty=3,lwd=0.8)
-
-# residual plot
-
-plot(x=i,y=residuals(M),pch=19,xlim=c(0,7))
-abline(h=0,lty=1,lwd=3,col="darkgreen")
-abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
-abline(h=seq(from=-4,to=8,by=1),lty=3,lwd=0.8)
-
-# heteroscedasticity diagnostics
-
-library(lmtest)
-bptest(M)
-library(sandwich)
-H <- vcovHC(M)
-a <- coef(M)[1]
-b <- coef(M)[2]
-a.se <- sqrt(H[1,1])
-a.se
-b.se <- sqrt(H[2,2])
-b.se
-
-# let's review the original model summary and combine with
-# White's corrected standard errors
-
-summary(M)
-a/a.se
-b/b.se
+sr <- rstandard(M)
+ysr <- sqrt(abs(sr))
+RM <- lm(ysr~1+i)
+RM
 ```
 
 * Here is our output:
@@ -6191,33 +6160,63 @@ Residual standard error: 3.264 on 48 degrees of freedom
 Multiple R-squared:  0.01174,	Adjusted R-squared:  -0.008847 
 F-statistic: 0.5703 on 1 and 48 DF,  p-value: 0.4538
 
-> par(mfrow=c(1,2))
-> 
-> # fitted regression line plot
-> 
-> plot(x=i,y=h,pch=19,ylim=c(0,15),xlim=c(0,7))
-> abline(M,lty=1,lwd=3,col="darkgreen")
-> abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
-> abline(h=seq(from=0,to=14,by=1),lty=3,lwd=0.8)
-> 
-> # residual plot
-> 
-> plot(x=i,y=residuals(M),pch=19,xlim=c(0,7))
-> abline(h=0,lty=1,lwd=3,col="darkgreen")
-> abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
-> abline(h=seq(from=-4,to=8,by=1),lty=3,lwd=0.8)
->
+> sr <- rstandard(M)
+> ysr <- sqrt(abs(sr))
+> RM <- lm(ysr~1+i)
+> RM
+
+Call:
+lm(formula = ysr ~ 1 + i)
+
+Coefficients:
+(Intercept)            i  
+    0.97906     -0.06337
 ```
 
+* Now, we create 3 diagnostic plots:
+
+```R
+par(mfrow=c(1,3))
+
+# fitted regression line plot
+
+plot(x=i,y=h,pch=19,ylim=c(0,15),xlim=c(0,7))
+abline(M,lty=1,lwd=3,col="darkgreen")
+abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+abline(h=seq(from=0,to=14,by=1),lty=3,lwd=0.8)
+
+# residual plot
+
+plot(x=i,y=residuals(M),pch=19,xlim=c(0,7))
+abline(h=0,lty=1,lwd=3,col="darkgreen")
+abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+abline(h=seq(from=-4,to=8,by=1),lty=3,lwd=0.8)
+
+# standardized residual plot
+
+plot(x=i,y=ysr,pch=19,xlim=c(0,7))
+abline(RM,lty=1,lwd=3,col="darkgreen")
+abline(v=seq(from=0,to=7,by=1),lty=3,lwd=0.8)
+abline(h=seq(from=0,to=1.6,by=0.1),lty=3,lwd=0.8)
+```
+
+* Which gives us these plots:
+  
 <p align="center">
-<img src="/gfiles/h2019.png" width="600px">
+<img src="/gfiles/h2019a.png" width="600px">
 </p>
 
-* And then, the rest of the output is:
+* Next, we calculate the Breusch-Pagan test.
+* Ho: no heteroscedasiticity.
+
+```R
+library(lmtest)
+bptest(M)
+```
+
+* In this case, we reject Ho:
 
 ```Rout
-> # heteroscedasticity diagnostics
-> 
 > library(lmtest)
 Loading required package: zoo
 
@@ -6234,6 +6233,32 @@ The following objects are masked from ‘package:base’:
 data:  M
 BP = 4.7845, df = 1, p-value = 0.02872
 
+>
+```
+
+* With these results in hand, we calculate Halbert White's heteroscedasticity-consistent variance-covariance matrix:
+
+```R
+library(sandwich)
+H <- vcovHC(M)
+a <- coef(M)[1]
+b <- coef(M)[2]
+a.se <- sqrt(H[1,1])
+a.se
+b.se <- sqrt(H[2,2])
+b.se
+
+# let's review the original model summary and combine with
+# White's corrected standard errors
+
+summary(M)
+a/a.se
+b/b.se
+```
+
+* Here is our output:
+
+```Rout
 > library(sandwich)
 > H <- vcovHC(M)
 > a <- coef(M)[1]
@@ -6245,8 +6270,6 @@ BP = 4.7845, df = 1, p-value = 0.02872
 > b.se
 [1] 0.3008508
 > 
-> # let's review the original model summary and combine with
-> # White's corrected standard errors
 > 
 > summary(M)
 
@@ -6274,7 +6297,57 @@ F-statistic: 0.5703 on 1 and 48 DF,  p-value: 0.4538
 > b/b.se
          i 
 -0.8194828 
->
+> 
 ```
 
 * So, we do have evidence of heteroscedasticity; after correcting for it, the standard error of the slope coefficient decreases slightly.
+* Let's estimate a 82% confidence interval for the slope -- with and without the correction.
+
+```R
+# calculate t-multipliers for 82% confidence interval
+
+tmult.lcl <- qt(p=0.09,df=50-2)
+tmult.lcl
+tmult.ucl <- qt(p=0.91,df=50-2)
+tmult.ucl
+
+# lower and upper confidence limits 
+# uncorrected standard error
+
+b+tmult.lcl*sqrt(vcov(M)[2,2])
+b+tmult.ucl*sqrt(vcov(M)[2,2])
+
+# lower and upper confidence limits for 
+# corrected standard error
+
+b+tmult.lcl*sqrt(H[2,2])
+b+tmult.ucl*sqrt(H[2,2])
+```
+
+* Here is our output:
+
+```Rout
+> # lower and upper confidence limits 
+> # uncorrected standard error
+> 
+> b+tmult.lcl*sqrt(vcov(M)[2,2])
+         i 
+-0.6907349 
+> b+tmult.ucl*sqrt(vcov(M)[2,2])
+        i 
+0.1976507 
+> 
+> # lower and upper confidence limits for 
+> # corrected standard error
+> 
+> b+tmult.lcl*sqrt(H[2,2])
+         i 
+-0.6558751 
+> b+tmult.ucl*sqrt(H[2,2])
+        i 
+0.1627909 
+>
+```
+
+* In both cases, the confidence interval for the slope includes zero.
+* However, the width of the corrected confidence interval is 0.1627909-(-0.6558751) = 0.818666 while the width of the uncorrected confidenc interval is 0.1976507-(-0.6907349) = 0.8883856 which is about a 7.8% decrease, ((0.818666-0.8883856)/0.8883856)*100 = -7.847898.
