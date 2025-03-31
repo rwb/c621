@@ -6210,7 +6210,7 @@ F-statistic: 0.5703 on 1 and 48 DF,  p-value: 0.4538
 ```
 
 <p align="center">
-<img src="/gfiles/hp2.png" width="800px">
+<img src="/gfiles/h2019.png" width="600px">
 </p>
 
 * And then, the rest of the output is:
