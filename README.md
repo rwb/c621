@@ -6688,3 +6688,7 @@ abline(v=2,lty=2,lwd=2,col="darkred")
 <p align="center">
 <img src="/gfiles/hsr.png" width="600px">
 </p>
+
+* Based on the plot, we do not have any observations that have are outliers *and* have high leverage (so-called "bad" leverage points).
+* If we did have values that were bad leverage points, we would have to exercise judgment (should we fit another model with those data points removed? or should we try a different kind of regression model?).
+
