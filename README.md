@@ -6236,6 +6236,7 @@ BP = 4.7845, df = 1, p-value = 0.02872
 >
 ```
 
+* So, we reject Ho (at the 0.03 significance level).
 * With these results in hand, we calculate Halbert White's heteroscedasticity-consistent variance-covariance matrix:
 
 ```R
