@@ -6821,3 +6821,22 @@ lines(x=x,y=yfit,lty=1,lwd=3,col="darkred")
 <p align="center">
 <img src="/gfiles/curve2.png" width="600px">
 </p>
+
+#### Topic 20: Difference Quotients
+
+* Suppose we take the curve we just drew and we plot it in a 2-dimensional space.
+* Start a new R session.
+
+```R
+x <- seq(from=4,to=14,by=0.01)
+y <- -5.9957343+2.7808392*x-0.1267133*x*x
+plot(x,y,type="l",lty=1,lwd=3,col="darkred")
+abline(h=3:9,lty=3,lwd=0.8)
+abline(v=4:14,lty=3,lwd=0.8)
+```
+
+* Here is the resulting plot:
+
+<p align="center">
+<img src="/gfiles/curve3.png" width="600px">
+</p>
