@@ -6822,7 +6822,7 @@ lines(x=x,y=yfit,lty=1,lwd=3,col="darkred")
 <img src="/gfiles/curve2.png" width="600px">
 </p>
 
-#### Topic 20: Difference Quotients
+#### Topics 19/20: Nonlinear Single Variable Regression/Difference Quotients
 
 * Suppose we take the curve we just drew and we plot it in a 2-dimensional space.
 * Start a new R session.
