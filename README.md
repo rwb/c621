@@ -7144,3 +7144,53 @@ abline(a=int,b=slope,col="red",lty=1,lwd=3)
 
 * Notice that if we keep making the distance between x1 and x2 smaller, we will still be able to calculate the slope of the line.
 * When the distance between x1 and x2 approaches zero, the secant becomes a tangent and we have the derivative of the function at that x point.
+
+#### Example Problem #1
+
+* Please enter the following dataset into R:
+
+```Rout
+> data.frame(x,y)
+           x         y
+1  10.525025 10.006471
+2   9.167082  8.477390
+3  12.088710  8.502788
+4   4.666047  2.950113
+5   5.724271  5.258985
+6  11.393397  8.239564
+7  12.584118  9.191330
+8   5.675389  4.865792
+9   5.229290  4.914085
+10  4.594962  4.980177
+11  6.324089  6.676996
+12  5.574342  5.389346
+13  6.719233  6.950672
+14 13.852802  7.767387
+15 10.245633  9.038506
+16 11.988984  9.181324
+17  4.007869  2.827483
+18 13.207840  9.468860
+19  8.493307  8.110161
+20 13.494317  8.335246
+21  4.374399  4.258318
+22  9.693014  9.805548
+23 13.572246  8.259157
+24  5.843392  5.444042
+25  9.654258  8.487896
+26 11.742820  8.913228
+27  4.269311  3.191912
+28 10.476408 10.021241
+29  6.983456  7.329047
+30 11.202451  9.429451
+>
+```
+
+* Estimate a linear regression of *y* on *x*.
+* Create a scatterplot (with the least squares line) and a residual plot for this regression.
+* Estimate a quadratic regression of *y* on *x*.
+* Calculate the coordinates for the parabola implied by this regression.
+* Create a new scatterplot where you draw the parabola through the points.
+* Create a new residual plot based on the quadratic regression. Do the residuals appear to be randomly distributed?
+* Calculate E(y|x=12)-E(y|x=11) based on the linear regression model.
+* Calculate E(y|x=12)-E(y|x=11) based on the quadratic regression model.
+* Draw a secant on the quadratic regression plot space based on the difference quotient, E(y|x=12)-E(y|x=11)
