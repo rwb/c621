@@ -7147,6 +7147,8 @@ abline(a=int,b=slope,col="red",lty=1,lwd=3)
 
 #### Example Problem #1
 
+* Use the 2019 homicide data to estimate a linear regression of the 2019 homicide rate on the 2019 undocumented immigrant population rate. Use your residual diagnostics to determine whether there are any influential observations. What do you conclude?
+  
 * Please enter the following dataset into R:
 
 ```Rout
