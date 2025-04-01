@@ -6695,7 +6695,7 @@ abline(v=2,lty=2,lwd=2,col="darkred")
 <img src="/gfiles/hsr.png" width="600px">
 </p>
 
-* Based on the plot, we do not have any observations that have are outliers *and* have high leverage (so-called "bad" leverage points).
+* Based on the plot, we do not have any observations that have are outliers *and* have high leverage (so-called "bad" leverage points). Such points would be in the upper right hand sector of the plot (observations with leverage exceeding 2*mean(h) and standardized residuals exceeding |2|).
 * If we did have values that were bad leverage points, we would have to exercise judgment (should we fit another model with those data points removed? or should we try a different kind of regression model?).
 
 #### Topic 18: Functional Form
