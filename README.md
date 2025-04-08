@@ -26,7 +26,7 @@ The various topics I plan to discuss in this course are listed below in coverage
 
 * #1: distributed on 2/17; due on 2/24 at 11:59pm (ET)
 * #2: distributed on 3/10; due on 3/24 at 11:59pm (ET)
-* #3: distributed on 4/7; due on 4/14 at 11:59pm (ET)
+* #3: distributed on ~~4/7~~ 4/14; due on ~~4/14~~ 4/21 at 11:59pm (ET)
 * #4: distributed on 5/12; due on 5/19 at 11:59pm (ET)
 
 #### Simple Linear Regression
@@ -53,7 +53,7 @@ The various topics I plan to discuss in this course are listed below in coverage
 18. functional form
 19. nonlinear single independent variable regression
 20. finite difference derivatives (difference quotients)
-21. prediction interval
+21. ~~prediction interval~~
 22. confidence interval for an expected value
 
 #### Multiple regression
@@ -7145,7 +7145,7 @@ abline(a=int,b=slope,col="red",lty=1,lwd=3)
 * Notice that if we keep making the distance between x1 and x2 smaller, we will still be able to calculate the slope of the line.
 * When the distance between x1 and x2 approaches zero, the secant becomes a tangent and we have the derivative of the function at that x point.
 
-#### Example Problem #1
+#### Example Problem
 
 * Use the 2019 homicide data to estimate a linear regression of the 2019 homicide rate on the 2019 undocumented immigrant population rate. Use your residual diagnostics to determine whether there are any influential observations. What do you conclude?
   
@@ -7196,3 +7196,66 @@ abline(a=int,b=slope,col="red",lty=1,lwd=3)
 * Calculate E(y|x=12)-E(y|x=11) based on the linear regression model.
 * Calculate E(y|x=12)-E(y|x=11) based on the quadratic regression model.
 * Draw a secant on the quadratic regression plot space based on the difference quotient, E(y|x=12)-E(y|x=11)
+
+### Lesson 10 - Monday 4/7/25
+
+* Worked practice problem from last week.
+* Let's read in a comma-separated version of the dataset:
+
+```R
+d <- read.csv(file="d.txt",header=T,sep=",")
+d
+```
+
+* Next up, we estimate the linear regression model:
+
+```R
+L <- lm(y~1+x,data=d)
+summary(L)
+```
+
+* Here is a summary of the regression analysis:
+
+```Rout
+> L <- lm(y~1+x,data=d)
+> summary(L)
+
+Call:
+lm(formula = y ~ 1 + x, data = d)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.3627 -0.5361 -0.0386  0.9158  2.0702 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   2.1550     0.6189   3.482  0.00165 ** 
+x             0.5757     0.0661   8.710 1.85e-09 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.18 on 28 degrees of freedom
+Multiple R-squared:  0.7304,	Adjusted R-squared:  0.7208 
+F-statistic: 75.86 on 1 and 28 DF,  p-value: 1.85e-09
+
+>
+```
+
+* Now, let's create a scatterplot:
+
+```R
+lint <- coef(L)[1]
+lb1 <- coef(L)[2]
+xstar <- seq(from=3,to=15,by=0.01)
+yhatl <- lint+lb1*xstar
+plot(d$x,d$y,pch=19)
+lines(x=xstar,y=yhatl,lty=1,lwd=3,col="blue")
+abline(h=3:10,lty=3,lwd=0.8)
+abline(v=4:14,lty=3,lwd=0.8)
+```
+
+* Here is the plot:
+
+<p align="center">
+<img src="/gfiles/curve8.png" width="600px">
+</p>
