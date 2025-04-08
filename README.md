@@ -7259,3 +7259,56 @@ abline(v=4:14,lty=3,lwd=0.8)
 <p align="center">
 <img src="/gfiles/curve8.png" width="600px">
 </p>
+
+* The quadratic regression is:
+
+```R
+d$xsq <- d$x*d$x
+Q <- lm(y~1+x+xsq,data=d)
+summary(Q)
+qint <- coef(Q)[1]
+qb1 <- coef(Q)[2]
+qb2 <- coef(Q)[3]
+xstarsq <- xstar*xstar
+yhatq <- qint+qb1*xstar+qb2*xstarsq
+lines(x=xstar,y=yhatq,lty=1,lwd=3,col="red")
+```
+
+* And the output is:
+
+```Rout
+> d$xsq <- d$x*d$x
+> Q <- lm(y~1+x+xsq,data=d)
+> summary(Q)
+
+Call:
+lm(formula = y ~ 1 + x + xsq, data = d)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.05165 -0.32329 -0.06149  0.25812  1.09661 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -6.55382    0.93508  -7.009 1.56e-07 ***
+x            2.87104    0.23599  12.166 1.81e-12 ***
+xsq         -0.13048    0.01329  -9.814 2.12e-10 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5621 on 27 degrees of freedom
+Multiple R-squared:  0.941,	Adjusted R-squared:  0.9366 
+F-statistic: 215.2 on 2 and 27 DF,  p-value: < 2.2e-16
+
+> qint <- coef(Q)[1]
+> qb1 <- coef(Q)[2]
+> qb2 <- coef(Q)[3]
+> xstarsq <- xstar*xstar
+> yhatq <- qint+qb1*xstar+qb2*xstarsq
+> lines(x=xstar,y=yhatq,lty=1,lwd=3,col="red")
+>
+```
+
+<p align="center">
+<img src="/gfiles/curve9.png" width="600px">
+</p>
