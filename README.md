@@ -7366,6 +7366,8 @@ abline(a=int.quadratic,b=slope.quadratic,lty=1,lwd=3,col="darkgreen")
 * We can use the following bootstrap code to estimate this confidence interval:
 
 ```R
+eyx11.quadratic
+
 library(boot)
 
 eb <- function(data,i){
@@ -7383,6 +7385,9 @@ boot.ci(qb,conf=0.92,type="bca",index=1)
 * Here is our output:
 
 ```Rout
+> eyx11.quadratic
+   9.239385 
+> 
 > library(boot)
 > 
 > eb <- function(data,i){
@@ -7418,3 +7423,5 @@ Level       BCa
 Calculations and Intervals on Original Scale
 >
 ```
+
+* So, this analysis tells us that the point estimate of E(y|x=11) under the quadratic specification is 9.239385; based on the BCa bootstrap, the 92% confidence interval around this estimate is [8.986,9.500].
