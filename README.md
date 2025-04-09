@@ -7366,4 +7366,55 @@ abline(a=int.quadratic,b=slope.quadratic,lty=1,lwd=3,col="darkgreen")
 * We can use the following bootstrap code to estimate this confidence interval:
 
 ```R
-predict(Q,interval="confidence",newdata=list(x=11),level=0.92)
+library(boot)
+
+eb <- function(data,i){
+  b <- data[i,]
+  Qb <- lm(y~1+x+xsq,data=b)
+  eyx11b <- coef(Qb)[1]+coef(Qb)[2]*11+coef(Qb)[3]*11*11
+  return(eyx11b)
+  }
+
+qb <- boot(data=d,statistic=eb,R=1e5)
+qb
+boot.ci(qb,conf=0.92,type="bca",index=1)
+```
+
+* Here is our output:
+
+```Rout
+> library(boot)
+> 
+> eb <- function(data,i){
++   b <- data[i,]
++   Qb <- lm(y~1+x+xsq,data=b)
++   eyx11b <- coef(Qb)[1]+coef(Qb)[2]*11+coef(Qb)[3]*11*11
++   return(eyx11b)
++   }
+> 
+> qb <- boot(data=d,statistic=eb,R=1e5)
+> qb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = d, statistic = eb, R = 1e+05)
+
+
+Bootstrap Statistics :
+    original      bias    std. error
+t1* 9.239385 0.001603776   0.1467056
+> boot.ci(qb,conf=0.92,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = qb, conf = 0.92, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+92%   ( 8.986,  9.500 )  
+Calculations and Intervals on Original Scale
+>
+```
