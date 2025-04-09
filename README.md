@@ -7414,7 +7414,7 @@ t1* 9.239385 0.001603776   0.1467056
 BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 Based on 100000 bootstrap replicates
 
-CALL : 
+CALL :
 boot.ci(boot.out = qb, conf = 0.92, type = "bca", index = 1)
 
 Intervals : 
@@ -7425,3 +7425,70 @@ Calculations and Intervals on Original Scale
 ```
 
 * So, this analysis tells us that the point estimate of E(y|x=11) under the quadratic specification is 9.239; based on the BCa bootstrap, the 92% confidence interval around this estimate is [8.986,9.500].
+* We can elaborate on this example by estimating Δ = E(y|x=12) - E(y|x=11) and then calculating a 94% confidence interval for that difference.
+
+```R
+eyx12.quadratic-eyx11.quadratic
+
+library(boot)
+
+eb <- function(data,i){
+  b <- data[i,]
+  Qb <- lm(y~1+x+xsq,data=b)
+  eyx11b <- coef(Qb)[1]+coef(Qb)[2]*11+coef(Qb)[3]*11*11
+  eyx12b <- coef(Qb)[1]+coef(Qb)[2]*12+coef(Qb)[3]*12*12
+  delta <- eyx12b-eyx11b
+  return(delta)
+  }
+
+qb <- boot(data=d,statistic=eb,R=1e5)
+qb
+boot.ci(qb,conf=0.94,type="bca",index=1)
+```
+
+* Here is our output (which confirms the negative slope of the secant in the chart posted above).
+
+```Rout
+> eyx12.quadratic-eyx11.quadratic
+(Intercept) 
+ -0.1300335 
+> 
+> library(boot)
+> 
+> eb <- function(data,i){
++   b <- data[i,]
++   Qb <- lm(y~1+x+xsq,data=b)
++   eyx11b <- coef(Qb)[1]+coef(Qb)[2]*11+coef(Qb)[3]*11*11
++   eyx12b <- coef(Qb)[1]+coef(Qb)[2]*12+coef(Qb)[3]*12*12
++   delta <- eyx12b-eyx11b
++   return(delta)
++   }
+> 
+> qb <- boot(data=d,statistic=eb,R=1e5)
+> qb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = d, statistic = eb, R = 1e+05)
+
+
+Bootstrap Statistics :
+      original     bias    std. error
+t1* -0.1300335 0.00254202  0.06748186
+> boot.ci(qb,conf=0.94,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = qb, conf = 0.94, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+94%   (-0.2385,  0.0187 )  
+Calculations and Intervals on Original Scale
+>
+```
+
+* Our point estimate for the difference is -0.130 and the 94% confidence interval around this estimate is [-0.2385,0.0187] which includes zero. Based on this evidence, we would fail to reject Ho that Δ = E(y|x=12) - E(y|x=11) = 0 (at the 94% confidence level).
