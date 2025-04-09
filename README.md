@@ -7424,4 +7424,4 @@ Calculations and Intervals on Original Scale
 >
 ```
 
-* So, this analysis tells us that the point estimate of E(y|x=11) under the quadratic specification is 9.239385; based on the BCa bootstrap, the 92% confidence interval around this estimate is [8.986,9.500].
+* So, this analysis tells us that the point estimate of E(y|x=11) under the quadratic specification is 9.239; based on the BCa bootstrap, the 92% confidence interval around this estimate is [8.986,9.500].
