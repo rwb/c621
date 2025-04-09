@@ -7312,3 +7312,49 @@ F-statistic: 215.2 on 2 and 27 DF,  p-value: < 2.2e-16
 <p align="center">
 <img src="/gfiles/curve9.png" width="600px">
 </p>
+
+* Next, we create residual plots for both statistical models:
+
+```R
+par(mfrow=c(1,2))
+plot(d$x,residuals(L),pch=19)
+abline(h=0,lty=2,lwd=0.8)
+plot(d$x,residuals(Q),pch=19)
+abline(h=0,lty=2,lwd=0.8)
+```
+
+<p align="center">
+<img src="/gfiles/resid-plot.png" width="600px">
+</p>
+
+* Again, we are looking for an approximately random distribution of residuals which is not evident in the left-hand plot (a horseshoe pattern) but is evident in the right-hand plot (correctly specified model).
+* Let's generate the scatterplot again with a regression line and a quadratic regression curve.
+
+```R
+# redraw linear and quadratic scatterplot
+
+plot(d$x,d$y,pch=19)
+lines(x=xstar,y=yhatl,lty=1,lwd=3,col="blue")
+abline(h=3:10,lty=3,lwd=0.8)
+abline(v=4:14,lty=3,lwd=0.8)
+lines(x=xstar,y=yhatq,lty=1,lwd=3,col="red")
+
+eyx11.linear <- lint+lb1*11
+eyx12.linear <- lint+lb1*12
+slope.linear <- eyx12.linear-eyx11.linear
+slope.linear
+int.linear <- eyx11.linear-slope.linear*11
+int.linear
+
+eyx11.quadratic <- qint+qb1*11+qb2*11*11
+eyx12.quadratic <- qint+qb1*12+qb2*12*12
+slope.quadratic <- eyx12.quadratic-eyx11.quadratic
+slope.quadratic
+int.quadratic <- eyx11.quadratic-slope.quadratic*11
+int.quadratic
+abline(a=int.quadratic,b=slope.quadratic,lty=1,lwd=3,col="darkgreen")
+```
+
+<p align="center">
+<img src="/gfiles/secant.png" width="600px">
+</p>
