@@ -7358,3 +7358,12 @@ abline(a=int.quadratic,b=slope.quadratic,lty=1,lwd=3,col="darkgreen")
 <p align="center">
 <img src="/gfiles/secant.png" width="600px">
 </p>
+
+* Note that the green line is a secant which shows the slope of the line connecting E(y|x=12) and E(y|x=11) based on the quadratic specification.
+* With nonlinear regressions, it is important to be able to estimate the difference between conditional expectations because the magnitude of the estimated difference could vary depending on the value of *x*.
+* When we estimate a conditional expectation or a difference between two conditional expectations, we need to provide a measure of uncertainty to accompany the estimate.
+* Let's begin by calculating a 92% confidence interval for our estimate of the E(y|x=11) from the quadratic regression.
+* We can use the following bootstrap code to estimate this confidence interval:
+
+```R
+predict(Q,interval="confidence",newdata=list(x=11),level=0.92)
