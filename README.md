@@ -7492,3 +7492,18 @@ Calculations and Intervals on Original Scale
 ```
 
 * Our point estimate for the difference is -0.130 and the 94% confidence interval around this estimate is [-0.2385,0.0187] which includes zero. Based on this evidence, we would fail to reject Ho that Δ = E(y|x=12) - E(y|x=11) = 0 (at the 94% confidence level).
+
+#### Practice Problem
+
+* Read the ih.csv dataset (emailed to you on March 10th).
+* Calculate the 2018 homicide rate per 100,000 population for each state; store the rate in an object called *h*.
+* Calculate the 2018 undocumented immigration (as a percent of the population) for each state; store in an object called *i*.
+* Estimate a linear regression model where *h* is the outcome and *i* is the independent variable.
+* Create a scatterplot where *i* is on the horizontal axis and *h* is on the vertical axis.
+* Use your linear model to draw a regression line through the scatterplot.
+* Estimate a quadratic regression model where *h* is the outcome and *i* is the independent variable.
+* Estimate E(y|x=3) for the linear model; calculate a 87% confidence interval around this estimate.
+* Estimate E(y|x=3) for the quadratic model; calculate a 87% confidence interval around this estimate.
+* Estimate Δ = E(y|x=4)-E(y|x=3) for the quadratic model; use this information to draw a secant on the scatterplot.
+* Calculate a 93% confidence interval for Δ; use this confidence interval to test the hypothesis that Δ = 0.
+* Extra challenge: develop a Monte Carlo simulation to demonstrate that the procedure being used to calculate the 93% confidence interval has the appropriate coverage rate.
