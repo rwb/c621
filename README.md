@@ -7506,3 +7506,4 @@ Calculations and Intervals on Original Scale
 * Estimate E(y|x=3) for the quadratic model; calculate a 87% confidence interval around this estimate.
 * Estimate Δ = E(y|x=4)-E(y|x=3) for the quadratic model; use this information to draw a secant on the scatterplot.
 * Calculate a 93% confidence interval for Δ; use this confidence interval to test the hypothesis that Δ = 0.
+* Challenge: design a simulation procedure that will allow you to verify that this confidence interval procedure has the correct coverage rate.
