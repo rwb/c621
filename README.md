@@ -7821,4 +7821,84 @@ Calculations and Intervals on Original Scale
 
 * Notice that this confidence interval includes zero.
 * The evidence is not strong enough to reject Ho that Δ = 0.
+* Challenge: design a simulation procedure that will allow you to verify that this confidence interval procedure has the correct coverage rate.
 
+```R
+set.seed(3)
+
+x <- rnorm(n=100,mean=10,sd=1)
+xsq <- x*x
+eyx10 <- 3+2*10-0.5*10*10
+eyx11 <- 3+2*11-0.5*11*11
+t <- eyx11-eyx10
+t
+
+lcl <- vector()
+ucl <- vector()
+
+for(i in 1:3000){
+  y <- 3+2*x-0.5*xsq+rnorm(n=100,mean=0,sd=1)
+  
+  delta <- vector()
+
+  for(j in 1:3000){
+    b <- sample(1:100,size=100,replace=T)
+    yb <- y[b]
+    xb <- x[b]
+    xsqb <- xsq[b]
+  
+    Qb <- lm(yb~1+xb+xsqb)
+    eyx10b <- coef(Qb)[1]+coef(Qb)[2]*10+coef(Qb)[3]*10*10
+    eyx11b <- coef(Qb)[1]+coef(Qb)[2]*11+coef(Qb)[3]*11*11
+    delta[j] <- eyx11b-eyx10b
+    }
+
+  lcl[i] <- quantile(delta,0.035)
+  ucl[i] <- quantile(delta,1-0.035)
+  }
+
+f <- ifelse(lcl<t & ucl>t,1,0)
+mean(f)
+```
+
+* Here is the output:
+
+```Rout
+> set.seed(3)
+> 
+> x <- rnorm(n=100,mean=10,sd=1)
+> xsq <- x*x
+> eyx10 <- 3+2*10-0.5*10*10
+> eyx11 <- 3+2*11-0.5*11*11
+> t <- eyx11-eyx10
+> t
+[1] -8.5
+> 
+> lcl <- vector()
+> ucl <- vector()
+> 
+> for(i in 1:3000){
++   y <- 3+2*x-0.5*xsq+rnorm(n=100,mean=0,sd=1)
++   
++   delta <- vector()
++ 
++   for(j in 1:3000){
++     b <- sample(1:100,size=100,replace=T)
++     yb <- y[b]
++     xb <- x[b]
++     xsqb <- xsq[b]
++   
++     Qb <- lm(yb~1+xb+xsqb)
++     eyx10b <- coef(Qb)[1]+coef(Qb)[2]*10+coef(Qb)[3]*10*10
++     eyx11b <- coef(Qb)[1]+coef(Qb)[2]*11+coef(Qb)[3]*11*11
++     delta[j] <- eyx11b-eyx10b
++     }
++ 
++   lcl[i] <- quantile(delta,0.035)
++   ucl[i] <- quantile(delta,1-0.035)
++   }
+> 
+> f <- ifelse(lcl<t & ucl>t,1,0)
+> mean(f)
+[1] 0.9226667
+> 
