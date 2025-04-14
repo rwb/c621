@@ -7960,3 +7960,4 @@ is.matrix(B)
 >
 ```
 
+* Note that the *order* of the matrix is defined in terms of the number of rows and columns of the matrix; for example, matrix $\bf{B}$ above is a $3 \times 3$ matrix.
