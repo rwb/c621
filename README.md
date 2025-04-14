@@ -7762,3 +7762,62 @@ abline(a=int.q,b=slope.q,lty=1,lwd=3,col="darkgreen")
 <p align="center">
 <img src="/gfiles/s3.png" width="600px">
 </p>
+
+* Calculate a 93% confidence interval for Δ; use this confidence interval to test the hypothesis that Δ = 0.
+
+```
+eb <- function(data,i){
+  b <- data[i,]
+  Qb <- lm(h~1+i+isq,data=b)
+  eyx3b <- coef(Qb)[1]+coef(Qb)[2]*3+coef(Qb)[3]*3*3
+  eyx4b <- coef(Qb)[1]+coef(Qb)[2]*4+coef(Qb)[3]*4*4
+  delta <- eyx4b-eyx3b
+  return(delta)
+  }
+
+qb <- boot(data=s,statistic=eb,R=1e5)
+qb
+boot.ci(qb,conf=0.93,type="bca",index=1)
+```
+
+* Here is our output:
+
+```Rout
+> eb <- function(data,i){
++   b <- data[i,]
++   Qb <- lm(h~1+i+isq,data=b)
++   eyx3b <- coef(Qb)[1]+coef(Qb)[2]*3+coef(Qb)[3]*3*3
++   eyx4b <- coef(Qb)[1]+coef(Qb)[2]*4+coef(Qb)[3]*4*4
++   delta <- eyx4b-eyx3b
++   return(delta)
++   }
+> 
+> qb <- boot(data=s,statistic=eb,R=1e5)
+> qb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = s, statistic = eb, R = 1e+05)
+
+
+Bootstrap Statistics :
+      original     bias    std. error
+t1* -0.0590562 -0.1535435   0.4354478
+> boot.ci(qb,conf=0.93,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = qb, conf = 0.93, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+93%   (-0.7287,  0.4550 )  
+Calculations and Intervals on Original Scale
+>
+```
+
+* Notice that this confidence interval includes zero.
+
