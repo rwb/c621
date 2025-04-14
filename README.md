@@ -8263,23 +8263,7 @@ summary(lm(y~1+x))
 * Output:
 
 ```Rout
-> x <- rnorm(n=10,mean=10,sd=1)
-> o <- rep(10,1)
-> X <- cbind(o,x)
-> X
-       o         x
- [1,] 10 11.438151
- [2,] 10 11.699460
- [3,] 10  9.223068
- [4,] 10 10.311442
- [5,] 10 12.607022
- [6,] 10  9.402994
- [7,] 10 11.600318
- [8,] 10  9.797171
- [9,] 10 10.036166
-[10,] 10 11.210280
-> is.matrix(X)
-[1] TRUE> set.seed(5)
+> set.seed(5)
 > x <- rnorm(n=10,mean=10,sd=1)
 > o <- rep(1,10)
 > X <- cbind(o,x)
@@ -8335,7 +8319,6 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 Residual standard error: 0.9492 on 8 degrees of freedom
 Multiple R-squared:   0.44,	Adjusted R-squared:   0.37 
 F-statistic: 6.287 on 1 and 8 DF,  p-value: 0.03652
-
 > 
 ```
 
