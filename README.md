@@ -7684,3 +7684,81 @@ Calculations and Intervals on Original Scale
 >
 ```
 
+* Estimate E(y|x=3) for the quadratic model; calculate a 87% confidence interval around this estimate.
+
+```R
+eb <- function(data,i){
+  b <- data[i,]
+  Qb <- lm(h~1+i+isq,data=b)
+  eyx3b <- coef(Qb)[1]+coef(Qb)[2]*3+coef(Qb)[3]*3*3
+  return(eyx3b)
+  }
+
+qb <- boot(data=s,statistic=eb,R=1e5)
+qb
+boot.ci(qb,conf=0.87,type="bca",index=1)
+```
+
+```Rout
+> eb <- function(data,i){
++   b <- data[i,]
++   Qb <- lm(h~1+i+isq,data=b)
++   eyx3b <- coef(Qb)[1]+coef(Qb)[2]*3+coef(Qb)[3]*3*3
++   return(eyx3b)
++   }
+> 
+> qb <- boot(data=s,statistic=eb,R=1e5)
+> qb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = s, statistic = eb, R = 1e+05)
+
+
+Bootstrap Statistics :
+    original     bias    std. error
+t1* 5.127302 0.05530494   0.5187268
+> boot.ci(qb,conf=0.87,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = qb, conf = 0.87, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+87%   ( 4.359,  5.910 )  
+Calculations and Intervals on Original Scale
+> 
+```
+
+* Estimate Δ = E(y|x=4)-E(y|x=3) for the quadratic model; use this information to draw a secant on the scatterplot.
+
+```R
+eyx4.q <- 6.27590-0.62572*4+0.08095*4*4
+eyx3.q <- 6.27590-0.62572*3+0.08095*3*3
+slope.q <- eyx4.q-eyx3.q
+slope.q
+int.q <- eyx4.quadratic-slope.q*4
+int.q
+abline(a=int.q,b=slope.q,lty=1,lwd=3,col="darkgreen")
+```
+
+* Here is our output:
+
+```Rout
+> eyx4.q <- 6.27590-0.62572*4+0.08095*4*4
+> eyx3.q <- 6.27590-0.62572*3+0.08095*3*3
+> slope.q <- eyx4.q-eyx3.q
+> slope.q
+[1] -0.05907
+> int.q <- eyx4.quadratic-slope.q*4
+> int.q
+[1] 5.3045
+```
+
+<p align="center">
+<img src="/gfiles/s3.png" width="600px">
+</p>
