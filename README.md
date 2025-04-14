@@ -7902,3 +7902,7 @@ mean(f)
 > mean(f)
 [1] 0.9226667
 > 
+```
+
+#### Topic 23: Matrix Operations
+
