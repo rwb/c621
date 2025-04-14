@@ -7692,6 +7692,9 @@ Calculations and Intervals on Original Scale
 * Estimate E(y|x=3) for the quadratic model; calculate a 87% confidence interval around this estimate.
 
 ```R
+eyx3b <- 6.27590-0.62572*3+0.08095*3*3
+eyx3b
+
 eb <- function(data,i){
   b <- data[i,]
   Qb <- lm(h~1+i+isq,data=b)
@@ -7705,6 +7708,10 @@ boot.ci(qb,conf=0.87,type="bca",index=1)
 ```
 
 ```Rout
+> eyx3b <- 6.27590-0.62572*3+0.08095*3*3
+> eyx3b
+[1] 5.12729
+> 
 > eb <- function(data,i){
 +   b <- data[i,]
 +   Qb <- lm(h~1+i+isq,data=b)
