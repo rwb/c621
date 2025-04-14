@@ -8322,4 +8322,79 @@ F-statistic: 6.287 on 1 and 8 DF,  p-value: 0.03652
 > 
 ```
 
+* Next, we calculate the so-called "hat matrix", $\bf{H}$:
 
+```R
+H <- X%*%solve(t(X)%*%X)%*%t(X)
+e <- y-H%*%y
+ess <- t(e)%*%e
+tss <- sum((y-mean(y))^2)
+rsq <- 1-(ess/tss)
+rsq
+mse <- ess/(10-2)
+mse
+sqrt(mse)
+```
+
+* Output:
+  
+```Rout
+> H <- X%*%solve(t(X)%*%X)%*%t(X)
+> e <- y-H%*%y
+> ess <- t(e)%*%e
+> tss <- sum((y-mean(y))^2)
+> rsq <- 1-(ess/tss)
+> rsq
+          [,1]
+[1,] 0.4400409
+> mse <- ess/(10-2)
+> mse
+         [,1]
+[1,] 0.901062
+> sqrt(mse)
+          [,1]
+[1,] 0.9492428
+> 
+```
+
+* Then, we calculate the variance-covariance matrix of the parameter estimates by:
+
+```R
+V <- as.vector(mse)*solve(t(X)%*%X)
+V
+sqrt(diag(V))
+summary(lm(y~1+x))
+```
+
+* Output:
+
+```Rout
+> V <- as.vector(mse)*solve(t(X)%*%X)
+> V
+          o          x
+o 10.955882 -1.0952135
+x -1.095214  0.1103918
+> sqrt(diag(V))
+        o         x 
+3.3099671 0.3322526 
+>
+> summary(lm(y~1+x))
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.79460 -0.26316  0.09027  0.32698  1.58269 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept)   4.1739     3.3100   1.261   0.2428  
+x             0.8331     0.3323   2.507   0.0365 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.9492 on 8 degrees of freedom
+Multiple R-squared:   0.44,	Adjusted R-squared:   0.37 
+F-statistic: 6.287 on 1 and 8 DF,  p-value: 0.03652
+```
