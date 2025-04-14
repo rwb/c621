@@ -7624,4 +7624,63 @@ lines(x,y,lty=1,lwd=3,col="blue")
 <img src="/gfiles/s2.png" width="600px">
 </p>
 
-* 
+* Estimate E(y|x=3) for the linear model; calculate a 87% confidence interval around this estimate.
+
+```R
+s <- data.frame(h,i,isq)
+
+library(boot)
+
+eb <- function(data,i){
+  b <- data[i,]
+  Lb <- lm(h~1+i,data=b)
+  eyx3b <- coef(Lb)[1]+coef(Lb)[2]*3
+  return(eyx3b)
+  }
+
+qb <- boot(data=s,statistic=eb,R=1e5)
+qb
+boot.ci(qb,conf=0.87,type="bca",index=1)
+```
+
+* Here is our output:
+
+```Rout
+> s <- data.frame(h,i,isq)
+> 
+> library(boot)
+> 
+> eb <- function(data,i){
++   b <- data[i,]
++   Lb <- lm(h~1+i,data=b)
++   eyx3b <- coef(Lb)[1]+coef(Lb)[2]*3
++   return(eyx3b)
++   }
+> 
+> qb <- boot(data=s,statistic=eb,R=1e5)
+> qb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = s, statistic = eb, R = 1e+05)
+
+
+Bootstrap Statistics :
+    original      bias    std. error
+t1* 5.321448 -0.01957561   0.3997628
+> boot.ci(qb,conf=0.87,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = qb, conf = 0.87, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+87%   ( 4.752,  5.966 )  
+Calculations and Intervals on Original Scale
+>
+```
+
