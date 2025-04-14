@@ -7820,4 +7820,5 @@ Calculations and Intervals on Original Scale
 ```
 
 * Notice that this confidence interval includes zero.
+* The evidence is not strong enough to reject Ho that Δ = 0.
 
