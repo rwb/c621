@@ -7753,7 +7753,7 @@ eyx4.q <- 6.27590-0.62572*4+0.08095*4*4
 eyx3.q <- 6.27590-0.62572*3+0.08095*3*3
 slope.q <- eyx4.q-eyx3.q
 slope.q
-int.q <- eyx4.quadratic-slope.q*4
+int.q <- eyx4.q-slope.q*4
 int.q
 abline(a=int.q,b=slope.q,lty=1,lwd=3,col="darkgreen")
 ```
