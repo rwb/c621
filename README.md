@@ -7955,7 +7955,7 @@ is.matrix(B)
 [2,]    2    5    8
 [3,]    3    6    9
 >
-> is.matrix(B)
+> (B)
 [1] TRUE
 > 
 ```
@@ -7978,7 +7978,7 @@ is.matrix(B)
 ```R
 C <- matrix(1:12, nrow = 3, ncol = 4)
 C
-is.matrix(C
+is.matrix(C)
 ```
 
 * Output:
