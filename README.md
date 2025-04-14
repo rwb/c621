@@ -7507,3 +7507,68 @@ Calculations and Intervals on Original Scale
 * Estimate Δ = E(y|x=4)-E(y|x=3) for the quadratic model; use this information to draw a secant on the scatterplot.
 * Calculate a 93% confidence interval for Δ; use this confidence interval to test the hypothesis that Δ = 0.
 * Challenge: design a simulation procedure that will allow you to verify that this confidence interval procedure has the correct coverage rate.
+
+### Lesson 11 - Monday 4/14/25
+
+* Worked practice problem from last week (topic 22)
+* Read the ih.csv dataset (emailed to you on March 10th).
+
+```R
+d <- read.csv(file="ih.csv",header=T,sep=",")
+```
+
+* Calculate the 2018 homicide rate per 100,000 population for each state; store the rate in an object called *h*.
+* Calculate the 2018 undocumented immigration (as a percent of the population) for each state; store in an object called *i*.
+
+```R
+h <- (d$h18/d$p18)*100000
+i <- (d$i18/d$p18)*100
+```
+
+* Estimate a linear regression model where *h* is the outcome and *i* is the independent variable.
+
+```R
+L <- lm(h~1+i)
+summary(L)
+```
+
+* Here is our output:
+
+```Rout
+> L <- lm(h~1+i)
+> summary(L)
+
+Call:
+lm(formula = h ~ 1 + i)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.2130 -2.6463 -0.1668  1.8877  7.3556 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   5.7622     0.8408   6.853 1.23e-08 ***
+i            -0.1469     0.2954  -0.497    0.621    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.052 on 48 degrees of freedom
+Multiple R-squared:  0.005126,	Adjusted R-squared:  -0.0156 
+F-statistic: 0.2473 on 1 and 48 DF,  p-value: 0.6212
+
+>
+```
+
+* Create a scatterplot where *i* is on the horizontal axis and *h* is on the vertical axis.
+* Use your linear model to draw a regression line through the scatterplot.
+
+```R
+plot(i,h,pch=19,ylim=c(0,14))
+abline(L,lty=1,lwd=3,col="red")
+abline(h=0:14,lty=3,lwd=0.8)
+abline(v=0:7,lty=3,lwd=0.8)
+```
+
+<p align="center">
+<img src="/gfiles/s1.png" width="600px">
+</p>
