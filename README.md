@@ -7627,6 +7627,8 @@ lines(x,y,lty=1,lwd=3,col="blue")
 * Estimate E(y|x=3) for the linear model; calculate a 87% confidence interval around this estimate.
 
 ```R
+eyx3 <- 5.7622-0.1469*3
+
 s <- data.frame(h,i,isq)
 
 library(boot)
@@ -7646,6 +7648,9 @@ boot.ci(qb,conf=0.87,type="bca",index=1)
 * Here is our output:
 
 ```Rout
+> eyx3 <- 5.7622-0.1469*3
+[1] 5.3215
+> 
 > s <- data.frame(h,i,isq)
 > 
 > library(boot)
