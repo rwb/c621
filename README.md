@@ -8322,7 +8322,7 @@ F-statistic: 6.287 on 1 and 8 DF,  p-value: 0.03652
 > 
 ```
 
-* Next, we calculate the so-called "hat matrix", $\bf{H}$:
+* Next, we calculate the so-called "hat matrix", $\bf{H}$ which helps us to calculate some important quantities related to the error term of the regression:
 
 ```R
 H <- X%*%solve(t(X)%*%X)%*%t(X)
