@@ -7906,3 +7906,57 @@ mean(f)
 
 #### Topic 23: Matrix Operations
 
+* Define a vector:
+
+```R
+A <- c(3,5,2)
+A
+is.vector(A)
+```
+
+* Output:
+
+```Rout
+> A <- c(3,5,2)
+> A
+[1] 3 5 2
+> is.vector(A)
+[1] TRUE
+>
+```
+
+* Define a matrix:
+
+```R
+B <- matrix(1:9, nrow = 3, ncol = 3)
+B
+is.matrix(B)
+```
+
+* Output:
+
+```Rout
+> B <- matrix(1:9, nrow = 3, ncol = 3)
+> B
+     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+>
+> is.matrix(B)
+[1] TRUE
+> 
+```
+
+* Now, let's transpose the matrix to get $\bf{B}^T$:
+
+```R
+
+> t(B)
+     [,1] [,2] [,3]
+[1,]    1    2    3
+[2,]    4    5    6
+[3,]    7    8    9
+>
+```
+
