@@ -7572,3 +7572,56 @@ abline(v=0:7,lty=3,lwd=0.8)
 <p align="center">
 <img src="/gfiles/s1.png" width="600px">
 </p>
+
+* Estimate a quadratic regression model where *h* is the outcome and *i* is the independent variable.
+
+```R
+isq <- i*i
+Q <- lm(h~1+i+isq)
+summary(Q)
+```
+
+```Rout
+> isq <- i*i
+> Q <- lm(h~1+i+isq)
+> summary(Q)
+
+Call:
+lm(formula = h ~ 1 + i + isq)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.5592 -2.6364 -0.1287  1.6218  7.3784 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  6.27590    1.30301   4.816 1.56e-05 ***
+i           -0.62572    0.96951  -0.645    0.522    
+isq          0.08095    0.15600   0.519    0.606    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.076 on 47 degrees of freedom
+Multiple R-squared:  0.01079,	Adjusted R-squared:  -0.0313 
+F-statistic: 0.2564 on 2 and 47 DF,  p-value: 0.7749
+
+>
+```
+
+* Let's add to the scatterplot:
+
+```R
+x <- seq(from=0,to=7,by=0.1)
+y <- 6.27590-0.62572*x+0.08095*x*x
+plot(i,h,pch=19,ylim=c(0,14))
+abline(L,lty=1,lwd=3,col="red")
+abline(h=0:14,lty=3,lwd=0.8)
+abline(v=0:7,lty=3,lwd=0.8)
+lines(x,y,lty=1,lwd=3,col="blue")
+```
+
+<p align="center">
+<img src="/gfiles/s2.png" width="600px">
+</p>
+
+* 
