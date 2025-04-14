@@ -8503,3 +8503,52 @@ F-statistic: 2.191 on 2 and 4 DF,  p-value: 0.2277
 
 > 
 ```
+
+* Next, calculate the variance-covariance matrix of the parameter estimates by:
+
+```R
+V <- as.vector(mse)*solve(t(X)%*%X)
+V
+sqrt(diag(V))
+summary(lm(y~1+x1+x2))
+```
+
+* Here is our output:
+
+```Rout
+> V <- as.vector(mse)*solve(t(X)%*%X)
+> V
+           x0        x1         x2
+x0 777.141461  9.997214 -42.263041
+x1   9.997214  1.256680  -1.083797
+x2 -42.263041 -1.083797   2.557858
+> sqrt(diag(V))
+       x0        x1        x2 
+27.877257  1.121017  1.599331 
+> summary(lm(y~1+x1+x2))
+
+Call:
+lm(formula = y ~ 1 + x1 + x2)
+
+Residuals:
+      1       2       3       4       5 
+ 1.6947 -1.0372  1.5253 -1.7036 -0.2468 
+      6       7 
+-0.8935  0.6611 
+
+Coefficients:
+            Estimate Std. Error t value
+(Intercept) -24.6124    27.8773  -0.883
+x1           -0.2923     1.1210  -0.261
+x2            2.8985     1.5993   1.812
+            Pr(>|t|)
+(Intercept)    0.427
+x1             0.807
+x2             0.144
+
+Residual standard error: 1.618 on 4 degrees of freedom
+Multiple R-squared:  0.5228,	Adjusted R-squared:  0.2843 
+F-statistic: 2.191 on 2 and 4 DF,  p-value: 0.2277
+
+>
+```
