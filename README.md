@@ -7961,3 +7961,60 @@ is.matrix(B)
 ```
 
 * Note that the *order* of the matrix is defined in terms of the number of rows and columns of the matrix; for example, matrix $\bf{B}$ above is a $3 \times 3$ matrix.
+* Let's consider the following matrix, $\bf{C}$ which is a $3 \times 4$ matrix.
+
+```R
+C <- matrix(1:12, nrow = 3, ncol = 4)
+C
+is.matrix(C
+```
+
+* Output:
+
+```Rout
+> C <- matrix(1:12, nrow = 3, ncol = 4)
+> C
+     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+[3,]    3    6    9   12
+> is.matrix(C)
+[1] TRUE
+>
+```
+
+* Note that matrix $\bf{B}$ is a square matrix because the number of rows is equal to the number of columns.
+* Addition and subtraction of matrices; note that matrices must have the same order to be added or subtracted:
+
+```R
+B
+t(B)
+B+t(B)
+B-t(B)
+```
+
+* Output:
+
+```Rout
+> B
+     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+> t(B)
+     [,1] [,2] [,3]
+[1,]    1    2    3
+[2,]    4    5    6
+[3,]    7    8    9
+> B+t(B)
+     [,1] [,2] [,3]
+[1,]    2    6   10
+[2,]    6   10   14
+[3,]   10   14   18
+> B-t(B)
+     [,1] [,2] [,3]
+[1,]    0    2    4
+[2,]   -2    0    2
+[3,]   -4   -2    0
+>
+```
