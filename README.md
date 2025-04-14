@@ -8419,7 +8419,7 @@ F-statistic: 6.287 on 1 and 8 DF,  p-value: 0.03652
 set.seed(17)
 x1 <- rnorm(n=7,mean=10,sd=1)
 x2 <- x1+rnorm(n=7,mean=10,sd=1)
-y <- x1+x2+rnorm(n=7,mean=30,sd=3)
+y <- x1+x2+rnorm(n=7,mean=0,sd=3)
 x0 <- rep(1,7)
 X <- cbind(x0,x1,x2)
 X
@@ -8440,10 +8440,10 @@ summary(lm(y~1+x1+x2))
 * Output:
 
 ```Rout
- set.seed(17)
+> set.seed(17)
 > x1 <- rnorm(n=7,mean=10,sd=1)
 > x2 <- x1+rnorm(n=7,mean=10,sd=1)
-> y <- x1+x2+rnorm(n=7,mean=30,sd=3)
+> y <- x1+x2+rnorm(n=7,mean=0,sd=3)
 > x0 <- rep(1,7)
 > X <- cbind(x0,x1,x2)
 > X
@@ -8457,10 +8457,10 @@ summary(lm(y~1+x1+x2))
 [7,]  1 10.972874 21.16079
 > B <- solve(t(X)%*%X)%*%t(X)%*%y
 > B
-         [,1]
-x0  5.3875828
-x1 -0.2922613
-x2  2.8985224
+          [,1]
+x0 -24.6124172
+x1  -0.2922613
+x2   2.8985224
 > H <- X%*%solve(t(X)%*%X)%*%t(X)
 > e <- y-H%*%y
 > ess <- t(e)%*%e
@@ -8482,18 +8482,24 @@ Call:
 lm(formula = y ~ 1 + x1 + x2)
 
 Residuals:
-      1       2       3       4       5       6       7 
- 1.6947 -1.0372  1.5253 -1.7036 -0.2468 -0.8935  0.6611 
+      1       2       3       4       5 
+ 1.6947 -1.0372  1.5253 -1.7036 -0.2468 
+      6       7 
+-0.8935  0.6611 
 
 Coefficients:
-            Estimate Std. Error t value Pr(>|t|)
-(Intercept)   5.3876    27.8773   0.193    0.856
-x1           -0.2923     1.1210  -0.261    0.807
-x2            2.8985     1.5993   1.812    0.144
+            Estimate Std. Error t value
+(Intercept) -24.6124    27.8773  -0.883
+x1           -0.2923     1.1210  -0.261
+x2            2.8985     1.5993   1.812
+            Pr(>|t|)
+(Intercept)    0.427
+x1             0.807
+x2             0.144
 
 Residual standard error: 1.618 on 4 degrees of freedom
 Multiple R-squared:  0.5228,	Adjusted R-squared:  0.2843 
 F-statistic: 2.191 on 2 and 4 DF,  p-value: 0.2277
 
->
+> 
 ```
