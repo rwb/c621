@@ -8398,3 +8398,90 @@ Residual standard error: 0.9492 on 8 degrees of freedom
 Multiple R-squared:   0.44,	Adjusted R-squared:   0.37 
 F-statistic: 6.287 on 1 and 8 DF,  p-value: 0.03652
 ```
+
+#### Topic 24: 2 Continuous Variables
+
+* Let's work with the more complicated example of 2 predictor variables:
+
+```R
+set.seed(17)
+x1 <- rnorm(n=7,mean=10,sd=1)
+x2 <- x1+rnorm(n=7,mean=10,sd=1)
+y <- x1+x2+rnorm(n=7,mean=30,sd=3)
+x0 <- rep(1,7)
+X <- cbind(x0,x1,x2)
+X
+B <- solve(t(X)%*%X)%*%t(X)%*%y
+B
+H <- X%*%solve(t(X)%*%X)%*%t(X)
+e <- y-H%*%y
+ess <- t(e)%*%e
+tss <- sum((y-mean(y))^2)
+rsq <- 1-(ess/tss)
+rsq
+mse <- ess/(7-3)
+mse
+sqrt(mse)
+summary(lm(y~1+x1+x2))
+```
+
+* Output:
+
+```Rout
+ set.seed(17)
+> x1 <- rnorm(n=7,mean=10,sd=1)
+> x2 <- x1+rnorm(n=7,mean=10,sd=1)
+> y <- x1+x2+rnorm(n=7,mean=30,sd=3)
+> x0 <- rep(1,7)
+> X <- cbind(x0,x1,x2)
+> X
+     x0        x1       x2
+[1,]  1  8.984991 20.70153
+[2,]  1  9.920363 20.17560
+[3,]  1  9.767013 20.13359
+[4,]  1  9.182732 20.36352
+[5,]  1 10.772091 21.41528
+[6,]  1  9.834388 21.12971
+[7,]  1 10.972874 21.16079
+> B <- solve(t(X)%*%X)%*%t(X)%*%y
+> B
+         [,1]
+x0  5.3875828
+x1 -0.2922613
+x2  2.8985224
+> H <- X%*%solve(t(X)%*%X)%*%t(X)
+> e <- y-H%*%y
+> ess <- t(e)%*%e
+> tss <- sum((y-mean(y))^2)
+> rsq <- 1-(ess/tss)
+> rsq
+          [,1]
+[1,] 0.5228371
+> mse <- ess/(7-3)
+> mse
+         [,1]
+[1,] 2.618174
+> sqrt(mse)
+         [,1]
+[1,] 1.618077
+> summary(lm(y~1+x1+x2))
+
+Call:
+lm(formula = y ~ 1 + x1 + x2)
+
+Residuals:
+      1       2       3       4       5       6       7 
+ 1.6947 -1.0372  1.5253 -1.7036 -0.2468 -0.8935  0.6611 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   5.3876    27.8773   0.193    0.856
+x1           -0.2923     1.1210  -0.261    0.807
+x2            2.8985     1.5993   1.812    0.144
+
+Residual standard error: 1.618 on 4 degrees of freedom
+Multiple R-squared:  0.5228,	Adjusted R-squared:  0.2843 
+F-statistic: 2.191 on 2 and 4 DF,  p-value: 0.2277
+
+>
+```
