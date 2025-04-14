@@ -8107,3 +8107,236 @@ c22
 [1] 46
 >
 ```
+
+* Note the following inequality:
+
+```R
+M1%*%M2
+M2%*%M1
+```
+
+* Output:
+
+```Rout
+> M1%*%M2
+     [,1] [,2]
+[1,]   23   31
+[2,]   34   46
+> M2%*%M1
+     [,1] [,2]
+[1,]   19   43
+[2,]   22   50
+>
+```
+
+* Note that it is possible to multiply a $3 \times 4$ matrix by a $4 \times 2$ matrix but it is not possible to multiply the other way:
+
+```R
+> T1 <- matrix(1:12, nrow = 3, ncol = 4)
+> T2 <- matrix(13:20,nrow = 4, ncol = 2)
+> T1%*%T2
+     [,1] [,2]
+[1,]  334  422
+[2,]  392  496
+[3,]  450  570
+> T2%*%T1
+Error in T2 %*% T1 : non-conformable arguments
+>
+```
+
+* Inverse of a number:
+
+```R
+x <- 3
+ix <- 1/x
+ix
+ix*x
+```
+
+* Output:
+
+```Rout
+> x <- 3
+> ix <- 1/x
+> ix
+[1] 0.3333333
+> ix*x
+[1] 1
+>
+```
+
+* Inverse of a matrix:
+
+```R
+M <- matrix(1:4, nrow = 2, ncol = 2)
+M
+solve(M)
+solve(M)%*%M
+```
+
+* Output:
+
+```Rout
+> M <- matrix(1:4, nrow = 2, ncol = 2)
+> M
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    4
+> solve(M)
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+>
+> solve(M)%*%M
+     [,1] [,2]
+[1,]    1    0
+[2,]    0    1
+> 
+```
+
+* The last matrix, the product of $\bf{M}^{-1}$ and $\bf{M}$, is called the identity matrix.
+* What does the solve() function do?
+
+```R
+a <- M[1,1]
+b <- M[2,1]
+c <- M[1,2]
+d <- M[2,2]
+D <- a*d-b*c
+D
+det(M)
+MI11 <- d/D
+MI12 <- -b/D
+MI21 <- -c/D
+MI22 <- a/D
+mi.values <- c(MI11,MI12,MI21,MI22)
+MI <- matrix(mi.values, nrow = 2, ncol = 2)
+MI
+solve(M)
+```
+
+* Output:
+
+```Rout
+> a <- M[1,1]
+> b <- M[2,1]
+> c <- M[1,2]
+> d <- M[2,2]
+> D <- a*d-b*c
+> D
+[1] -2
+> det(M)
+[1] -2
+> MI11 <- d/D
+> MI12 <- -b/D
+> MI21 <- -c/D
+> MI22 <- a/D
+> mi.values <- c(MI11,MI12,MI21,MI22)
+> MI <- matrix(mi.values, nrow = 2, ncol = 2)
+> MI
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+> solve(M)
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+>
+```
+
+* Matrix solution for least squares regression:
+
+```R
+set.seed(5)
+x <- rnorm(n=10,mean=10,sd=1)
+o <- rep(1,10)
+X <- cbind(o,x)
+X
+is.matrix(X)
+t(X)
+y <- 3+1*x+rnorm(n=10,mean=0,sd=1)
+y
+B <- solve(t(X)%*%X)%*%t(X)%*%y
+summary(lm(y~1+x))
+```
+
+* Output:
+
+```Rout
+> x <- rnorm(n=10,mean=10,sd=1)
+> o <- rep(10,1)
+> X <- cbind(o,x)
+> X
+       o         x
+ [1,] 10 11.438151
+ [2,] 10 11.699460
+ [3,] 10  9.223068
+ [4,] 10 10.311442
+ [5,] 10 12.607022
+ [6,] 10  9.402994
+ [7,] 10 11.600318
+ [8,] 10  9.797171
+ [9,] 10 10.036166
+[10,] 10 11.210280
+> is.matrix(X)
+[1] TRUE> set.seed(5)
+> x <- rnorm(n=10,mean=10,sd=1)
+> o <- rep(1,10)
+> X <- cbind(o,x)
+> X
+      o         x
+ [1,] 1  9.159145
+ [2,] 1 11.384359
+ [3,] 1  8.744508
+ [4,] 1 10.070143
+ [5,] 1 11.711441
+ [6,] 1  9.397092
+ [7,] 1  9.527834
+ [8,] 1  9.364629
+ [9,] 1  9.714226
+[10,] 1 10.138108
+> is.matrix(X)
+[1] TRUE
+> t(X)
+      [,1]     [,2]     [,3]     [,4]     [,5]     [,6]
+o 1.000000  1.00000 1.000000  1.00000  1.00000 1.000000
+x 9.159145 11.38436 8.744508 10.07014 11.71144 9.397092
+      [,7]     [,8]     [,9]    [,10]
+o 1.000000 1.000000 1.000000  1.00000
+x 9.527834 9.364629 9.714226 10.13811
+>
+> y <- 3+1*x+rnorm(n=10,mean=0,sd=1)
+> y
+ [1] 13.38677 13.58258 10.66412 12.91261 13.63968 12.25811
+ [7] 11.93052 10.18066 12.95504 12.87875
+>
+> B <- solve(t(X)%*%X)%*%t(X)%*%y
+> B
+       [,1]
+o 4.1738674
+x 0.8330706
+>
+> summary(lm(y~1+x))
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.79460 -0.26316  0.09027  0.32698  1.58269 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept)   4.1739     3.3100   1.261   0.2428  
+x             0.8331     0.3323   2.507   0.0365 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.9492 on 8 degrees of freedom
+Multiple R-squared:   0.44,	Adjusted R-squared:   0.37 
+F-statistic: 6.287 on 1 and 8 DF,  p-value: 0.03652
+
+> 
+```
+
+
