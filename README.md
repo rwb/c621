@@ -8552,3 +8552,39 @@ F-statistic: 2.191 on 2 and 4 DF,  p-value: 0.2277
 
 >
 ```
+
+### Assignment #3 (Due on ELMS at 11:59pm on Wednesday 4/23/25)
+
+Instructions: please review the guidelines for assignments and submission of assignments in the syllabus above. You should not discuss this assignment with others; the work you submit should be your own work. If I receive questions related to the assignment that I judge to be of interest to the entire class, I will post them below with the answers. I will respond to all questions submitted by 11:59pm (ET) on Monday 4/21/25. I will not be able to respond to any questions received after that time (so that all students will have ample time to take such questions into consideration before the submission deadline). Each problem below is worth 5 points. Good luck!
+
+Dataset #1:
+
+```R
+set.seed(847)
+g <- c(rep(0,1800),rep(1,350))
+y <- 12+1/3*g+rnorm(n=2150,mean=0,sd=1+2*g)
+```
+
+* 1.1: Estimate a linear regression model with *y* as the outcome variable and *g* as the independent variable.
+* 1.2: Create a boxplot showing the distribution of *y* conditional on the 2 levels of *g*. Create a second boxplot in the same plotspace showing the conditional distribution of the square root of the absolute values of the standardized residuals from the regression for each level of *g*. Comment on the pattern you observe in these 2 boxplots.
+* 1.3: Calculate a 95% confidence interval for the slope coefficient for this regression. Comment on whether this confidence interval includes zero.
+* 1.4: Estimate a regression of the square root of the absolute values of the standardized residuals on the independent variable, *g*. Then, calculate a Breusch-Pagan test of homoscedasticity. What do these diagnostics tell you about whether the null hypothesis of homoscedasticity should be rejected?
+* 1.5: Use White's heteroscedasticity consistent covariance matrix to create a new 95% confidence interval for the slope coefficient. Comment on whether this confidence interval includes zero.
+* 1.6: Use the weighted least squares (approach #1) to estimate the linear regression adjusted for heteroscedasticity. Then create a new 95% confidence interval for the slope coefficient. Comment on whether this confidence interval includes zero.
+* 1.7: Comment on the effect that heteroscedasticity has on our inference about the slope coefficient in this dataset.
+
+Dataset #2: Read in our ih.csv dataset. Calculate the percent of the population that is considered to be undocumented immigrant status for the year 2022 (based on i22 and p22) for each state; then calculate the 2022 homicide rate for each state (based on h22 and p22). Let's call the independent variable *ip* and the outcome variable *hr*.
+
+* 2.1: Estimate a linear regression where *ip* is the independent variable and *hr* is the outcome variable.
+* 2.2: Create a 3-panel plot window with a scatterplot and regression line for the relationship between *ip* and *hr*; a scatterplot of the residuals against the independent variable; and a plot of the square root of the absolute values of the standardized residuals against the independent variable.
+* 2.3: Create a scatterplot of the leverage statistics against the standardized residuals. Draw horizontal and vertical lines at the appropriate cutoff points. Identify states that have high leverage or high standardized residuals (outliers).
+* 2.4: Indicate if any states qualify as both high leverage and as outliers; if there are, explain what you would do next.
+* 2.5: Using the same dataset, estimate linear and quadratic regression models for the relationship between *ip* and *hr*.
+* 2.6: Create a scatterplot of the *ip* and *hr* datapoints. Add the regression line for the linear model and the appropriate nonlinear function for the quadratic model to the plotspace.
+* 2.7: Calculate Δ = E(y|x=3)-E(y|x=2) for the linear model along with a 82% confidence interval for that estimate. Comment on whether the confidence interval includes zero.
+* 2.8: Calculate Δ = E(y|x=3)-E(y|x=2) for the quadratic model along with a 82% confidence interval for that estimate. Comment on whether the confidence interval includes zero.
+* 2.9: Write a statement where you intepret what you have learned from 2.8-2.9.
+* 2.10: Create a $\bf{X} matrix using a column of 1's and the independent variable, *ip*; Create a $\bf{Y}$ vector using *hr*. With these in hand, use matrix arithmetic to estimate the linear regression intercept and slope estimates; confirm that you get the same results using the lm() function.
+* 2.11: Use the hat matrix, $\bf{H}$, to estimate the R-squared, mean square error, and root mean square error for the linear regression; then, using the regression mean square error, the hat matrix, and the $\bf{X}$ matrix, calculate the variance-covariance matrix of the parameter estimates. Use this matrix to calculate the standard errors of the intercept and slope terms;  confirm that these standard errors match the standard errors from the lm() function.
+* 2.12: Create a $\bf{X} matrix using a column of 1's, the independent variable, *ip*, and the squared *ip*; Create a $\bf{Y}$ vector using *hr*. With these in hand, use matrix arithmetic to estimate the quadratic regression intercept and slope estimates; confirm that you get the same results using the lm() function.
+* 2.13: Use the hat matrix, $\bf{H}$, to estimate the R-squared, mean square error, and root mean square error for the quadratic regression; Then, using the regression mean square error, the hat matrix, and the $\bf{X}$ matrix, calculate the variance-covariance matrix of the parameter estimates. Use this matrix to calculate the standard errors of the intercept and slope terms; confirm that these standard errors match the standard errors from the lm() function.
