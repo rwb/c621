@@ -8553,7 +8553,7 @@ F-statistic: 2.191 on 2 and 4 DF,  p-value: 0.2277
 >
 ```
 
-### Assignment #3 (Due on ELMS at 11:59pm on Wednesday 4/23/25)
+### Assignment #3 (Due on ELMS at 11:59pm on Thursday 4/24/25)
 
 Instructions: please review the guidelines for assignments and submission of assignments in the syllabus above. You should not discuss this assignment with others; the work you submit should be your own work. If I receive questions related to the assignment that I judge to be of interest to the entire class, I will post them below with the answers. I will respond to all questions submitted by 11:59pm (ET) on Monday 4/21/25. I will not be able to respond to any questions received after that time (so that all students will have ample time to take such questions into consideration before the submission deadline). Each problem below is worth 5 points. Good luck!
 
