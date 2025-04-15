@@ -8578,7 +8578,7 @@ Dataset #2: Read in our ih.csv dataset. Calculate the percent of the population 
 * 2.1: Estimate a linear regression where *ip* is the independent variable and *hr* is the outcome variable.
 * 2.2: Create a 3-panel plot window with a scatterplot and regression line for the relationship between *ip* and *hr*; a scatterplot of the residuals against the independent variable; and a plot of the square root of the absolute values of the standardized residuals against the independent variable.
 * 2.3: Create a scatterplot of the leverage statistics against the standardized residuals. Draw horizontal and vertical lines at the appropriate cutoff points. Identify states that have high leverage or high standardized residuals (outliers).
-* 2.4: Indicate if any states qualify as both high leverage and as outliers; if there are, explain what you would do next.
+* 2.4: Indicate which, if any, states qualify as both high leverage and as outliers; if there are, explain what you would do next.
 * 2.5: Using the same dataset, estimate linear and quadratic regression models for the relationship between *ip* and *hr*.
 * 2.6: Create a scatterplot of the *ip* and *hr* datapoints. Add the regression line for the linear model and the appropriate nonlinear function for the quadratic model to the plotspace.
 * 2.7: Calculate Δ = E(y|x=3)-E(y|x=2) for the linear model along with a 82% confidence interval for that estimate. Comment on whether the confidence interval includes zero.
