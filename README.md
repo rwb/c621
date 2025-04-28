@@ -9219,5 +9219,43 @@ qchisq(p=0.82,df=1)
 
 * Using both the F-test and the likelihood-ratio tests, we reject Ho and conclude that the interaction model is more consistent with the data (at the 82% confidence level).
 * Now, that we have evidence in favor of the interaction model, we turn to the interpretation of the interaction effect.
+* We begin by computing the expected outcomes for different levels of immigration and Census regions:
 
 ```R
+irs <- 1:7
+rgs <- 0:1
+g <- expand.grid(irs=irs,rgs=rgs)
+g$yhat <- coef(Mi)[1]+coef(Mi)[2]*g$irs+coef(Mi)[3]*g$rgs+coef(Mi)[4]*g$irs*g$rgs
+g
+```
+
+---
+
+```Rout
+> irs <- 1:7
+> rgs <- 0:1
+> g <- expand.grid(irs=irs,rgs=rgs)
+> g$yhat <- coef(Mi)[1]+coef(Mi)[2]*g$irs+coef(Mi)[3]*g$rgs+coef(Mi)[4]*g$irs*g$rgs
+> g
+   irs rgs     yhat
+1    1   0 4.158776
+2    2   0 4.219987
+3    3   0 4.281197
+4    4   0 4.342408
+5    5   0 4.403618
+6    6   0 4.464829
+7    7   0 4.526039
+
+8    1   1 9.059850
+9    2   1 8.274835
+10   3   1 7.489821
+11   4   1 6.704806
+12   5   1 5.919792
+13   6   1 5.134777
+14   7   1 4.349763
+>
+```
+
+* Notice that for southern region states, θ appears to be negative (as immigration rates increase, homicide rates are expected to drop); for the other states, there appears to be a weak positive relationship (θ > 0, but just barely).
+
+`
