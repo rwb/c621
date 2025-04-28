@@ -8843,3 +8843,126 @@ rg           -0.1726597 -0.007045421  0.593336443
   0.7344644   0.2459171   0.7702834 
 > 
 ```
+
+---
+
+* Now, we calculate the expected homicide rate (and 92% confidence interval for the expected rate) for southern states when the immigration rate is set to (held constant at) the sample median value.
+
+```R
+md.ir <- median(ir)
+md.ir
+ey.southern <- coef(Mr)[1]+coef(Mr)[2]*md.ir+coef(Mr)[3]*1
+ey.southern
+nd <- data.frame(ir=2.302555,rg=1)
+predict(Mr,newdata=nd,interval="confidence",level=0.92)
+```
+
+---
+
+```Rout
+> md.ir <- median(ir)
+> md.ir
+[1] 2.302555
+> ey.southern <- coef(Mr)[1]+coef(Mr)[2]*md.ir+coef(Mr)[3]*1
+> ey.southern
+(Intercept) 
+   7.906998 
+> nd <- data.frame(ir=2.302555,rg=1)
+> predict(Mr,newdata=nd,interval="confidence",level=0.92)
+       fit      lwr      upr
+1 7.906998 6.767107 9.046889
+>
+```
+
+---
+
+* Next, we consider the expected homicide rate (and 92% confidence interval for the expected rate) for other states (again, with the immigration rate set to its sample median value:
+
+```R
+nd <- data.frame(ir=2.302555,rg=0)
+predict(Mr,newdata=nd,interval="confidence",level=0.92)
+```
+
+---
+
+```Rout
+> nd <- data.frame(ir=2.302555,rg=0)
+> predict(Mr,newdata=nd,interval="confidence",level=0.92)
+       fit      lwr      upr
+1 4.264295 3.483831 5.044759
+>
+```
+
+* There is clearly no overlap in these confidence intervals which confirms the inference from the linear regression model where we observed a positive and statistically significant main effect for the region variable (rg).
+* Our next task is to demonstrate that we can get similar results by drawing coefficients from a multivariate *t* distribution with degrees of freedom equal to the number of cases minus the number of regression coefficients estimated (including the intercept term).
+* First, we estimate the 92% confidence interval for southern states:
+
+```R
+library(mvnfast)
+D <- Mr$df.residual
+sb <- rmvt(n=1e5,mu=B,sigma=V,df=D)
+ey.sb.south <- sb[,1]+sb[,2]*md.ir+sb[,3]
+quantile(ey.sb.south,0.04)
+quantile(ey.sb.south,0.96)
+```
+
+---
+
+```Rout
+> library(mvnfast)
+> D <- Mr$df.residual
+> sb <- rmvt(n=1e5,mu=B,sigma=V,df=D)
+> ey.sb.south <- sb[,1]+sb[,2]*md.ir+sb[,3]
+> quantile(ey.sb.south,0.04)
+      4% 
+6.764685 
+> quantile(ey.sb.south,0.96)
+     96% 
+9.048475 
+>
+```
+
+---
+
+* Then, we perform the same set of calculations for "non-south" region states:
+
+```R
+ey.sb.oth <- sb[,1]+sb[,2]*md.ir
+quantile(ey.sb.oth,0.04)
+quantile(ey.sb.oth,0.96)
+```
+
+---
+
+```Rout
+> ey.sb.oth <- sb[,1]+sb[,2]*md.ir
+> quantile(ey.sb.oth,0.04)
+      4% 
+3.483547 
+> quantile(ey.sb.oth,0.96)
+     96% 
+5.047166 
+> 
+```
+
+* Note that this is just to confirm that we can get the same results as the predict() function using simulation.
+* Now, we estimate the 92% confidence interval for the difference between the 2 expectations:
+
+```R
+delta <- ey.sb.south-ey.sb.oth
+quantile(delta,0.04)
+quantile(delta,0.96)
+```
+
+---
+
+```Rout
+> delta <- ey.sb.south-ey.sb.oth
+> quantile(delta,0.04)
+      4% 
+2.262114 
+> quantile(delta,0.96)
+    96% 
+5.02692 
+>
+```
