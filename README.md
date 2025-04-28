@@ -8596,7 +8596,7 @@ Dataset #2: Read in our ih.csv dataset. Calculate the percent of the population 
 
 ### Lesson 12 - Monday 4/21/25
 
-* Today, we will be working on topics 25 (1 continuous/1 binary independent variable) and 26 (interaction effects).
+* Today, we will be workin on topics 25 (1 continuous/1 binary independent variable).
 * We begin by reading in our homicide dataset:
 
 ```R
@@ -8966,3 +8966,255 @@ quantile(delta,0.96)
 5.02692 
 >
 ```
+
+* So, this is giving us an estimate of the 92% confidence interval for the difference between the expectation for the southern states and the other states when the immigration rate is held constant at the sample median. Since this confidence interval does not include zero, the null hypothesis (Ho) that delta = 0 must be rejected (at the 92% confidence level).
+
+### Lesson 13 - Monday 4/28/25
+
+* Today, we cover topics 26 (interaction effects), 27 (mediation), and 28 (likelihood ratio and F-tests)
+* We begin with Topic 26
+* So, now we have 2 models: 1 without an interaction term (the restricted model) and 1 with an interaction term (the unrestricted model).
+
+#### Topic 26: Interaction Effects
+
+* We begin this unit by elaborating the model in the previous section to include an interaction term.
+* One way to think about the model we are about to estimate.
+* Think about a regression coefficient that measures the amount of change we expect to see in the homicide rate for a 1-unit change (1 percentage point) in the percentage of the population that is an undocumented immigrant (again, these estimates are based on demographic research conducted by the Pew Center). Let's call that regression coefficient, θ.
+* Now, let's think about a constrained (no interaction model), where our estimate of θr is assumed to apply to all the states (we will call this model, Mr).
+* Next, let's think about an interaction model, Mi, where we relax the constraint that there is one θr and allow for the possibility that there are two different values of θ -- one for southern states, θs, and one for non-southern states, θns.
+* The interaction model allows us to estimate these separate values of θ and also allows us to estimate the difference between them (along with a confidence interval -- we will use a 82% confidence interval -- for the difference).
+
+```R
+d <- read.csv(file="ih.csv",sep=",",header=T)
+head(d)
+y <- (d$h18/d$p18)*100000
+ir <- (d$i18/d$p18)*100
+rg <- rep(0,50)
+rg[d$state=="alabama"] <- 1
+rg[d$state=="arkansas"] <- 1
+rg[d$state=="delaware"] <- 1
+rg[d$state=="florida"] <- 1
+rg[d$state=="georgia"] <- 1
+rg[d$state=="kentucky"] <- 1
+rg[d$state=="louisiana"] <- 1
+rg[d$state=="maryland"] <- 1
+rg[d$state=="mississippi"] <- 1
+rg[d$state=="north carolina"] <- 1
+rg[d$state=="oklahoma"] <- 1
+rg[d$state=="south carolina"] <- 1
+rg[d$state=="tennessee"] <- 1
+rg[d$state=="texas"] <- 1
+rg[d$state=="virginia"] <- 1
+rg[d$state=="west virginia"] <- 1
+Mr <- lm(y~1+ir+rg)
+summary(Mr)
+Mi <- lm(y~1+ir+rg+ir*rg)
+summary(Mi)
+```
+
+---
+
+```Rout
+> d <- read.csv(file="ih.csv",sep=",",header=T)
+> head(d)
+       state  h18 u18      p18     i18 moe18  h19 u19
+1    alabama  560  69  4887871   60000 10000  579  51
+2     alaska   56  32   737438   10000  5000   76  27
+3    arizona  411 150  7171646  275000 20000  412 149
+4   arkansas  257  61  3013825   70000  5000  264  60
+5 california 1848 234 39557045 1950000 70000 1766 222
+6   colorado  269  53  5695564  170000 20000  247  53
+       p19     i19 moe19  h21 u21      p21     i21 moe21
+1  4903185   60000 10000  750  89  5039877   60000 10000
+2   731545   10000  5000   48  31   732673    5000  5000
+3  7278717  250000 25000  546 186  7276316  250000 20000
+4  3017804   70000  5000  326  77  3025891   70000  5000
+5 39512223 1900000 65000 2475 232 39237836 1850000 65000
+6  5758736  170000 15000  374  76  5812069  160000 15000
+   h22 u22      p22     i22 moe22
+1  702  70  5074296   65000 10000
+2   74  31   733583   10000  5000
+3  625 162  7359197  250000 20000
+4  322  72  3045637   70000 10000
+5 2228 251 39029342 1800000 75000
+6  412  68  5839926  170000 15000
+> y <- (d$h18/d$p18)*100000
+> ir <- (d$i18/d$p18)*100
+> rg <- rep(0,50)
+> rg[d$state=="alabama"] <- 1
+> rg[d$state=="arkansas"] <- 1
+> rg[d$state=="delaware"] <- 1
+> rg[d$state=="florida"] <- 1
+> rg[d$state=="georgia"] <- 1
+> rg[d$state=="kentucky"] <- 1
+> rg[d$state=="louisiana"] <- 1
+> rg[d$state=="maryland"] <- 1
+> rg[d$state=="mississippi"] <- 1
+> rg[d$state=="north carolina"] <- 1
+> rg[d$state=="oklahoma"] <- 1
+> rg[d$state=="south carolina"] <- 1
+> rg[d$state=="tennessee"] <- 1
+> rg[d$state=="texas"] <- 1
+> rg[d$state=="virginia"] <- 1
+> rg[d$state=="west virginia"] <- 1
+> Mr <- lm(y~1+ir+rg)
+> summary(Mr)
+
+Call:
+lm(formula = y ~ 1 + ir + rg)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-3.137 -1.966 -1.083  1.518  6.698 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   4.7022     0.7345   6.402 6.61e-08 ***
+ir           -0.1902     0.2459  -0.773    0.443    
+rg            3.6427     0.7703   4.729 2.09e-05 ***
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.539 on 47 degrees of freedom
+Multiple R-squared:  0.3259,	Adjusted R-squared:  0.2972 
+F-statistic: 11.36 on 2 and 47 DF,  p-value: 9.445e-05
+
+> Mi <- lm(y~1+ir+rg+ir*rg)
+> summary(Mi)
+
+Call:
+lm(formula = y ~ 1 + ir + rg + ir * rg)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.1453 -1.9231 -0.8155  1.7757  7.0562 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  4.09757    0.81564   5.024 8.12e-06 ***
+ir           0.06121    0.28858   0.212 0.832958    
+rg           5.74730    1.51933   3.783 0.000446 ***
+ir:rg       -0.84623    0.52947  -1.598 0.116837    
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.498 on 46 degrees of freedom
+Multiple R-squared:  0.3614,	Adjusted R-squared:  0.3197 
+F-statistic: 8.676 on 3 and 46 DF,  p-value: 0.0001136
+
+>
+```
+
+---
+
+* So, now we have our 2 models, Mr and Mi.
+* How do we decide which model is more consistent with the data?
+* One way is to calculate a F-test.
+
+```R
+ssMr <- sum(residuals(Mr)^2)
+ssMr
+ssMi <- sum(residuals(Mi)^2)
+ssMi
+dfMr <- 50-3
+dfMr
+dfMi <- 50-4
+dfMi
+ts.num <- (ssMr-ssMi)/(dfMr-dfMi)
+ts.den <- ssMi/dfMi
+ts.ratio <- ts.num/ts.den
+ts.ratio
+
+# critical F value at the 82% confidence level
+
+qf(p=0.82,df1=dfMr-dfMi,df2=dfMi)
+
+# we can also use the anova() function to get a p-value
+
+anova(Mr,Mi)
+```
+
+---
+
+```Rout
+> ssMr <- sum(residuals(Mr)^2)
+> ssMr
+[1] 302.9888
+> ssMi <- sum(residuals(Mi)^2)
+> ssMi
+[1] 287.049
+> dfMr <- 50-3
+> dfMr
+[1] 47
+> dfMi <- 50-4
+> dfMi
+[1] 46
+> ts.num <- (ssMr-ssMi)/(dfMr-dfMi)
+> ts.den <- ssMi/dfMi
+> ts.ratio <- ts.num/ts.den
+> ts.ratio
+[1] 2.554368
+> 
+> # critical F value at the 82% confidence level
+> 
+> qf(p=0.82,df1=dfMr-dfMi,df2=dfMi)
+[1] 1.853574
+> 
+> # we can also use the anova() function to get a p-value
+> 
+> anova(Mr,Mi)
+Analysis of Variance Table
+
+Model 1: y ~ 1 + ir + rg
+Model 2: y ~ 1 + ir + rg + ir * rg
+  Res.Df    RSS Df Sum of Sq      F Pr(>F)
+1     47 302.99                           
+2     46 287.05  1     15.94 2.5544 0.1168
+>
+```
+
+---
+
+* Another approach is to use a likelihood ratio test:
+
+```R
+# extract log-likelihood values from model objects (Mr and Mi)
+
+logLik(Mr)
+logLik(Mi)
+
+# test statistic is 2 x the difference between the two log-likelihood values
+# degrees of freedom is the difference between the number of parameters estimated
+# for each statistical model.
+
+ts <- 2*(115.9887-114.6377)
+ts
+qchisq(p=0.82,df=1)
+```
+
+---
+
+```Rout
+> # extract log-likelihood values from model objects (Mr and Mi)
+> 
+> logLik(Mr)
+'log Lik.' -115.9887 (df=4)
+> logLik(Mi)
+'log Lik.' -114.6377 (df=5)
+> 
+> # test statistic is 2 x the difference between the two log-likelihood values
+> 
+> ts <- 2*(115.9887-114.6377)
+> ts
+[1] 2.702
+> qchisq(p=0.82,df=4-3)
+[1] 1.797624
+>
+```
+
+* Using both the F-test and the likelihood-ratio tests, we reject Ho and conclude that the interaction model is more consistent with the data (at the 82% confidence level).
+* Now, that we have evidence in favor of the interaction model, we turn to the interpretation of the interaction effect.
+
+```R
