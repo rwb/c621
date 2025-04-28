@@ -9359,4 +9359,181 @@ quantile(theta.s-theta.ns,c(0.09,0.91))
 ```
 
 * Notice that the confidence interval for θs is strictly negative while the confidence interval for θns includes zero; the confidence interval for, Δ, the difference between θs and θns is strictly negative which leads to the conclusion that there is a significant difference between the two θ estimates at the 82% confidence level.
+* An important assumption made by this model, Mi, is that the variance of the error term is constant (homoscedasticity). In other words, we have allowed the θ estimates to vary by region but we've constrained the error variances to be the same. One way to relax this assumption is to estimate separate models for each region.
+* Let's do that now.
 
+```R
+dcombined <- data.frame(y,ir,rg)
+dsouth <- subset(dcombined,rg==1)
+dnonsouth <- subset(dcombined,rg==0)
+Ms <- lm(y~1+ir,data=dsouth)
+summary(Ms)
+Mns <- lm(y~1+ir,data=dnonsouth)
+summary(Mns)
+```
+
+* Here is our output (notice some familiar numbers for the slope coefficient for *ir* in each set of estimates):
+
+```Rout
+> dcombined <- data.frame(y,ir,rg)
+> dsouth <- subset(dcombined,rg==1)
+> dnonsouth <- subset(dcombined,rg==0)
+> Mi <- lm(y~1+ir,data=dsouth)
+> summary(Ms)
+
+Call:
+lm(formula = y ~ 1 + ir, data = dsouth)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-4.145 -1.539  0.140  1.276  4.231 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   9.8449     1.2571   7.831 1.75e-06 ***
+ir           -0.7850     0.4354  -1.803   0.0929 .  
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.45 on 14 degrees of freedom
+Multiple R-squared:  0.1885,	Adjusted R-squared:  0.1305 
+F-statistic: 3.251 on 1 and 14 DF,  p-value: 0.09292
+
+> Mns <- lm(y~1+ir,data=dnonsouth)
+> summary(Mns)
+
+Call:
+lm(formula = y ~ 1 + ir, data = dnonsouth)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.6261 -1.9876 -0.9868  1.7757  7.0562 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  4.09757    0.82243   4.982 2.09e-05 ***
+ir           0.06121    0.29098   0.210    0.835    
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.519 on 32 degrees of freedom
+Multiple R-squared:  0.001381,	Adjusted R-squared:  -0.02983 
+F-statistic: 0.04425 on 1 and 32 DF,  p-value: 0.8347
+
+>
+```
+
+* Here is our likelihood ratio test:
+
+```R
+logLik(Mi)
+logLik(Ms)
+logLik(Mns)
+```
+
+----
+
+```Rout
+> logLik(Mi)
+'log Lik.' -114.6377 (df=5)
+> logLik(Ms)
+'log Lik.' -35.9712 (df=3)
+> logLik(Mns)
+'log Lik.' -78.62232 (df=3)
+> 
+```
+
+* In this case, we have 5 parameters estimated in the Mi specification (the intercept, the main effect for immigration rate, the main effect for region, the interaction term between immigration and region, and the root mean square error term).
+* Each of the 2 group-specific (rg=0, rg=1) regressions has 3 parameter estimates (the intercept, the main effect for immigration rate, and the root mean square error term).
+* This means that our *unconstrained* model has a total log-likelihood value of -(35.9712+78.62232) = -114.5935 with 6 parameters estimated (the difference is that we now have 2 rmse parameter estimates instead of 1).
+* Here is the likelihood ratio test with 1 degree of freedom:
+
+```R
+ts <- 2*(114.6377-114.5935)
+ts
+qchisq(p=0.82,df=1)
+```
+
+---
+
+```Rout
+> ts <- 2*(114.6377-114.5935)
+> ts
+[1] 0.0884
+> qchisq(p=0.82,df=1)
+[1] 1.797624
+> 
+```
+
+* With this evidence in hand, it appears there is no significant difference between the Mi model and the (Ms+Mns) model (at the 82% confidence level).
+* If the difference had been significant, then we could have explored the implications. For example, we could have calculated a 82% confidence interval for Δ (when the immigration rate goes from 2 to 3).
+
+```R
+Bs <- coef(Ms)
+Vs <- vcov(Ms)
+Ds <- Ms$df.residual
+Ds
+Bns <- coef(Mns)
+Vns <- vcov(Mns)
+Dns <- Mns$df.residual
+Dns
+
+library(mvnfast)
+sbs <- rmvt(n=1e5,mu=Bs,sigma=Vs,df=Ds)
+sbns <- rmvt(n=1e5,mu=Bns,sigma=Vns,df=Dns)
+
+ey.sb.s.i2 <- sbs[,1]+sbs[,2]*2
+ey.sb.s.i3 <- sbs[,1]+sbs[,2]*3
+theta.s <- ey.sb.s.i3-ey.sb.s.i2
+mean(theta.s)
+
+ey.sb.ns.i2 <- sbns[,1]+sbns[,2]*2
+ey.sb.ns.i3 <- sbns[,1]+sbns[,2]*3
+theta.ns <- ey.sb.ns.i3-ey.sb.ns.i2
+mean(theta.ns)
+
+mean(theta.s-theta.ns)
+quantile(theta.s-theta.ns,c(0.09,0.91))
+```
+
+* Here are the results:
+
+```Rout
+> Bs <- coef(Ms)
+> Vs <- vcov(Ms)
+> Ds <- Ms$df.residual
+> Ds
+[1] 14
+> Bns <- coef(Mns)
+> Vns <- vcov(Mns)
+> Dns <- Mns$df.residual
+> Dns
+[1] 32
+> 
+> library(mvnfast)
+> sbs <- rmvt(n=1e5,mu=Bs,sigma=Vs,df=Ds)
+> sbns <- rmvt(n=1e5,mu=Bns,sigma=Vns,df=Dns)
+> 
+> ey.sb.s.i2 <- sbs[,1]+sbs[,2]*2
+> ey.sb.s.i3 <- sbs[,1]+sbs[,2]*3
+> theta.s <- ey.sb.s.i3-ey.sb.s.i2
+> mean(theta.s)
+[1] -0.7852218
+> 
+> ey.sb.ns.i2 <- sbns[,1]+sbns[,2]*2
+> ey.sb.ns.i3 <- sbns[,1]+sbns[,2]*3
+> theta.ns <- ey.sb.ns.i3-ey.sb.ns.i2
+> mean(theta.ns)
+[1] 0.06220472
+> 
+> mean(theta.s-theta.ns)
+[1] -0.8474265
+> quantile(theta.s-theta.ns,c(0.09,0.91))
+        9%        91% 
+-1.5857804 -0.1093654 
+>
+```
+
+* Note that the confidence interval for delta (theta.s-theta.ns) is [-1.586,-0.109] which is a little wider than what was estimated before which was [-1.564,-0.128].
