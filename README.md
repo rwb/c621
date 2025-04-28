@@ -9260,9 +9260,10 @@ g
 ```
 
 * Notice that for southern region states, θs appears to be negative (as immigration rates increase, homicide rates are expected to drop); for the other states, there appears to be a weak positive relationship (θns > 0, but just barely).
+* Let's suppose we want to look at θs and θns when immigration goes from 2 to 3.
 * We can calculate the point estimates of these 2 numbers: θs = 7.490-8.275 = -0.785 and θns = 4.281-4.220 = 0.061. We can also think about an estimate, Δ = θs - θns = -0.785-0.061 = -0.846.
 * With this table, we have the expected homicide rates for different levels of immigration and the two regions but we do not have any measure of uncertainty for these estimates.
-* Let's suppose we want to look at θs and θns when immigration goes from 2 to 3.
+
 
 * We begin by collecting the parameter estimates and variance covariance matrices; then we simulate coefficients:
 
