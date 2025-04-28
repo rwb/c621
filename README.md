@@ -9219,6 +9219,9 @@ qchisq(p=0.82,df=1)
 
 * Using both the F-test and the likelihood-ratio tests, we reject Ho and conclude that the interaction model is more consistent with the data (at the 82% confidence level).
 * Now, that we have evidence in favor of the interaction model, we turn to the interpretation of the interaction effect.
+
+---
+
 * We begin by computing the expected outcomes for different levels of immigration and Census regions:
 
 ```R
@@ -9256,6 +9259,104 @@ g
 >
 ```
 
-* Notice that for southern region states, θ appears to be negative (as immigration rates increase, homicide rates are expected to drop); for the other states, there appears to be a weak positive relationship (θ > 0, but just barely).
+* Notice that for southern region states, θs appears to be negative (as immigration rates increase, homicide rates are expected to drop); for the other states, there appears to be a weak positive relationship (θns > 0, but just barely).
+* We can calculate the point estimates of these 2 numbers: θs = 7.490-8.275 = -0.785 and θns = 4.281-4.220 = 0.061. We can also think about an estimate, Δ = θs - θns = -0.785-0.061 = -0.846.
+* With this table, we have the expected homicide rates for different levels of immigration and the two regions but we do not have any measure of uncertainty for these estimates.
+* Let's suppose we want to look at θs and θns when immigration goes from 2 to 3.
 
-`
+* We begin by collecting the parameter estimates and variance covariance matrices; then we simulate coefficients:
+
+```R
+Bi <- coef(Mi)
+Bi
+Vi <- vcov(Mi)
+Vi
+D <- Mi$df.residual
+D
+
+library(mvnfast)
+sb <- rmvt(n=1e5,mu=Bi,sigma=Vi,df=D)
+```
+
+---
+
+* Here is our output:
+
+```Rout
+> Bi <- coef(Mi)
+> Bi
+(Intercept)          ir          rg       ir:rg 
+ 4.09756549  0.06121054  5.74729876 -0.84622506 
+> Vi <- vcov(Mi)
+> Vi
+            (Intercept)          ir         rg       ir:rg
+(Intercept)   0.6652715 -0.20029392 -0.6652715  0.20029392
+ir           -0.2002939  0.08327721  0.2002939 -0.08327721
+rg           -0.6652715  0.20029392  2.3083617 -0.69722217
+ir:rg         0.2002939 -0.08327721 -0.6972222  0.28034211
+>
+> D <- Mi$df.residual
+> D
+[1] 46
+>
+```
+
+---
+
+* Next, we calculate estimates of θs and θns when immigration goes from 2 to 3:
+
+```R
+ey.sb.s.i2 <- sb[,1]+sb[,2]*2+sb[,3]+sb[,4]*1*2
+ey.sb.s.i3 <- sb[,1]+sb[,2]*3+sb[,3]+sb[,4]*1*3
+theta.s <- ey.sb.s.i3-ey.sb.s.i2
+mean(theta.s)
+
+ey.sb.ns.i2 <- sb[,1]+sb[,2]*2
+ey.sb.ns.i3 <- sb[,1]+sb[,2]*3
+theta.ns <- ey.sb.ns.i3-ey.sb.ns.i2
+mean(theta.ns)
+```
+
+---
+
+```Rout
+> ey.sb.s.i2 <- sb[,1]+sb[,2]*2+sb[,3]+sb[,4]*1*2
+> ey.sb.s.i3 <- sb[,1]+sb[,2]*3+sb[,3]+sb[,4]*1*3
+> theta.s <- ey.sb.s.i3-ey.sb.s.i2
+> mean(theta.s)
+[1] -0.7845834
+> 
+> ey.sb.ns.i2 <- sb[,1]+sb[,2]*2
+> ey.sb.ns.i3 <- sb[,1]+sb[,2]*3
+> theta.ns <- ey.sb.ns.i3-ey.sb.ns.i2
+> mean(theta.ns)
+[1] 0.06138246
+>
+```
+
+* Notice these means coincide with the expected values we calculated earlier.
+* Now, we calculate 82% confidence intervals for θs, θns, and Δ (all at the 82% confidence level).
+
+```R
+quantile(theta.s,c(0.09,0.91))
+quantile(theta.ns,c(0.09,0.91))
+quantile(theta.s-theta.ns,c(0.09,0.91))
+```
+
+* Here is our output:
+
+```Rout
+> quantile(theta.s,c(0.09,0.91))
+       9%       91% 
+-1.386030 -0.182235 
+> quantile(theta.ns,c(0.09,0.91))
+        9%        91% 
+-0.3310341  0.4524287 
+> quantile(theta.s-theta.ns,c(0.09,0.91))
+        9%        91% 
+-1.5637758 -0.1279633 
+>
+```
+
+* Notice that the confidence interval for θs is strictly negative while the confidence interval for θns includes zero; the confidence interval for, Δ, the difference between θs and θns is strictly negative which leads to the conclusion that there is a significant difference between the two θ estimates at the 82% confidence level.
+
