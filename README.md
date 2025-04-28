@@ -9446,6 +9446,7 @@ logLik(Mns)
 ```
 
 * In this case, we have 5 parameters estimated in the Mi specification (the intercept, the main effect for immigration rate, the main effect for region, the interaction term between immigration and region, and the root mean square error term).
+* Note that the expected value estimates are quite similar to what was estimated before: θs = -0.785 and θns = 0.061; so Δ = θs - θns = -0.785-0.061 = -0.846.
 * Each of the 2 group-specific (rg=0, rg=1) regressions has 3 parameter estimates (the intercept, the main effect for immigration rate, and the root mean square error term).
 * This means that our *unconstrained* model has a total log-likelihood value of -(35.9712+78.62232) = -114.5935 with 6 parameters estimated (the difference is that we now have 2 rmse parameter estimates instead of 1).
 * Here is the likelihood ratio test with 1 degree of freedom:
