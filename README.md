@@ -9206,6 +9206,8 @@ qchisq(p=0.82,df=1)
 'log Lik.' -114.6377 (df=5)
 > 
 > # test statistic is 2 x the difference between the two log-likelihood values
+> # degrees of freedom is the difference between the number of parameters estimated
+> # for each statistical model.
 > 
 > ts <- 2*(115.9887-114.6377)
 > ts
