@@ -8982,6 +8982,7 @@ quantile(delta,0.96)
 * Think about a regression coefficient that measures the amount of change we expect to see in the homicide rate for a 1-unit change (1 percentage point) in the percentage of the population that is an undocumented immigrant (again, these estimates are based on demographic research conducted by the Pew Center). Let's call that regression coefficient, θ.
 * Now, let's think about a constrained (no interaction model), where our estimate of θr is assumed to apply to all the states (we will call this model, Mr).
 * Next, let's think about an interaction model, Mi, where we relax the constraint that there is one θr and allow for the possibility that there are two different values of θ -- one for southern states, θs, and one for non-southern states, θns.
+* We will estimate both models; then we will conduct a F-test ([https://sites.duke.edu/bossbackup/files/2013/02/FTestTutorial.pdf](link)) and a likelihood ratio test ([https://www.stat.cmu.edu/~larry/=stat705/Lecture16.pdf](link; section 8)) to adjudicate between them.
 * The interaction model allows us to estimate these separate values of θ and also allows us to estimate the difference between them (along with a confidence interval -- we will use a 82% confidence interval -- for the difference).
 
 ```R
