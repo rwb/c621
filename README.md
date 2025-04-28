@@ -8593,3 +8593,253 @@ Dataset #2: Read in our ih.csv dataset. Calculate the percent of the population 
 
 1. For question 2.5, concerning the estimation of the linear regression model, do you expect to use the lm() function again (which was already done in #2.1)? My response: Yes, the linear regression model will be the same; the quadratic regression will be new. 
 2. For question 2.6, I know in class we discussed that there should be three lines (quadratic function, data point line, and regression line). Just to clarify, shouldn’t it be only two lines (regression line, quadratic function line)? My response: For this question, what I meant to say was that should be 3 things in the plotspace: the individual data point, the regression line and the quadratic function.
+
+### Lesson 12 - Monday 4/21/25
+
+* Today, we will be working on topics 25 (1 continuous/1 binary independent variable) and 26 (interaction effects).
+* We begin by reading in our homicide dataset:
+
+```R
+d <- read.csv(file="ih.csv",sep=",",header=T)
+head(d)
+ncases <- nrow(d)
+x0 <- rep(1,ncases)
+y <- (d$h18/d$p18)*100000
+ir <- (d$i18/d$p18)*100
+```
+
+---
+
+```Rout
+> d <- read.csv(file="ih.csv",sep=",",header=T)
+> head(d)
+       state  h18 u18      p18     i18 moe18  h19 u19
+1    alabama  560  69  4887871   60000 10000  579  51
+2     alaska   56  32   737438   10000  5000   76  27
+3    arizona  411 150  7171646  275000 20000  412 149
+4   arkansas  257  61  3013825   70000  5000  264  60
+5 california 1848 234 39557045 1950000 70000 1766 222
+6   colorado  269  53  5695564  170000 20000  247  53
+       p19     i19 moe19  h21 u21      p21     i21 moe21
+1  4903185   60000 10000  750  89  5039877   60000 10000
+2   731545   10000  5000   48  31   732673    5000  5000
+3  7278717  250000 25000  546 186  7276316  250000 20000
+4  3017804   70000  5000  326  77  3025891   70000  5000
+5 39512223 1900000 65000 2475 232 39237836 1850000 65000
+6  5758736  170000 15000  374  76  5812069  160000 15000
+   h22 u22      p22     i22 moe22
+1  702  70  5074296   65000 10000
+2   74  31   733583   10000  5000
+3  625 162  7359197  250000 20000
+4  322  72  3045637   70000 10000
+5 2228 251 39029342 1800000 75000
+6  412  68  5839926  170000 15000
+> ncases <- nrow(d)
+>
+> x0 <- rep(1,ncases)
+> y <- (d$h18/d$p18)*100000
+> ir <- (d$i18/d$p18)*100
+```
+
+---
+
+* Next, we create a binary/dummy variable (terms used interchangeably) to indicate whether each state is in the U.S. Census "South" region.
+
+```R
+rg <- rep(0,ncases)
+rg[d$state=="alabama"] <- 1
+rg[d$state=="arkansas"] <- 1
+rg[d$state=="delaware"] <- 1
+rg[d$state=="florida"] <- 1
+rg[d$state=="georgia"] <- 1
+rg[d$state=="kentucky"] <- 1
+rg[d$state=="louisiana"] <- 1
+rg[d$state=="maryland"] <- 1
+rg[d$state=="mississippi"] <- 1
+rg[d$state=="north carolina"] <- 1
+rg[d$state=="oklahoma"] <- 1
+rg[d$state=="south carolina"] <- 1
+rg[d$state=="tennessee"] <- 1
+rg[d$state=="texas"] <- 1
+rg[d$state=="virginia"] <- 1
+rg[d$state=="west virginia"] <- 1
+
+data.frame(d$state,x0,y,ir,rg)[1:3,]
+```
+
+---
+
+```Rout
+> data.frame(d$state,x0,y,ir,rg)[1:3,]
+  d.state x0         y       ir rg
+1 alabama  1 11.456931 1.227528  1
+2  alaska  1  7.593859 1.356046  0
+3 arizona  1  5.730902 3.834545  0
+>
+```
+
+---
+
+* Next, we set up our matrix solution:
+
+```R
+# comparing matrix solution to output from lm()
+
+X <- cbind(x0,ir,rg)
+X
+B <- solve(t(X)%*%X)%*%t(X)%*%y
+B
+H <- X%*%solve(t(X)%*%X)%*%t(X)
+e <- y-H%*%y
+ess <- t(e)%*%e
+tss <- sum((y-mean(y))^2)
+rsq <- 1-(ess/tss)
+rsq
+mse <- ess/(ncases-3)
+mse
+sqrt(mse)
+V <- as.vector(mse)*solve(t(X)%*%X)
+V
+sqrt(diag(V))
+
+# lm results
+
+Mr <- lm(y~1+ir+rg)
+summary(Mr)
+B <- coef(Mr)
+B
+V <- vcov(Mr)
+V
+sqrt(diag(V))
+```
+
+---
+
+```Rout
+> # comparing matrix solution to output from lm()
+> 
+> X <- cbind(x0,ir,rg)
+> X
+      x0        ir rg
+ [1,]  1 1.2275283  1
+ [2,]  1 1.3560462  0
+ [3,]  1 3.8345451  0
+ [4,]  1 2.3226299  1
+ [5,]  1 4.9295897  0
+ [6,]  1 2.9847790  0
+ [7,]  1 3.9186434  0
+ [8,]  1 3.1018300  1
+ [9,]  1 3.7559876  1
+[10,]  1 3.5648167  1
+[11,]  1 3.1679187  0
+[12,]  1 2.2802313  0
+[13,]  1 3.1394513  0
+[14,]  1 1.6437837  0
+[15,]  1 1.7426322  0
+[16,]  1 2.5759873  0
+[17,]  1 1.0070714  1
+[18,]  1 1.5021530  1
+[19,]  1 0.3735046  0
+[20,]  1 4.5509322  1
+[21,]  1 3.9842663  0
+[22,]  1 1.2004904  0
+[23,]  1 1.5148332  0
+[24,]  1 0.8370919  1
+[25,]  1 0.9793597  0
+[26,]  1 0.4705805  0
+[27,]  1 2.8508222  0
+[28,]  1 6.9206615  0
+[29,]  1 1.1058212  0
+[30,]  1 4.7707139  0
+[31,]  1 2.6247621  0
+[32,]  1 3.0702773  0
+[33,]  1 3.1299296  1
+[34,]  1 0.6578281  0
+[35,]  1 0.9410201  0
+[36,]  1 2.2824803  1
+[37,]  1 2.6248517  0
+[38,]  1 1.4835567  0
+[39,]  1 3.3102718  0
+[40,]  1 1.7702154  1
+[41,]  1 1.1334848  0
+[42,]  1 1.9202335  1
+[43,]  1 5.5745545  1
+[44,]  1 3.1634508  0
+[45,]  1 0.7981811  0
+[46,]  1 3.5220838  1
+[47,]  1 3.9811078  0
+[48,]  1 0.2768253  1
+[49,]  1 1.3760912  0
+[50,]  1 0.8654457  0
+> B <- solve(t(X)%*%X)%*%t(X)%*%y
+> B
+         [,1]
+x0  4.7021615
+ir -0.1901654
+rg  3.6427028
+> H <- X%*%solve(t(X)%*%X)%*%t(X)
+> e <- y-H%*%y
+> ess <- t(e)%*%e
+> tss <- sum((y-mean(y))^2)
+> rsq <- 1-(ess/tss)
+> rsq
+          [,1]
+[1,] 0.3258868
+> mse <- ess/(ncases-3)
+> mse
+        [,1]
+[1,] 6.44657
+> sqrt(mse)
+        [,1]
+[1,] 2.53901
+> V <- as.vector(mse)*solve(t(X)%*%X)
+> V
+           x0           ir           rg
+x0  0.5394380 -0.145451816 -0.172659734
+ir -0.1454518  0.060475235 -0.007045421
+rg -0.1726597 -0.007045421  0.593336443
+> sqrt(diag(V))
+       x0        ir        rg 
+0.7344644 0.2459171 0.7702834 
+> 
+> # lm results
+> 
+> Mr <- lm(y~1+ir+rg)
+> summary(Mr)
+
+Call:
+lm(formula = y ~ 1 + ir + rg)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-3.137 -1.966 -1.083  1.518  6.698 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   4.7022     0.7345   6.402 6.61e-08 ***
+ir           -0.1902     0.2459  -0.773    0.443    
+rg            3.6427     0.7703   4.729 2.09e-05 ***
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.539 on 47 degrees of freedom
+Multiple R-squared:  0.3259,	Adjusted R-squared:  0.2972 
+F-statistic: 11.36 on 2 and 47 DF,  p-value: 9.445e-05
+
+> B <- coef(Mr)
+> B
+(Intercept)          ir          rg 
+  4.7021615  -0.1901654   3.6427028 
+> V <- vcov(Mr)
+> V
+            (Intercept)           ir           rg
+(Intercept)   0.5394380 -0.145451816 -0.172659734
+ir           -0.1454518  0.060475235 -0.007045421
+rg           -0.1726597 -0.007045421  0.593336443
+>
+> sqrt(diag(V))
+(Intercept)          ir          rg 
+  0.7344644   0.2459171   0.7702834 
+> 
+```
