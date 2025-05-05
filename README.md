@@ -9555,7 +9555,7 @@ quantile(theta.s-theta.ns,c(0.09,0.91))
 * Our discussion will involve 3 variables: (1) an antecedent variable, *x*; (2) an outcome variable *y*; and (3) a mediating variable *z*.
 
 ```R
-set.seed (38)
+set.seed(38)
 x <- c(rep(0,350),rep(1,350))
 z <- rbinom(n=700,size=1,p=x*1/3+(1-x)*2/3)
 table(z,x)
@@ -9564,6 +9564,7 @@ Mr <- lm(y~1+x)
 Mf <- lm(y~1+x+z)
 summary(Mr)
 summary(Mf)
+coef(Mf)[2]-coef(Mr)[2]
 ```
 
 ---
@@ -9621,6 +9622,216 @@ Residual standard error: 1.868 on 697 degrees of freedom
 Multiple R-squared:  0.0512,	Adjusted R-squared:  0.04848 
 F-statistic: 18.81 on 2 and 697 DF,  p-value: 1.11e-08
 
+>
+> coef(Mf)[2]-coef(Mr)[2]
+        x 
+0.3083992 
+> 
+```
+
+* Test for mediation: focus on coefficients from linear model:
+
+```R
+d <- data.frame(x,z,y)
+
+library(boot)
+
+db <- function(data,i){
+  b <- data[i,]
+  Mrb <- lm(y~1+x,data=b)
+  Mfb <- lm(y~1+x+z,data=b)
+  db <- coef(Mfb)[2]-coef(Mrb)[2]
+  return(db)
+  }
+
+rb <- boot(data=d,statistic=db,R=1e5)
+rb
+boot.ci(rb,conf=0.92,type="bca",index=1)
+```
+
+---
+
+```Rout
+> d <- data.frame(x,z,y)
+> 
+> library(boot)
+> 
+> db <- function(data,i){
++   b <- data[i,]
++   Mrb <- lm(y~1+x,data=b)
++   Mfb <- lm(y~1+x+z,data=b)
++   db <- coef(Mfb)[2]-coef(Mrb)[2]
++   return(db)
++   }
+> 
+> rb <- boot(data=d,statistic=db,R=1e5)
+> rb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = d, statistic = db, R = 1e+05)
+
+
+Bootstrap Statistics :
+     original       bias    std. error
+t1* 0.3083992 -6.33051e-05  0.06228826
+> boot.ci(rb,conf=0.92,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = rb, conf = 0.92, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+92%   ( 0.2093,  0.4283 )  
+Calculations and Intervals on Original Scale
+>
+```
+
+* Note that in this case, we reject Ho of no mediation (i.e., slope of *x* is the same in both models) because the 92% confidence interval does not include zero.
+
+---
+
+* Here is a different case:
+
+```R
+set.seed(730)
+x <- c(rep(0,350),rep(1,350))
+z <- rbinom(n=700,size=1,p=x*2/3+(1-x)*1/3)
+table(z,x)
+y <- 10+z+rnorm(n=700,mean=0,sd=2)
+Mr <- lm(y~1+x)
+Mf <- lm(y~1+x+z)
+summary(Mr)
+summary(Mf)
+coef(Mf)[2]-coef(Mr)[2]
+```
+
+---
+
+```Rout
+> set.seed(730)
+> x <- c(rep(0,350),rep(1,350))
+> z <- rbinom(n=700,size=1,p=x*2/3+(1-x)*1/3)
+> table(z,x)
+   x
+z     0   1
+  0 230 116
+  1 120 234
+> y <- 10+z+rnorm(n=700,mean=0,sd=2)
+> Mr <- lm(y~1+x)
+> Mf <- lm(y~1+x+z)
+> summary(Mr)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.3949 -1.3842 -0.0801  1.4725  6.1740 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  10.2041     0.1145  89.096   <2e-16 ***
+x             0.3180     0.1620   1.963     0.05 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.143 on 698 degrees of freedom
+Multiple R-squared:  0.005493,	Adjusted R-squared:  0.004068 
+F-statistic: 3.855 on 1 and 698 DF,  p-value: 0.04999
+
+> summary(Mf)
+
+Call:
+lm(formula = y ~ 1 + x + z)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.0273 -1.3641 -0.0193  1.4146  5.9533 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   9.8365     0.1251  78.604  < 2e-16 ***
+x            -0.0312     0.1666  -0.187    0.851    
+z             1.0722     0.1666   6.437 2.27e-10 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.083 on 697 degrees of freedom
+Multiple R-squared:  0.06129,	Adjusted R-squared:  0.0586 
+F-statistic: 22.76 on 2 and 697 DF,  p-value: 2.669e-10
+
+> coef(Mf)[2]-coef(Mr)[2]
+         x 
+-0.3492228 
+> 
+```
+
+---
+
+* Now let's consider our bootstrap analysis:
+
+```R
+d <- data.frame(x,z,y)
+
+library(boot)
+
+db <- function(data,i){
+  b <- data[i,]
+  Mrb <- lm(y~1+x,data=b)
+  Mfb <- lm(y~1+x+z,data=b)
+  db <- coef(Mfb)[2]-coef(Mrb)[2]
+  return(db)
+  }
+
+rb <- boot(data=d,statistic=db,R=1e5)
+rb
+boot.ci(rb,conf=0.95,type="bca",index=1)
+```
+
+---
+
+```Rout
+> d <- data.frame(x,z,y)
+> 
+> library(boot)
+> 
+> db <- function(data,i){
++   b <- data[i,]
++   Mrb <- lm(y~1+x,data=b)
++   Mfb <- lm(y~1+x+z,data=b)
++   db <- coef(Mfb)[2]-coef(Mrb)[2]
++   return(db)
++   }
+> 
+> rb <- boot(data=d,statistic=db,R=1e5)
+> rb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = d, statistic = db, R = 1e+05)
+
+
+Bootstrap Statistics :
+      original       bias    std. error
+t1* -0.3492228 0.0002293385  0.06597566
+> boot.ci(rb,conf=0.95,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = rb, conf = 0.95, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+95%   (-0.4926, -0.2325 )  
+Calculations and Intervals on Original Scale
 >
 ```
 
