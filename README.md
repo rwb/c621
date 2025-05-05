@@ -8971,7 +8971,7 @@ quantile(delta,0.96)
 
 ### Lesson 13 - Monday 4/28/25
 
-* Today, we cover topics 26 (interaction effects), 27 (mediation), and 28 (likelihood ratio and F-tests)
+* Today, we cover topics 26 (interaction effects) and 28 (likelihood ratio and F-tests)
 * We begin with Topic 26
 * So, now we have 2 models: 1 without an interaction term (the restricted model) and 1 with an interaction term (the unrestricted model).
 
@@ -9540,3 +9540,87 @@ quantile(theta.s-theta.ns,c(0.09,0.91))
 ```
 
 * Note that the confidence interval for delta (theta.s-theta.ns) is [-1.586,-0.109] which is a little wider than what was estimated before which was [-1.564,-0.128].
+
+### Lesson 14 - Monday 5/5/25
+
+* 4th Assignment will be distributed on Monday 5/12/25 after class is over and will be due on Monday evening 5/19/25 on ELMS.
+* Tonight's topic will be statistical mediation (topic 27) and an introduction to the idea of clustering and hierarchical data (topic 29).
+* Next week, we will discuss the linear probability model and normal approximations to confidence intervals for proportions.
+
+---
+
+#### Topic 27: Statistical Mediation
+
+* Related reading (MacKinnon et al., 2007; [link](https://pmc.ncbi.nlm.nih.gov/articles/PMC2819368/pdf/nihms173361.pdf)).
+* Our discussion will involve 3 variables: (1) an antecedent variable, *x*; (2) an outcome variable *y*; and (3) a mediating variable *z*.
+
+```R
+set.seed (38)
+x <- c(rep(0,350),rep(1,350))
+z <- rbinom(n=700,size=1,p=x*1/3+(1-x)*2/3)
+table(z,x)
+y <- 10+z+rnorm(n=700,mean=0,sd=2)
+Mr <- lm(y~1+x)
+Mf <- lm(y~1+x+z)
+summary(Mr)
+summary(Mf)
+```
+
+---
+
+```Rout
+> set.seed (38)
+> x <- c(rep(0,350),rep(1,350))
+> z <- rbinom(n=700,size=1,p=x*1/3+(1-x)*2/3)
+> table(z,x)
+   x
+z     0   1
+  0 111 235
+  1 239 115
+> y <- 10+z+rnorm(n=700,mean=0,sd=2)
+> Mr <- lm(y~1+x)
+> Mf <- lm(y~1+x+z)
+> summary(Mr)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-5.5429 -1.2916  0.0504  1.2648  5.6052 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  10.6080     0.1021 103.869   <2e-16 ***
+x            -0.2957     0.1444  -2.047    0.041 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.911 on 698 degrees of freedom
+Multiple R-squared:  0.00597,	Adjusted R-squared:  0.004546 
+F-statistic: 4.192 on 1 and 698 DF,  p-value: 0.04099
+
+> summary(Mf)
+
+Call:
+lm(formula = y ~ 1 + x + z)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.1273 -1.2205  0.0606  1.2313  5.0208 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 10.01359    0.14354  69.761  < 2e-16 ***
+x            0.01268    0.15100   0.084    0.933    
+z            0.87048    0.15101   5.764 1.23e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.868 on 697 degrees of freedom
+Multiple R-squared:  0.0512,	Adjusted R-squared:  0.04848 
+F-statistic: 18.81 on 2 and 697 DF,  p-value: 1.11e-08
+
+>
+```
+
