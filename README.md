@@ -9545,7 +9545,7 @@ quantile(theta.s-theta.ns,c(0.09,0.91))
 
 * 4th Assignment will be distributed on Monday 5/12/25 after class is over and will be due on Monday evening 5/19/25 on ELMS.
 * Tonight's topic will be statistical mediation (topic 27) and an introduction to the idea of clustering and hierarchical data (topic 29).
-* Next week, we will discuss the linear probability model and normal approximations to confidence intervals for proportions.
+* Next week, we will discuss hierarchical data, the linear probability model and normal approximations to confidence intervals for proportions.
 
 ---
 
@@ -9629,7 +9629,7 @@ F-statistic: 18.81 on 2 and 697 DF,  p-value: 1.11e-08
 > 
 ```
 
-* Test for mediation: focus on coefficients from linear model:
+* Test for mediation -- focus on coefficients from linear model:
 
 ```R
 d <- data.frame(x,z,y)
@@ -9835,3 +9835,710 @@ Calculations and Intervals on Original Scale
 >
 ```
 
+---
+
+* Next, we consider a case where there is no actual mediation:
+
+```R
+set.seed(105)
+x <- c(rep(0,350),rep(1,350))
+z <- rbinom(n=700,size=1,p=1/2)
+table(z,x)
+y <- 10+z+rnorm(n=700,mean=0,sd=2)
+Mr <- lm(y~1+x)
+Mf <- lm(y~1+x+z)
+summary(Mr)
+summary(Mf)
+coef(Mf)[2]-coef(Mr)[2]
+```
+
+---
+
+```Rout
+> set.seed(105)
+> x <- c(rep(0,350),rep(1,350))
+> z <- rbinom(n=700,size=1,p=1/2)
+> table(z,x)
+   x
+z     0   1
+  0 171 172
+  1 179 178
+> y <- 10+z+rnorm(n=700,mean=0,sd=2)
+> Mr <- lm(y~1+x)
+> Mf <- lm(y~1+x+z)
+> summary(Mr)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.1384 -1.4061 -0.0491  1.4501  5.7708 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  10.4638     0.1063  98.424   <2e-16 ***
+x             0.0212     0.1504   0.141    0.888    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.989 on 698 degrees of freedom
+Multiple R-squared:  2.85e-05,	Adjusted R-squared:  -0.001404 
+F-statistic: 0.01989 on 1 and 698 DF,  p-value: 0.8879
+
+> summary(Mf)
+
+Call:
+lm(formula = y ~ 1 + x + z)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.5214 -1.3660 -0.0089  1.3708  5.3877 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 10.06514    0.12876  78.171  < 2e-16 ***
+x            0.02343    0.14753   0.159    0.874    
+z            0.77952    0.14756   5.283  1.7e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.952 on 697 degrees of freedom
+Multiple R-squared:  0.03852,	Adjusted R-squared:  0.03576 
+F-statistic: 13.96 on 2 and 697 DF,  p-value: 1.133e-06
+
+> coef(Mf)[2]-coef(Mr)[2]
+          x 
+0.002227203 
+> 
+```
+
+* Here is our R code to test Ho of zero mediation:
+
+```R
+d <- data.frame(x,z,y)
+
+library(boot)
+
+db <- function(data,i){
+  b <- data[i,]
+  Mrb <- lm(y~1+x,data=b)
+  Mfb <- lm(y~1+x+z,data=b)
+  db <- coef(Mfb)[2]-coef(Mrb)[2]
+  return(db)
+  }
+
+rb <- boot(data=d,statistic=db,R=1e5)
+rb
+boot.ci(rb,conf=0.95,type="bca",index=1)
+```
+
+---
+
+```Rout
+> d <- data.frame(x,z,y)
+> 
+> library(boot)
+> 
+> db <- function(data,i){
++   b <- data[i,]
++   Mrb <- lm(y~1+x,data=b)
++   Mfb <- lm(y~1+x+z,data=b)
++   db <- coef(Mfb)[2]-coef(Mrb)[2]
++   return(db)
++   }
+> 
+> rb <- boot(data=d,statistic=db,R=1e5)
+> rb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = d, statistic = db, R = 1e+05)
+
+
+Bootstrap Statistics :
+       original       bias    std. error
+t1* 0.002227203 -5.22697e-05  0.03003518
+> boot.ci(rb,conf=0.95,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = rb, conf = 0.95, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+95%   (-0.0574,  0.0623 )  
+Calculations and Intervals on Original Scale
+>
+```
+
+---
+
+* Now, we consider the issue of mediation when *x* has an effect on *y*:
+
+```R
+set.seed(389)
+x <- c(rep(0,350),rep(1,350))
+z <- rbinom(n=700,size=1,p=1/2)
+table(z,x)
+y <- 10+1/3*x+z+rnorm(n=700,mean=0,sd=2)
+Mr <- lm(y~1+x)
+Mf <- lm(y~1+x+z)
+summary(Mr)
+summary(Mf)
+coef(Mf)[2]-coef(Mr)[2]
+```
+
+---
+
+```Rout
+> set.seed(389)
+> x <- c(rep(0,350),rep(1,350))
+> z <- rbinom(n=700,size=1,p=1/2)
+> table(z,x)
+   x
+z     0   1
+  0 167 164
+  1 183 186
+> y <- 10+1/3*x+z+rnorm(n=700,mean=0,sd=2)
+> Mr <- lm(y~1+x)
+> Mf <- lm(y~1+x+z)
+> summary(Mr)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.9173 -1.4321  0.0112  1.3722  5.5795 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  10.6144     0.1118  94.938   <2e-16 ***
+x             0.1575     0.1581   0.996     0.32    
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.092 on 698 degrees of freedom
+Multiple R-squared:  0.001419,	Adjusted R-squared:  -1.171e-05 
+F-statistic: 0.9918 on 1 and 698 DF,  p-value: 0.3196
+
+> summary(Mf)
+
+Call:
+lm(formula = y ~ 1 + x + z)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.3504 -1.4895 -0.0151  1.3324  5.7097 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  10.1398     0.1359  74.608  < 2e-16 ***
+x             0.1497     0.1545   0.969    0.333    
+z             0.9077     0.1547   5.868 6.83e-09 ***
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.043 on 697 degrees of freedom
+Multiple R-squared:  0.04842,	Adjusted R-squared:  0.04569 
+F-statistic: 17.73 on 2 and 697 DF,  p-value: 3.074e-08
+
+> coef(Mf)[2]-coef(Mr)[2]
+           x 
+-0.007780114 
+>
+```
+
+* Now, let's check on the confidence interval for the difference:
+
+```R
+d <- data.frame(x,z,y)
+
+library(boot)
+
+db <- function(data,i){
+  b <- data[i,]
+  Mrb <- lm(y~1+x,data=b)
+  Mfb <- lm(y~1+x+z,data=b)
+  db <- coef(Mfb)[2]-coef(Mrb)[2]
+  return(db)
+  }
+
+rb <- boot(data=d,statistic=db,R=1e5)
+rb
+boot.ci(rb,conf=0.95,type="bca",index=1)
+```
+
+---
+
+```Rout
+> d <- data.frame(x,z,y)
+> 
+> library(boot)
+> 
+> db <- function(data,i){
++   b <- data[i,]
++   Mrb <- lm(y~1+x,data=b)
++   Mfb <- lm(y~1+x+z,data=b)
++   db <- coef(Mfb)[2]-coef(Mrb)[2]
++   return(db)
++   }
+> 
+> rb <- boot(data=d,statistic=db,R=1e5)
+> rb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = d, statistic = db, R = 1e+05)
+
+
+Bootstrap Statistics :
+        original       bias    std. error
+t1* -0.007780114 5.265146e-05  0.03484994
+> boot.ci(rb,conf=0.95,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = rb, conf = 0.95, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+95%   (-0.0779,  0.0603 )  
+Calculations and Intervals on Original Scale
+>
+```
+
+* In this case, we fail to reject Ho of zero mediation
+* Now, let's check on the case of partial mediation:
+
+```R
+set.seed(389)
+x <- c(rep(0,350),rep(1,350))
+z <- rbinom(n=700,size=1,p=x*1/2+(1-x)*1/3)
+table(z,x)
+y <- 10+1/3*x+z+rnorm(n=700,mean=0,sd=2)
+Mr <- lm(y~1+x)
+Mf <- lm(y~1+x+z)
+summary(Mr)
+summary(Mf)
+coef(Mf)[2]-coef(Mr)[2]
+```
+
+---
+
+```Rout
+> set.seed(389)
+> x <- c(rep(0,350),rep(1,350))
+> z <- rbinom(n=700,size=1,p=x*1/2+(1-x)*1/3)
+> table(z,x)
+   x
+z     0   1
+  0 230 164
+  1 120 186
+> y <- 10+1/3*x+z+rnorm(n=700,mean=0,sd=2)
+> Mr <- lm(y~1+x)
+> Mf <- lm(y~1+x+z)
+> summary(Mr)
+
+Call:
+lm(formula = y ~ 1 + x)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-6.737 -1.472 -0.019  1.417  5.580 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  10.4344     0.1119  93.241   <2e-16 ***
+x             0.3375     0.1583   2.132   0.0333 *  
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.094 on 698 degrees of freedom
+Multiple R-squared:  0.006472,	Adjusted R-squared:  0.005049 
+F-statistic: 4.547 on 1 and 698 DF,  p-value: 0.03333
+
+> summary(Mf)
+
+Call:
+lm(formula = y ~ 1 + x + z)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.3586 -1.5003 -0.0114  1.3329  5.7393 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  10.1102     0.1220  82.853  < 2e-16 ***
+x             0.1592     0.1574   1.012    0.312    
+z             0.9455     0.1586   5.961 3.98e-09 ***
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.044 on 697 degrees of freedom
+Multiple R-squared:  0.05467,	Adjusted R-squared:  0.05196 
+F-statistic: 20.15 on 2 and 697 DF,  p-value: 3.098e-09
+
+> coef(Mf)[2]-coef(Mr)[2]
+         x 
+-0.1782972 
+>
+```
+
+---
+
+* Here is the bootstrap analysis:
+
+```R
+d <- data.frame(x,z,y)
+
+library(boot)
+
+db <- function(data,i){
+  b <- data[i,]
+  Mrb <- lm(y~1+x,data=b)
+  Mfb <- lm(y~1+x+z,data=b)
+  db <- coef(Mfb)[2]-coef(Mrb)[2]
+  return(db)
+  }
+
+rb <- boot(data=d,statistic=db,R=1e5)
+rb
+boot.ci(rb,conf=0.95,type="bca",index=1)
+```
+
+---
+
+```Rout
+> d <- data.frame(x,z,y)
+> 
+> library(boot)
+> 
+> db <- function(data,i){
++   b <- data[i,]
++   Mrb <- lm(y~1+x,data=b)
++   Mfb <- lm(y~1+x+z,data=b)
++   db <- coef(Mfb)[2]-coef(Mrb)[2]
++   return(db)
++   }
+> 
+> rb <- boot(data=d,statistic=db,R=1e5)
+> rb
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = d, statistic = db, R = 1e+05)
+
+
+Bootstrap Statistics :
+      original        bias    std. error
+t1* -0.1782972 -9.515332e-05  0.04641128
+> boot.ci(rb,conf=0.95,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = rb, conf = 0.95, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+95%   (-0.2834, -0.0999 )  
+Calculations and Intervals on Original Scale
+>
+```
+
+* There is a R utility for conducting mediation analysis based on the bootstrap:
+
+```R
+library(mediation)
+model.M <- lm(z~1+x)
+model.Y <- lm(y~1+x+z)
+rs <- mediate(model.M, model.Y, treat='x', mediator='z',
+                   boot=TRUE, sims=1e4)
+summary(rs)
+```
+
+---
+
+```Rout
+> library(mediation)
+Loading required package: MASS
+Loading required package: Matrix
+Loading required package: mvtnorm
+Loading required package: sandwich
+mediation: Causal Mediation Analysis
+Version: 4.5.0
+
+> 
+> model.M <- lm(z~1+x)
+> model.Y <- lm(y~1+x+z)
+> rs <- mediate(model.M, model.Y, treat='x', mediator='z',
++                    boot=TRUE, sims=1e4)
+Running nonparametric bootstrap
+
+> summary(rs)
+
+Causal Mediation Analysis 
+
+Nonparametric Bootstrap Confidence Intervals with the Percentile Method
+
+               Estimate 95% CI Lower 95% CI Upper p-value
+ACME             0.1783       0.0965         0.28  <2e-16
+ADE              0.1592      -0.1444         0.47   0.308
+Total Effect     0.3375       0.0321         0.66   0.027
+Prop. Mediated   0.5283       0.2008         2.86   0.027
+                  
+ACME           ***
+ADE               
+Total Effect   *  
+Prop. Mediated *  
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Sample Size Used: 700 
+
+
+Simulations: 10000 
+
+>
+```
+
+---
+
+* A helpful tutorial on the mediation library can be found [here](https://library.virginia.edu/data/articles/introduction-to-mediation-analysis).
+
+---
+
+#### Topic 29: Introduction to Hierarchical Data
+
+* Here we will work with the dataset in Sheather's book, Chapter 1.
+* Overview of the analysis:
+
+```R
+d <- read.csv(file="fg.csv",header=T,sep=",")
+d
+
+cor.test(d$t1,d$t2)
+plot(d$t1,d$t2,pch=19)
+
+MN <- lm(t2~1+t1,data=d)
+summary(MN)
+
+MF <- lm(t2~1+as.factor(id)+t1,data=d)
+summary(MF)
+
+library(lme4)
+MM <- lmer(t2~t1+(1|id),data=d)
+summary(MM)
+```
+
+---
+
+```Rout
+> d <- read.csv(file="fg.csv",header=T,sep=",")
+> d
+   id                 Name    t1    t2
+1   1       Adam Vinatieri  90.0  73.5
+2   1       Adam Vinatieri  73.5  93.9
+3   1       Adam Vinatieri  93.9  80.0
+4   1       Adam Vinatieri  80.0  89.4
+5   2          David Akers  88.2  82.7
+6   2          David Akers  82.7  84.3
+7   2          David Akers  84.3  72.7
+8   2          David Akers  72.7  83.3
+9   3           Jason Elam  72.2  87.0
+10  3           Jason Elam  87.0  85.2
+11  3           Jason Elam  85.2  75.0
+12  3           Jason Elam  75.0  86.6
+13  4         Jason Hanson  82.1  95.6
+14  4         Jason Hanson  95.6  85.7
+15  4         Jason Hanson  85.7  79.1
+16  4         Jason Hanson  79.1  82.3
+17  5            Jay Feely  80.0  70.3
+18  5            Jay Feely  70.3  78.2
+19  5            Jay Feely  78.2  83.3
+20  5            Jay Feely  83.3  76.4
+21  6            Jeff Reed  89.4  71.8
+22  6            Jeff Reed  71.8  84.8
+23  6            Jeff Reed  84.8  82.7
+24  6            Jeff Reed  82.7  68.7
+25  7         Jeff Wilkins  76.0  92.8
+26  7         Jeff Wilkins  92.8  79.1
+27  7         Jeff Wilkins  79.1  87.0
+28  7         Jeff Wilkins  87.0  88.4
+29  8          John Carney  88.5  73.3
+30  8          John Carney  73.3  81.4
+31  8          John Carney  81.4  78.1
+32  8          John Carney  78.1  88.2
+33  9            John Hall  77.4  75.7
+34  9            John Hall  75.7  72.7
+35  9            John Hall  72.7  85.7
+36  9            John Hall  85.7  81.8
+37 10           Kris Brown  70.8  81.8
+38 10           Kris Brown  81.8  70.8
+39 10           Kris Brown  70.8  76.4
+40 10           Kris Brown  76.4  73.3
+41 11          Matt Stover  84.0  86.8
+42 11          Matt Stover  86.8  90.6
+43 11          Matt Stover  90.6  88.2
+44 11          Matt Stover  88.2 100.0
+45 12      Mike Vanderjagt  74.1 100.0
+46 12      Mike Vanderjagt 100.0  80.0
+47 12      Mike Vanderjagt  80.0  92.0
+48 12      Mike Vanderjagt  92.0  80.0
+49 13         Neil Rackers  83.3  75.0
+50 13         Neil Rackers  75.0  75.8
+51 13         Neil Rackers  75.8  95.2
+52 13         Neil Rackers  95.2  68.4
+53 14          Olindo Mare  77.4  75.8
+54 14          Olindo Mare  75.8  75.0
+55 14          Olindo Mare  75.0  83.3
+56 14          Olindo Mare  83.3  63.6
+57 15          Phil Dawson  78.5  85.7
+58 15          Phil Dawson  85.7  82.7
+59 15          Phil Dawson  82.7  93.1
+60 15          Phil Dawson  93.1  88.2
+61 16         Rian Lindell  79.3  70.8
+62 16         Rian Lindell  70.8  85.7
+63 16         Rian Lindell  85.7  82.8
+64 16         Rian Lindell  82.8  87.5
+65 17        Ryan Longwell  82.3  88.4
+66 17        Ryan Longwell  88.4  85.7
+67 17        Ryan Longwell  85.7  74.0
+68 17        Ryan Longwell  74.0  83.3
+69 18 Sebastian Janikowski  78.7  88.0
+70 18 Sebastian Janikowski  88.0  89.2
+71 18 Sebastian Janikowski  89.2  66.6
+72 18 Sebastian Janikowski  66.6  84.6
+73 19        Shayne Graham  72.2  88.0
+74 19        Shayne Graham  88.0  87.0
+75 19        Shayne Graham  87.0  87.5
+76 19        Shayne Graham  87.5  84.2
+> 
+> cor.test(d$t1,d$t2)
+
+	Pearson's product-moment correlation
+
+data:  d$t1 and d$t2
+t = -1.2092, df = 74, p-value = 0.2305
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.3535538  0.0890568
+sample estimates:
+       cor 
+-0.1391935 
+
+> plot(d$t1,d$t2,pch=19)
+> 
+> MN <- lm(t2~1+t1,data=d)
+> summary(MN)
+
+Call:
+lm(formula = t2 ~ 1 + t1, data = d)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-18.4350  -7.0576   0.6933   5.3824  18.7047 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  94.6098    10.2525   9.228 6.18e-14 ***
+t1           -0.1510     0.1248  -1.209     0.23    
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.723 on 74 degrees of freedom
+Multiple R-squared:  0.01937,	Adjusted R-squared:  0.006123 
+F-statistic: 1.462 on 1 and 74 DF,  p-value: 0.2305
+
+> 
+> MF <- lm(t2~1+as.factor(id)+t1,data=d)
+> summary(MF)
+
+Call:
+lm(formula = t2 ~ 1 + as.factor(id) + t1, data = d)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.1808  -4.0045  -0.5093   4.3053  13.3134 
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)    
+(Intercept)     126.6872    10.0057  12.661  < 2e-16 ***
+as.factor(id)2   -4.6463     4.4007  -1.056  0.29559    
+as.factor(id)3   -3.0167     4.4217  -0.682  0.49790    
+as.factor(id)4    2.1172     4.3949   0.482  0.63186    
+as.factor(id)5  -10.3737     4.4514  -2.330  0.02341 *  
+as.factor(id)6   -8.2955     4.3994  -1.886  0.06454 .  
+as.factor(id)7    2.3102     4.3931   0.526  0.60106    
+as.factor(id)8   -5.9774     4.4159  -1.354  0.18130    
+as.factor(id)9   -8.4865     4.4528  -1.906  0.06180 .  
+as.factor(id)10 -13.3598     4.5186  -2.957  0.00455 ** 
+as.factor(id)11   8.7363     4.4060   1.983  0.05230 .  
+as.factor(id)12   4.8955     4.3994   1.113  0.27055    
+as.factor(id)13  -6.6200     4.3985  -1.505  0.13793    
+as.factor(id)14 -13.0365     4.4528  -2.928  0.00493 ** 
+as.factor(id)15   3.5524     4.3931   0.809  0.42215    
+as.factor(id)16  -4.8674     4.4244  -1.100  0.27598    
+as.factor(id)17  -2.2315     4.3970  -0.508  0.61379    
+as.factor(id)18  -3.9763     4.4126  -0.901  0.37138    
+as.factor(id)19   2.1350     4.3932   0.486  0.62888    
+t1               -0.5037     0.1128  -4.467  3.9e-05 ***
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 6.212 on 56 degrees of freedom
+Multiple R-squared:  0.5199,	Adjusted R-squared:  0.3569 
+F-statistic: 3.191 on 19 and 56 DF,  p-value: 0.0003849
+
+> 
+> library(lme4)
+Loading required package: Matrix
+> MM <- lmer(t2~t1+(1|id),data=d)
+> summary(MM)
+Linear mixed model fit by REML ['lmerMod']
+Formula: t2 ~ t1 + (1 | id)
+   Data: d
+
+REML criterion at convergence: 516.3
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-1.97654 -0.63878  0.01243  0.70155  2.08720 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 23.83    4.882   
+ Residual             39.33    6.271   
+Number of obs: 76, groups:  id, 19
+
+Fixed effects:
+            Estimate Std. Error t value
+(Intercept) 113.5942     9.0760   12.52
+t1           -0.3830     0.1097   -3.49
+
+Correlation of Fixed Effects:
+   (Intr)
+t1 -0.989
+>
+```
+
+<p align="center">
+<img src="/gfiles/scp.png" width="600px">
+</p>
