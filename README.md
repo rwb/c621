@@ -10891,3 +10891,13 @@ points(x=2.3,y=pooled.p,pch=19,cex=2,col="darkred")
 <p align="center">
 <img src="/gfiles/shrinkage2.png" width="600px">
 </p>
+
+#### Topic 30: Binary Outcomes	
+
+* We begin by reading in our Minneapolis dataset (emailed to you).
+
+```r
+df <- read.csv(file="minn.txt",sep=",",header=T)
+head(df,n=10)
+tail(df,n=10)
+```
