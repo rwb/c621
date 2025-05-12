@@ -10556,3 +10556,94 @@ boxplot(post1,post2,post3,post4,post5,post6,
 <p align="center">
 <img src="/gfiles/hp3z.png" width="600px">
 </p>
+
+* Now let's consider the inference about domain #8 again:
+
+```R
+# use p8 as an example
+# calculate an exact 95% confidence interval
+# around this estimate
+
+# fixed-effect estimate
+
+dp[8]
+qbeta(p=0.025,shape1=d8y,shape2=1+d8n)
+qbeta(p=0.975,shape1=1+d8y,shape2=d8n)
+
+# random effect estimate
+
+mean(post8)
+quantile(post8,c(0.025,0.975))
+```
+
+* Here are the results:
+
+```Rout
+> # use p8 as an example
+> # calculate an exact 95% confidence interval
+> # around this estimate
+> 
+> # fixed-effect estimate
+> 
+> dp[8]
+[1] 0.08695652
+> qbeta(p=0.025,shape1=d8y,shape2=1+d8n)
+[1] 0.04248918
+> qbeta(p=0.975,shape1=1+d8y,shape2=d8n)
+[1] 0.1541052
+> 
+> # random effect estimate
+> 
+> mean(post8)
+[1] 0.1180318
+> quantile(post8,c(0.025,0.975))
+      2.5%      97.5% 
+0.07288513 0.17222524 
+>
+```
+
+* Notice that domain 8's inference has been "shrunk" toward the overall average.
+* We can see how this plays out with all domains by generating a shrinkage plot:
+
+```R
+# generate a shrinkage plot
+
+plot.new()
+plot.window(xlim=c(0.4,2.5),ylim=c(-0.05,0.3))
+segments(x0=0.5,x1=0.5,y0=0,y1=0.3,lty=1,lwd=2)
+segments(x0=0.5,x1=2.5,y0=0,y1=0,lty=1,lwd=2)
+segments(x0=1,x1=1,y0=-0.01,y1=0.01,lty=1,lwd=2)
+segments(x0=2,x1=2,y0=-0.01,y1=0.01,lty=1,lwd=2)
+text(x=1,y=-0.03,"Separate")
+text(x=2,y=-0.03,"Partially Pooled")
+points(x=rep(1,10),y=c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10),pch=19,cex=1.5)
+points(x=rep(2,10),y=c(mean(post1),mean(post2),mean(post3),mean(post4),
+  mean(post5),mean(post6),mean(post7),mean(post8),mean(post9),mean(post10)),
+  pch=19,cex=1.5)
+segments(x0=rep(1,10),x1=rep(2,10),
+  y0=c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10),
+  y1=c(mean(post1),mean(post2),mean(post3),mean(post4),
+  mean(post5),mean(post6),mean(post7),mean(post8),
+  mean(post9),mean(post10)))
+segments(x0=0.47,x1=0.53,y0=0.05,y1=0.05,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.1,y1=0.1,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.15,y1=0.15,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.2,y1=0.2,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.25,y1=0.25,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.3,y1=0.3,lty=1,lwd=2)
+text(x=0.41,y=0.05,"0.05",srt=90)
+text(x=0.41,y=0.1,"0.10",srt=90)
+text(x=0.41,y=0.15,"0.15",srt=90)
+text(x=0.41,y=0.2,"0.20",srt=90)
+text(x=0.41,y=0.25,"0.25",srt=90)
+text(x=0.41,y=0.3,"0.30",srt=90)
+segments(x0=0.7,x1=2.3,y0=pooled.p,y1=pooled.p,lty=2,lwd=2)
+points(x=0.7,y=pooled.p,pch=19,cex=2,col="darkred")
+points(x=2.3,y=pooled.p,pch=19,cex=2,col="darkred")
+```
+
+* Here is the plot:
+
+<p align="center">
+<img src="/gfiles/shrinkage.png" width="600px">
+</p>
