@@ -10331,4 +10331,228 @@ Simulations: 10000
 
 #### Topic 29: Introduction to Hierarchical Data
 
-* We consider data from Stasny (1991; [link](https://www.jstor.org/stable/pdf/2290561.pdf)) focusing on the National Crime Survey.
+* We consider data from Stasny (1991; [link](https://www.jstor.org/stable/pdf/2290561.pdf)) examining victimization prevalence from the National Crime Survey.
+* We start by reading in her dataset (from Table 1 of the paper).
+
+```R
+# NCS dataset
+
+d1y  <- 156
+d1n  <- 555
+d2y  <- 95
+d2n  <- 364
+d3y  <- 162
+d3n  <- 557
+d4y  <- 72
+d4n  <- 262
+d5y  <- 92
+d5n  <- 297
+d6y  <- 15
+d6n  <- 40
+d7y  <- 11
+d7n  <- 36
+d8y  <- 10
+d8n  <- 105
+d9y  <- 35
+d9n  <- 274
+d10y <- 79
+d10n <- 413
+```
+
+* A simple way to summarize victimization prevalence is to completely pool the data:
+
+```R
+# complete pooling
+
+yes <- d1y+d2y+d3y+d4y+d5y+d6y+d7y+d8y+d9y+d10y
+no  <- d1n+d2n+d3n+d4n+d5n+d6n+d7n+d8n+d9n+d10n
+pooled.p <- yes/(yes+no)
+pooled.p
+```
+
+* which gives us this result:
+
+```Rout
+> # complete pooling
+> yes <- d1y+d2y+d3y+d4y+d5y+d6y+d7y+d8y+d9y+d10y
+> no  <- d1n+d2n+d3n+d4n+d5n+d6n+d7n+d8n+d9n+d10n
+> pooled.p <- yes/(yes+no)
+> pooled.p
+[1] 0.2002755
+> qbeta(p=0.025,shape1=yes,shape2=1+no)
+[1] 0.1873641
+> qbeta(p=0.975,shape1=1+yes,shape2=no)
+[1] 0.2136713
+> 
+```
+
+* There are 2 problems with this approach: (1) it ignores the fact that observations are more likely to be similar within domains than across domains (i.e., lack of independence); and (2) domains with less evidence tend to generate more extreme results.
+* Hierarchical models deal with both of these issues.
+* Another extreme approach is to develop separate estimates, one for each domain.
+
+```R
+# separate estimates
+
+p1  <- d1y/(d1y+d1n)
+p2  <- d2y/(d2y+d2n)
+p3  <- d3y/(d3y+d3n)
+p4  <- d4y/(d4y+d4n)
+p5  <- d5y/(d5y+d5n)
+p6  <- d6y/(d6y+d6n)
+p7  <- d7y/(d7y+d7n)
+p8  <- d8y/(d8y+d8n)
+p9  <- d9y/(d9y+d9n)
+p10 <- d10y/(d10y+d10n)
+
+dp <- c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10)
+dp
+
+# use p8 as an example
+# calculate an exact 95% confidence interval
+# around this estimate
+
+dp[8]
+qbeta(p=0.025,shape1=d8y,shape2=1+d8n)
+qbeta(p=0.975,shape1=1+d8y,shape2=d8n)
+```
+
+* which gives us this result:
+
+```Rout
+> # separate estimates
+> 
+> p1  <- d1y/(d1y+d1n)
+> p2  <- d2y/(d2y+d2n)
+> p3  <- d3y/(d3y+d3n)
+> p4  <- d4y/(d4y+d4n)
+> p5  <- d5y/(d5y+d5n)
+> p6  <- d6y/(d6y+d6n)
+> p7  <- d7y/(d7y+d7n)
+> p8  <- d8y/(d8y+d8n)
+> p9  <- d9y/(d9y+d9n)
+> p10 <- d10y/(d10y+d10n)
+> 
+> dp <- c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10)
+> dp
+ [1] 0.21940928 0.20697168 0.22531293 0.21556886 0.23650386
+ [6] 0.27272727 0.23404255 0.08695652 0.11326861 0.16056911
+> 
+> # use p8 as an example
+> # calculate an exact 95% confidence interval
+> # around this estimate
+> 
+> dp[8]
+[1] 0.08695652
+> qbeta(p=0.025,shape1=d8y,shape2=1+d8n)
+[1] 0.04248918
+> qbeta(p=0.975,shape1=1+d8y,shape2=d8n)
+[1] 0.1541052
+>
+```
+
+* We can see that the inference in this domain comes nowhere close to the overall inference.
+* Let's generate a histogram of the p's across all 10 of the domains.
+* The victimization prevalence within each domain is separately estimated.
+
+```R
+# generate a histogram of the distribution of p
+
+hist(dp)
+```
+
+<p align="center">
+<img src="/gfiles/hp1.png" width="600px">
+</p>
+
+* It looks like we have some variation in the p's.
+* Yet the variation is within a range. This suggests some value in an approach called "partial pooling."
+* Partial pooling allows for a balance of sharing information across domains ("borrowing strength") and allowing each domain to contribute information to the analysis.
+* Such models have been demonstrated to have less prediction error than standard "fixed effects" approaches.
+* These concepts are discussed in Sheather (chapter 10, section 10.1.1).
+* Here we will use an approach called "empirical bayes" (Raudenbush, 1985; [link](https://journals.sagepub.com/doi/abs/10.3102/10769986010002075)).
+* The first step is to build a model for the histogram above.
+* We will use the [method of moments](https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance).
+
+```R
+# step 1: estimate a and b using method of moments
+
+mean(dp)
+var(dp)
+
+eB <- function(mu,var) {
+  alpha <- ((1-mu)/var-1/mu)*mu^2
+  beta <- alpha*(1/mu-1)
+  return(params=list(alpha=alpha,beta=beta))
+  }
+
+eB(0.1971331,0.003429212)
+
+a <- 8.901334
+b <- 36.2526
+
+hist(dp,prob=T)
+pd <- rbeta(n=1e7,shape1=a,shape2=b)
+lines(density(pd),lty=1,lwd=3,col="darkred")
+```
+
+* which gives the following output:
+
+```Rout
+> mean(dp)
+[1] 0.1971331
+> var(dp)
+[1] 0.003429212
+> 
+> eB <- function(mu,var) {
++   alpha <- ((1-mu)/var-1/mu)*mu^2
++   beta <- alpha*(1/mu-1)
++   return(params=list(alpha=alpha,beta=beta))
++   }
+> 
+> eB(0.1971331,0.003429212)
+$alpha
+[1] 8.901336
+
+$beta
+[1] 36.2526
+
+> 
+> a <- 8.901334
+> b <- 36.2526
+> 
+> hist(dp,prob=T)
+> pd <- rbeta(n=1e7,shape1=a,shape2=b)
+> lines(density(pd),lty=1,lwd=3,col="darkred")
+>
+```
+
+<p align="center">
+<img src="/gfiles/hp2.png" width="600px">
+</p>
+
+* Next, we consider the so-called posterior estimates from each domain:
+
+```R
+# step 2: posterior estimates
+
+post1  <- rbeta(n=1e6,shape1=a+d1y,shape2=b+d1n)
+post2  <- rbeta(n=1e6,shape1=a+d2y,shape2=b+d2n)
+post3  <- rbeta(n=1e6,shape1=a+d3y,shape2=b+d3n)
+post4  <- rbeta(n=1e6,shape1=a+d4y,shape2=b+d4n)
+post5  <- rbeta(n=1e6,shape1=a+d5y,shape2=b+d5n)
+post6  <- rbeta(n=1e6,shape1=a+d6y,shape2=b+d6n)
+post7  <- rbeta(n=1e6,shape1=a+d7y,shape2=b+d7n)
+post8  <- rbeta(n=1e6,shape1=a+d8y,shape2=b+d8n)
+post9  <- rbeta(n=1e6,shape1=a+d9y,shape2=b+d9n)
+post10 <- rbeta(n=1e6,shape1=a+d10y,shape2=b+d10n)
+
+boxplot(post1,post2,post3,post4,post5,post6,
+  post7,post8,post9,post10,ylim=c(0,0.6),
+  names=c("d1","d2","d3","d4","d5","d6","d7",
+    "d8","d9","d10"),
+  ylab="Posterior Predictive Distribution")
+```
+
+<p align="center">
+<img src="/gfiles/hp3.png" width="600px">
+</p>
