@@ -10647,3 +10647,247 @@ points(x=2.3,y=pooled.p,pch=19,cex=2,col="darkred")
 <p align="center">
 <img src="/gfiles/shrinkage.png" width="600px">
 </p>
+
+* Now, let's use the lme4 library and the lmer() function to estimate a normal linear random effects model.
+* First, we have to get the data into the right form:
+
+```R
+library(lme4)
+
+id1  <- rep(1,d1y+d1n)
+id2  <- rep(2,d2y+d2n)
+id3  <- rep(3,d3y+d3n)
+id4  <- rep(4,d4y+d4n)
+id5  <- rep(5,d5y+d5n)
+id6  <- rep(6,d6y+d6n)
+id7  <- rep(7,d7y+d7n)
+id8  <- rep(8,d8y+d8n)
+id9  <- rep(9,d9y+d9n)
+id10 <- rep(10,d10y+d10n)
+
+y1 <- c(rep(0,d1n),rep(1,d1y))
+y2 <- c(rep(0,d2n),rep(1,d2y))
+y3 <- c(rep(0,d3n),rep(1,d3y))
+y4 <- c(rep(0,d4n),rep(1,d4y))
+y5 <- c(rep(0,d5n),rep(1,d5y))
+y6 <- c(rep(0,d6n),rep(1,d6y))
+y7 <- c(rep(0,d7n),rep(1,d7y))
+y8 <- c(rep(0,d8n),rep(1,d8y))
+y9 <- c(rep(0,d9n),rep(1,d9y))
+y10 <- c(rep(0,d10n),rep(1,d10y))
+
+df1 <- cbind(id1,y1)
+df2 <- cbind(id2,y2)
+df3 <- cbind(id3,y3)
+df4 <- cbind(id4,y4)
+df5 <- cbind(id5,y5)
+df6 <- cbind(id6,y6)
+df7 <- cbind(id7,y7)
+df8 <- cbind(id8,y8)
+df9 <- cbind(id9,y9)
+df10 <- cbind(id10,y10)
+
+df <- rbind(df1,df2,df3,df4,df5,
+  df6,df7,df8,df9,df10)
+d <- as.data.frame(df)
+names(d)[names(d)=="id1"] <- "id"
+names(d)[names(d)=="y1"] <- "y"
+head(d)
+```
+
+* Here is the output:
+
+```Rout
+> head(d)
+  id y
+1  1 0
+2  1 0
+3  1 0
+4  1 0
+5  1 0
+6  1 0
+>
+```
+
+* Now, we estimate the fully pooled model:
+
+```R
+M0 <- lm(y~1,data=d)
+summary(M0)
+```
+
+* Here is the output:
+
+```Rout
+ M0 <- lm(y~1,data=d)
+> summary(M0)
+
+Call:
+lm(formula = y ~ 1, data = d)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.2003 -0.2003 -0.2003 -0.2003  0.7997 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 0.200275   0.006643   30.15   <2e-16 ***
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4003 on 3629 degrees of freedom
+>
+```
+
+
+* Then, here is the "separate estimates" fixed effects model:
+
+```R
+Mf <- lm(y~0+as.factor(id),data=d)
+summary(Mf)
+
+# separate estimates
+
+p1  <- coef(Mf)[1]
+p2  <- coef(Mf)[2]
+p3  <- coef(Mf)[3]
+p4  <- coef(Mf)[4]
+p5  <- coef(Mf)[5]
+p6  <- coef(Mf)[6]
+p7  <- coef(Mf)[7]
+p8  <- coef(Mf)[8]
+p9  <- coef(Mf)[9]
+p10 <- coef(Mf)[10]
+
+dp <- c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10)
+dp
+```
+
+* Here is the output:
+
+```Rout
+> # separate estimates
+> 
+> p1  <- coef(Mf)[1]
+> p2  <- coef(Mf)[2]
+> p3  <- coef(Mf)[3]
+> p4  <- coef(Mf)[4]
+> p5  <- coef(Mf)[5]
+> p6  <- coef(Mf)[6]
+> p7  <- coef(Mf)[7]
+> p8  <- coef(Mf)[8]
+> p9  <- coef(Mf)[9]
+> p10 <- coef(Mf)[10]
+> 
+> dp <- c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10)
+> dp
+ as.factor(id)1  as.factor(id)2  as.factor(id)3 
+     0.21940928      0.20697168      0.22531293 
+ as.factor(id)4  as.factor(id)5  as.factor(id)6 
+     0.21556886      0.23650386      0.27272727 
+ as.factor(id)7  as.factor(id)8  as.factor(id)9 
+     0.23404255      0.08695652      0.11326861 
+as.factor(id)10 
+     0.16056911 
+>
+```
+
+* Then, we estimate the random effects model:
+
+```R
+Mr <- lmer(y~1+(1|id),data=d)
+summary(Mr)
+coef(Mr)
+
+post1  <- coef(Mr)$id[1,1]
+post2  <- coef(Mr)$id[2,1]
+post3  <- coef(Mr)$id[3,1]
+post4  <- coef(Mr)$id[4,1]
+post5  <- coef(Mr)$id[5,1]
+post6  <- coef(Mr)$id[6,1]
+post7  <- coef(Mr)$id[7,1]
+post8  <- coef(Mr)$id[8,1]
+post9  <- coef(Mr)$id[9,1]
+post10 <- coef(Mr)$id[10,1]
+```
+
+* Here is our output:
+
+```Rout
+> Mr <- lmer(y~1+(1|id),data=d)
+> summary(Mr)
+Linear mixed model fit by REML ['lmerMod']
+Formula: y ~ 1 + (1 | id)
+   Data: d
+
+REML criterion at convergence: 3645.2
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.5757 -0.5443 -0.5147 -0.3255  2.1831 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 0.00203  0.04506 
+ Residual             0.15891  0.39863 
+Number of obs: 3630, groups:  id, 10
+
+Fixed effects:
+            Estimate Std. Error t value
+(Intercept)  0.19477    0.01663   11.71
+> coef(Mr)
+$id
+   (Intercept)
+1    0.2169654
+2    0.2051936
+3    0.2223139
+4    0.2116193
+5    0.2295123
+6    0.2269393
+7    0.2095020
+8    0.1306194
+9    0.1297411
+10   0.1652631
+```
+
+* Now, let's consider another shrinkage plot:
+
+```R
+plot.new()
+plot.window(xlim=c(0.4,2.5),ylim=c(-0.05,0.3))
+segments(x0=0.5,x1=0.5,y0=0,y1=0.3,lty=1,lwd=2)
+segments(x0=0.5,x1=2.5,y0=0,y1=0,lty=1,lwd=2)
+segments(x0=1,x1=1,y0=-0.01,y1=0.01,lty=1,lwd=2)
+segments(x0=2,x1=2,y0=-0.01,y1=0.01,lty=1,lwd=2)
+text(x=1,y=-0.03,"Separate")
+text(x=2,y=-0.03,"Partially Pooled")
+points(x=rep(1,10),y=c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10),pch=19,cex=1.5)
+points(x=rep(2,10),y=c(post1,post2,post3,post4,
+  post5,post6,post7,post8,post9,post10),
+  pch=19,cex=1.5)
+segments(x0=rep(1,10),x1=rep(2,10),
+  y0=c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10),
+  y1=c(mean(post1),mean(post2),mean(post3),mean(post4),
+  mean(post5),mean(post6),mean(post7),mean(post8),
+  mean(post9),mean(post10)))
+segments(x0=0.47,x1=0.53,y0=0.05,y1=0.05,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.1,y1=0.1,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.15,y1=0.15,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.2,y1=0.2,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.25,y1=0.25,lty=1,lwd=2)
+segments(x0=0.47,x1=0.53,y0=0.3,y1=0.3,lty=1,lwd=2)
+text(x=0.41,y=0.05,"0.05",srt=90)
+text(x=0.41,y=0.1,"0.10",srt=90)
+text(x=0.41,y=0.15,"0.15",srt=90)
+text(x=0.41,y=0.2,"0.20",srt=90)
+text(x=0.41,y=0.25,"0.25",srt=90)
+text(x=0.41,y=0.3,"0.30",srt=90)
+segments(x0=0.7,x1=2.3,y0=coef(M0),y1=coef(M0),lty=2,lwd=2)
+points(x=0.7,y=pooled.p,pch=19,cex=2,col="darkred")
+points(x=2.3,y=pooled.p,pch=19,cex=2,col="darkred")
+```
+
+<p align="center">
+<img src="/gfiles/shrinkage2.png" width="600px">
+</p>
