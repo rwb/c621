@@ -10461,7 +10461,7 @@ hist(dp)
 ```
 
 <p align="center">
-<img src="/gfiles/hp1.png" width="600px">
+<img src="/gfiles/hp1z.png" width="600px">
 </p>
 
 * It looks like we have some variation in the p's.
@@ -10527,7 +10527,7 @@ $beta
 ```
 
 <p align="center">
-<img src="/gfiles/hp2.png" width="600px">
+<img src="/gfiles/hp2z.png" width="600px">
 </p>
 
 * Next, we consider the so-called posterior estimates from each domain:
@@ -10554,5 +10554,5 @@ boxplot(post1,post2,post3,post4,post5,post6,
 ```
 
 <p align="center">
-<img src="/gfiles/hp3.png" width="600px">
+<img src="/gfiles/hp3z.png" width="600px">
 </p>
