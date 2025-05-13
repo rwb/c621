@@ -10901,3 +10901,27 @@ df <- read.csv(file="minn.txt",sep=",",header=T)
 head(df,n=10)
 tail(df,n=10)
 ```
+
+### Assignment #4 (Due on ELMS at noon on Tuesday 5/20/25)
+
+Instructions: please review the guidelines for assignments and submission of assignments in the syllabus above. You should not discuss this assignment with others; the work you submit should be your own work. If I receive questions related to the assignment that I judge to be of interest to the entire class, I will post them below with the answers. I will respond to all questions submitted by Monday evening 5/19/25 at 9:00pm. I will not be able to respond to any questions received after that time (so that all students will have ample time to take such questions into consideration before the submission deadline). Each problem below is worth 10 points. Good luck!
+
+1. Use the immigration/homicide dataset to estimate the linear relationship between the 2018 immigration rate and the 2019 homicide rate controlling for region (1=South, 0=Other). Report a summary of your regression results using the summary() function. Confirm (and report) your results using the matrix solution for both the coefficient estimates and the standard errors (via the variance-covariance matrix).
+
+2. Holding the 2018 immigration rate constant at its *mean* value estimate and report the expected homicide rate for both the south region and non-south region using R's predict() function along with the 88% confidence intervals for each of the expected values. Report your results and comment on whether the confidence intervals overlap.
+
+3. Use the simulation procedure discussed in Lesson 12 to form and report 88% confidence intervals for the south and non-south expected values (holding the 2018 immigration rate constant at its mean value) based on the multivariate t-distribution. Report your results and comment on the consistency of the simulation-based confidence intervals with the confidence intervals based on the predict() function.
+
+4. Using your simulation framework from problem 3, develop a valid inference about the difference (Δ) between the south and non-south expectated homicide rates (holding the immigration rate constant at the sample mean). Report your results and comment on whether your confidence interval includes zero.
+
+5. Estimate a new regression model for the 2019 homicide rate which allows for an interaction between the 2018 immigration rate and the south/non-south region. Use the anova() function to test Ho that the restricted model (no interaction) is equally consistent with the data. Then, use a log-likelihood ratio test to test the same hypothesis. Report your results and supporting detail; then, compare your conclusions between the 2 tests. Conduct your tests at the alpha = 0.10 significance level (or 90% confidence level).
+
+6. Using the interaction model, calculate estimates of θs and θns when the immigration rate goes from 3 to 4. Using simulation and the simulated sampling distribution of the difference between θs and θns (Δ), test the Ho that θs = θns at the 85% confidence level. Report your detailed results and your conclusion.
+
+7. Using the 2022 immigration and homicide data, investigate whether the 2022 immigration rate mediates the relationship between the south/non-south region variable and the 2022 homicide rate. Set up your test using the bootstrap and report your results. Conduct your test at a 95% confidence level.
+
+8. Using the 2022 immigration ad homicide data, investigate the mediation question in problem 7 using the mediation() library. Report your results. Conduct your test at a 95% confidence level.
+
+9. Considering the data in Table 2 of Stasny's article, calculate a fully pooled estimate of the victimization rate with a 92% confidence interval. Then, develop separate estimates for each domain. Estimate and report the 92% confidence interval for the 9th domain.
+
+10. Considering the same data in problem 9, use the separate point estimates as the basis for a method of moments calculation of the shape parameters for the beta distribution. With these shape parameters as priors, estimate the mean posterior victimization rate for domain #8. Estimate and report the 92% credibility interval for the 9th domain. Compare your results to what you saw in problem 9. Do you see evidence of shrinkage?
